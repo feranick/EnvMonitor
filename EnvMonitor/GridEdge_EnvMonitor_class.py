@@ -4,7 +4,7 @@
 **********************************************************
 *
 * GridEdge - Environmental Tracking - using classes
-* version: 20170711a
+* version: 20170711b
 *
 * By: Nicola Ferralis <feranick@hotmail.com>
 *
@@ -12,26 +12,27 @@
 '''
 #print(__doc__)
 
-import sys, time, json
+import sys, time, json, os.path
 #from Adafruit_BME280 import *
 
 global MongoDBhost
 
 def main():
-    if len(sys.argv)<2:
+    if len(sys.argv)<3 or os.path.isfile(sys.argv[2]) == False:
         print(__doc__)
-        print(' Usage:\n  python3 GridEdge_EnvMonitor_class.py <lab-identifier>\n')
+        print(' Usage:\n  python3 GridEdge_EnvMonitor_class.py <lab-identifier> <mongoFile>\n')
         return
     
+    mongoFile = sys.argv[2]
+
     lab = sys.argv[1]
-    MongoDBhost = 'localhost:27017'
     sensor1 = Sensor(lab)
     sensor1.readSensors()
     sensor1.printUI()
     
     print(sensor1.makeJSON())
     
-    #sensors1.pushToMongoDB()
+    sensor1.pushToMongoDB(mongoFile)
 
 #************************************
 ''' Class Sensor '''
@@ -53,7 +54,6 @@ class Sensor:
             self.sensData.append(sensor.read_pressure() / 100)
             self.sensData.append(sensor.read_humidity())
         except:
-        
             print("\n SENSOR NOT CONNECTED ")
             self.sensData.append(0.0)
             self.sensData.append(0.0/100)
@@ -89,11 +89,35 @@ class Sensor:
     #****************************************
     ''' Push to Mongo  - non functional '''
     #****************************************
-    def pushToMongoDB(self):
+    def pushToMongoDB(self, file):
+        connDB1 = GEmongoDB(file)
+        connDB1.printAuthInfo()
+        #client = connDB1.connectDB()
+        #db = client.Tata
+        #db.EnvTrack.insert_one(makeJSON(self))
+
+
+#************************************
+''' Class Database '''
+#************************************
+class GEmongoDB:
+    def __init__(self, file):
+        with open(file, 'r') as f:
+            self.hostname = f.readline().rstrip('\n')
+            self.port_num = f.readline().rstrip('\n')
+            self.dbname = f.readline().rstrip('\n')
+            self.username = f.readline().rstrip('\n')
+            self.password = f.readline().rstrip('\n')
+
+    def connectDB(self):
         from pymongo import MongoClient
-        client = MongoClient(MongoDBhost)
-        db = client.Tata
-        db.EnvTrack.insert_one(makeJSON(self))
+        client = MongoClient(self.hostname, self.port_num)
+        auth_status = client[self.dbname].authenticate(self.username, self.password, mechanism='SCRAM-SHA-1')
+        print('authentication status = {0} \n'.format(auth_status))
+        return client
+
+    def printAuthInfo(self):
+        print(self.hostname,self.port_num,self.dbname,self.username,self.password)
 
 #************************************
 ''' Main initialization routine '''
