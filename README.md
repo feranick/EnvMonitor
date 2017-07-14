@@ -11,6 +11,7 @@ Requirements
 ============
 - Raspberry Pi
 - Adafruit BME280
+- Shinyei PPD42NS particulate sensor (under development)
 
 Installation
 ============
@@ -23,5 +24,5 @@ Installation
 	
 Usage:
 ======
- 	python3 GridEdge_EnvMonitor_class.py <lab-identifier>
+ 	python3 GridEdge_EnvMonitor_class.py <lab-identifier> <mongodb-auth-file>
 
