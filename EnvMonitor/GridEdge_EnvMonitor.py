@@ -4,7 +4,7 @@
 **********************************************************
 *
 * GridEdge - Environmental Tracking - using classes
-* version: 20170713a
+* version: 20170713b
 *
 * By: Nicola Ferralis <feranick@hotmail.com>
 *
@@ -32,7 +32,7 @@ def main():
         
     print(" Format JSON:",sensor1.makeJSON(),"\n")
     
-    print("Pushing to MongoDB:")
+    print(" Pushing to MongoDB:")
     sensor1.pushToMongoDB(mongoFile)
 
 #************************************
@@ -95,7 +95,8 @@ class Sensor:
         #connDB1.printAuthInfo()
         client = connDB1.connectDB()
         db = client.Tata
-        db.EnvTrack.insert_one(json.loads(self.makeJSON()))
+        db_entry = db.EnvTrack.insert_one(json.loads(self.makeJSON()))
+        print(" Data entry successful (id:",db_entry.inserted_id,")\n")
 
 #************************************
 ''' Class Database '''
