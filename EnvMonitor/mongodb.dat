@@ -1,0 +1,12 @@
+host name 
+localhost
+port number 
+7101
+database name 
+test1
+username 
+user1
+password  
+user1
+mechanism 
+SCRAM-SHA-1

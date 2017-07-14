@@ -4,7 +4,7 @@
 **********************************************************
 *
 * GridEdge - Environmental Tracking - using classes
-* version: 20170711b
+* version: 20170713a
 *
 * By: Nicola Ferralis <feranick@hotmail.com>
 *
@@ -29,9 +29,10 @@ def main():
     sensor1 = Sensor(lab)
     sensor1.readSensors()
     sensor1.printUI()
+        
+    print(" Format JSON:",sensor1.makeJSON(),"\n")
     
-    print(sensor1.makeJSON())
-    
+    print("Pushing to MongoDB:")
     sensor1.pushToMongoDB(mongoFile)
 
 #************************************
@@ -87,15 +88,14 @@ class Sensor:
         return json.dumps(data)
         
     #****************************************
-    ''' Push to Mongo  - non functional '''
+    ''' Push to Mongo '''
     #****************************************
     def pushToMongoDB(self, file):
         connDB1 = GEmongoDB(file)
-        connDB1.printAuthInfo()
-        #client = connDB1.connectDB()
-        #db = client.Tata
-        #db.EnvTrack.insert_one(makeJSON(self))
-
+        #connDB1.printAuthInfo()
+        client = connDB1.connectDB()
+        db = client.Tata
+        db.EnvTrack.insert_one(json.loads(self.makeJSON()))
 
 #************************************
 ''' Class Database '''
@@ -103,21 +103,30 @@ class Sensor:
 class GEmongoDB:
     def __init__(self, file):
         with open(file, 'r') as f:
+            f.readline()
             self.hostname = f.readline().rstrip('\n')
+            f.readline()
             self.port_num = f.readline().rstrip('\n')
+            f.readline()
             self.dbname = f.readline().rstrip('\n')
+            f.readline()
             self.username = f.readline().rstrip('\n')
+            f.readline()
             self.password = f.readline().rstrip('\n')
 
     def connectDB(self):
         from pymongo import MongoClient
-        client = MongoClient(self.hostname, self.port_num)
+        client = MongoClient(self.hostname, int(self.port_num))
         auth_status = client[self.dbname].authenticate(self.username, self.password, mechanism='SCRAM-SHA-1')
         print('authentication status = {0} \n'.format(auth_status))
         return client
 
     def printAuthInfo(self):
-        print(self.hostname,self.port_num,self.dbname,self.username,self.password)
+        print(self.hostname)
+        print(self.port_num)
+        print(self.dbname)
+        print(self.username)
+        print(self.password)
 
 #************************************
 ''' Main initialization routine '''
