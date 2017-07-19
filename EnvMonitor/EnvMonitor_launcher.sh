@@ -13,7 +13,7 @@
 lab="Lab1"
 
 remote="pi@server.com:/home/pi/EnvMonitor-logs"
-file="/home/pi/EnvMonitor_$lab.txt"
+file="/home/pi/EnvMonitor/EnvMonitor_$lab.txt"
 
 sleep 60
 IP=$(hostname -I)
