@@ -4,7 +4,7 @@
 **********************************************************
 *
 * GridEdge - Environmental Tracking - using classes
-* version: 20170719a
+* version: 20170719b
 *
 * By: Nicola Ferralis <feranick@hotmail.com>
 *
@@ -12,7 +12,7 @@
 '''
 #print(__doc__)
 
-import sys, time, json, os.path, socket
+import sys, time, json, os.path
 #from Adafruit_BME280 import *
 
 global MongoDBhost
@@ -44,10 +44,7 @@ class Sensor:
         self.date = time.strftime("%Y%m%d")
         self.time = time.strftime("%H:%M:%S")
         self.sensData = []
-    
-        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        s.connect(("8.8.8.8", 80))
-        self.ip = s.getsockname()[0]
+        self.ip = getIP()
 
     #************************************
     ''' Read Sensors '''
@@ -136,6 +133,15 @@ class GEmongoDB:
         print(self.dbname)
         print(self.username)
         print(self.password)
+
+#************************************
+''' Get system IP '''
+#************************************
+def getIP():
+    import socket
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    s.connect(("8.8.8.8", 80))
+    return s.getsockname()[0]
 
 #************************************
 ''' Main initialization routine '''
