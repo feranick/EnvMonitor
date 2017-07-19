@@ -25,4 +25,14 @@ Installation
 Usage:
 ======
  	python3 GridEdge_EnvMonitor_class.py <lab-identifier> <mongodb-auth-file>
+    
+The software will be automated through a script (EnvMonitor_launcher.sh). Since the RPi is 
+connected online via WiFi-DHCP, the IP may change. Through this script, the IP is collected
+on boot and saved on a dedicated server. This is achieved by adding the following to /etc/rc.local:
+
+su pi -c 'home/pi/EnvMonitor_launcher.sh'
+
+The same script will eventually run the software itself
+at periodic intervals. 
+    
 
