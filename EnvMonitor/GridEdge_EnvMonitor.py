@@ -4,7 +4,7 @@
 **********************************************************
 *
 * GridEdge - Environmental Tracking - using classes
-* version: 20170713c
+* version: 20170719a
 *
 * By: Nicola Ferralis <feranick@hotmail.com>
 *
@@ -12,7 +12,7 @@
 '''
 #print(__doc__)
 
-import sys, time, json, os.path
+import sys, time, json, os.path, socket
 #from Adafruit_BME280 import *
 
 global MongoDBhost
@@ -30,7 +30,7 @@ def main():
     sensor1.readSensors()
     sensor1.printUI()
         
-    print(" Format JSON:",sensor1.makeJSON(),"\n")
+    print(" JSON:\n",sensor1.makeJSON(),"\n")
     
     print(" Pushing to MongoDB:")
     sensor1.pushToMongoDB(mongoFile)
@@ -44,6 +44,10 @@ class Sensor:
         self.date = time.strftime("%Y%m%d")
         self.time = time.strftime("%H:%M:%S")
         self.sensData = []
+    
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.connect(("8.8.8.8", 80))
+        self.ip = s.getsockname()[0]
 
     #************************************
     ''' Read Sensors '''
@@ -66,12 +70,12 @@ class Sensor:
     #************************************
     def printUI(self):
         print("\n Lab: ", self.lab)
+        print(" IP: ", self.ip)
         print(" Date: ", self.date)
         print(" Time: ", self.time)
         print(" Temperature = {0:0.3f} deg C".format(self.sensData[0]))
         print(" Pressure = {0:0.2f} hPa".format(self.sensData[1]))
         print(" Humidity = {0:0.2f} %".format(self.sensData[2]),"\n")
-
 
     #************************************
     ''' Make JSON '''
@@ -79,6 +83,7 @@ class Sensor:
     def makeJSON(self):
         data = {
             'lab' : self.lab,
+            'IP' : self.ip,
             'date' : self.date,
             'time' : self.time,
             'temperature' : self.sensData[0],
@@ -122,7 +127,7 @@ class GEmongoDB:
         from pymongo import MongoClient
         client = MongoClient(self.hostname, int(self.port_num))
         auth_status = client[self.dbname].authenticate(self.username, self.password, mechanism='SCRAM-SHA-1')
-        print('authentication status = {0} \n'.format(auth_status))
+        print(' Authentication status = {0} \n'.format(auth_status))
         return client
 
     def printAuthInfo(self):
