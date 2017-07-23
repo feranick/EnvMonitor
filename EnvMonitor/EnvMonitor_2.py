@@ -4,7 +4,7 @@
 **********************************************************
 *
 * GridEdge - Environmental Tracking - using classes
-* version: 20170719b
+* version: 20170723a
 *
 * By: Nicola Ferralis <feranick@hotmail.com>
 *
@@ -108,7 +108,64 @@ class TRHSensor:
 #************************************
 class PMSensor:
     
-    import math
+    import math, time
+    import RPi.GPIO as GPIO
+    
+    """
+        A class to read a Shinyei PPD42NS Dust Sensor, e.g. as used
+        in the Grove dust sensor.
+        
+        This code calculates the percentage of low pulse time and
+        calibrated concentration in particles per 1/100th of a cubic
+        foot at user chosen intervals.
+        
+        You need to use a voltage divider to cut the sensor output
+        voltage to a Pi safe 3.3V (alternatively use an in-line
+        20k resistor to limit the current at your own risk).
+        """
+    
+    def __init__(self, gpio):
+        """
+            Instantiate with the Pi and gpio to which the sensor
+            is connected.
+            """
+        self.gpio = gpio
+        
+        GPIO.setwarnings(False)
+        GPIO.setmode(GPIO.BOARD)
+        
+        self.duration = 0
+        #self.starttime = time.time()
+        self.sampletime_ms = 30000 # 30s
+        self.lowpulseoccupancy = 0
+        self.rato = 0
+        self.concentration = 0
+        
+        GPIO.setup(gpio,GPIO.OUT)
+
+    def read(self):
+        self.starttime = time.time()
+        while time.time() - self.starttime < self.sampletime_ms:
+            while GPIO.input(gpio)==0:
+                self.start = time.time()
+            while GPIO.input(gpio)==1:
+                self.end = time.time()
+                if self.end > self.end:
+                    self.duration = self.end - self.start
+                    self.lowpulseoccupancy = self.lowpulseoccupancy + self.duration
+
+        self.ratio = self.lowpulseoccupancy/(self.sampletime_ms*10.0);
+        self.concentration = 1.1*pow(self.ratio,3)-3.8*pow(self.ratio,2)+520*self.ratio+0.62
+
+        print(" Concentration:", self.concentration," pcs/0.01cf\n")
+        self.lowpulseoccupancy = 0
+'''
+#************************************
+''' Class Particulate Sensor '''
+#************************************
+class PMSensor_orig:
+    
+    import math, time
     import RPi.GPIO as GPIO
 
     """
@@ -137,11 +194,24 @@ class PMSensor:
         self._last_tick = None
         self._low_ticks = 0
         self._high_ticks = 0
+        
+        self.collectionTime = 30
 
         GPIO.setup(gpio,GPIO.OUT)
         #pi.set_mode(gpio, pigpio.INPUT)
         
         self._cb = pi.callback(gpio, pigpio.EITHER_EDGE, self._cbf)
+    
+    
+    def read(self):
+        self._start_tick = None
+        self._last_tick = None
+        self._low_ticks = 0
+        self._high_ticks = 0
+    
+        while(time.time()<self.collectionTime):
+            if GPIO.input(gpio)==1:
+
 
     def read(self):
         """
@@ -178,7 +248,7 @@ class PMSensor:
             self._last_tick = tick
             self._high_ticks = self._high_ticks + ticks
             
-            '''
+            
             if level == 0: # Falling edge.
                 self._high_ticks = self._high_ticks + ticks
 
@@ -187,18 +257,18 @@ class PMSensor:
 
             else: # timeout level, not used
                 pass
-            '''
+            
        else:
             self._start_tick = tick
             self._last_tick = tick
          
 
     def pcs_to_ugm3(self, concentration_pcf):
-        '''
-        Convert concentration of PM2.5 particles per 0.01 cubic feet to µg/ metre cubed
-        this method outlined by Drexel University students (2009) and is an approximation
-        does not contain correction factors for humidity and rain
-        '''
+
+        #Convert concentration of PM2.5 particles per 0.01 cubic feet to µg/ metre cubed
+        #this method outlined by Drexel University students (2009) and is an approximation
+        #does not contain correction factors for humidity and rain
+
         # Assume all particles are spherical, with a density of 1.65E12 µg/m3
         densitypm25 = 1.65 * math.pow(10, 12)
         
@@ -219,16 +289,17 @@ class PMSensor:
 
 
     def tickDiff(t1, t2):
-        '''
-        Returns the microsecond difference between two ticks.
-        t1:= the earlier tick
-        t2:= the later tick
-        '''
+    
+        #Returns the microsecond difference between two ticks.
+        #t1:= the earlier tick
+        #t2:= the later tick
+        
         tDiff = t2 - t1
         if tDiff < 0:
             tDiff += (1 << 32)
         return tDiff
-
+        '''
+        
 #************************************
 ''' Class Database '''
 #************************************
