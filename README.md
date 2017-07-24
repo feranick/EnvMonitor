@@ -18,10 +18,16 @@ Installation
 ============
 	sudo apt-get update
 	sudo apt-get install build-essential python3-pip python3-dev python3-smbus git
+    mkdir ~/software
+    cd ~/software
 	git clone https://github.com/adafruit/Adafruit_Python_GPIO.git
 	cd Adafruit_Python_GPIO
-	sudo python setup.py install
+	sudo python3 setup.py install
+    cd ..
 	git clone https://github.com/adafruit/Adafruit_Python_BME280.git
+    cd Adafruit_Python_BME280
+    sudo python3 setup.py install
+
 	
 Usage:
 ======
