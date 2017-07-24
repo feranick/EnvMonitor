@@ -4,7 +4,7 @@
 **********************************************************
 *
 * GridEdge - Environmental Tracking - using classes
-* version: 20170719b
+* version: 20170724a
 *
 * By: Nicola Ferralis <feranick@hotmail.com>
 *
@@ -13,7 +13,7 @@
 #print(__doc__)
 
 import sys, time, json, os.path
-#from Adafruit_BME280 import *
+from Adafruit_BME280 import *
 
 global MongoDBhost
 
@@ -70,9 +70,9 @@ class Sensor:
         print(" IP: ", self.ip)
         print(" Date: ", self.date)
         print(" Time: ", self.time)
-        print(" Temperature = {0:0.3f} deg C".format(self.sensData[0]))
-        print(" Pressure = {0:0.2f} hPa".format(self.sensData[1]))
-        print(" Humidity = {0:0.2f} %".format(self.sensData[2]),"\n")
+        print(" Temperature = {0:0.1f} deg C".format(self.sensData[0]))
+        print(" Pressure = {0:0.1f} hPa".format(self.sensData[1]))
+        print(" Humidity = {0:0.1f} %".format(self.sensData[2]),"\n")
 
     #************************************
     ''' Make JSON '''
@@ -83,9 +83,9 @@ class Sensor:
             'IP' : self.ip,
             'date' : self.date,
             'time' : self.time,
-            'temperature' : self.sensData[0],
-            'pressure' : self.sensData[1],
-            'humidity' : self.sensData[2]
+            'temperature' : '{0:0.1f}'.format(self.sensData[0]),
+            'pressure' : '{0:0.1f}'.format(self.sensData[1]),
+            'humidity' : '{0:0.1f}'.format(self.sensData[2])
         }
         return json.dumps(data)
         
