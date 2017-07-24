@@ -17,7 +17,7 @@ Requirements
 Installation
 ============
 	sudo apt-get update
-	sudo apt-get install build-essential python3-pip python3-dev python3-smbus git
+	sudo apt-get install build-essential python3-pip python3-dev python3-smbus git python3-rpi.gpio
     mkdir ~/software
     cd ~/software
 	git clone https://github.com/adafruit/Adafruit_Python_GPIO.git
@@ -28,7 +28,6 @@ Installation
     cd Adafruit_Python_BME280
     sudo python3 setup.py install
 
-	
 Usage:
 ======
  	python3 GridEdge_EnvMonitor_class.py <lab-identifier> <mongodb-auth-file>
