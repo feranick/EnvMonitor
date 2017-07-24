@@ -12,6 +12,7 @@ Requirements
 - Raspberry Pi
 - Adafruit BME280
 - Shinyei PPD42NS particulate sensor (under development)
+  - data sheet: http://www.mouser.com/ds/2/744/Seeed_101020012-838657.pdf
 
 Installation
 ============
