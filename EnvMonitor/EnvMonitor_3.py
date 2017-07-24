@@ -4,7 +4,7 @@
 **********************************************************
 *
 * GridEdge - Environmental Tracking - using classes
-* version: 20170724c
+* version: 20170724d
 *
 * By: Nicola Ferralis <feranick@hotmail.com>
 *
@@ -34,8 +34,25 @@ def main():
     print(" JSON:\n",sensor1.makeJSON(),"\n")
 
     pms = PMSensor(26)
-    pms.read()
+    print(" Waiting for PM sensor...")
+    time.sleep(30)
+    g, r, c = pms.read()
 
+    if (c==1114000.62):
+        print(" Error\n")
+
+    print("Air Quality Measurements for PM2.5:",
+          "  ", str(int(c)), " particles/0.01ft^3")
+        
+    # convert to SI units
+    concentration_ugm3=pms.pcs_to_ugm3(c)
+    print("  ", str(int(concentration_ugm3))," ugm^3")
+
+    # convert SI units to US AQI
+    # input should be 24 hour average of ugm3, not instantaneous reading
+    aqi=pms.ugm3_to_aqi(concentration_ugm3)
+        
+    print("  Current AQI (not 24 hour avg): ",str(int(aqi)), "\n")
 
     #print(" Pushing to MongoDB:")
     #sensor1.pushToMongoDB(mongoFile)
@@ -110,64 +127,137 @@ class TRHSensor:
         except:
             print(" Data entry failed.\n")
 
+
 #************************************
 ''' Class Particulate Sensor '''
 #************************************
 class PMSensor:
-    """
-        A class to read a Shinyei PPD42NS Dust Sensor, e.g. as used
-        in the Grove dust sensor.
-        
-        This code calculates the percentage of low pulse time and
-        calibrated concentration in particles per 1/100th of a cubic
-        foot at user chosen intervals.
-        
-        You need to use a voltage divider to cut the sensor output
-        voltage to a Pi safe 3.3V (alternatively use an in-line
-        20k resistor to limit the current at your own risk).
-        """
     
+    import math, time
+    import RPi.GPIO as GPIO
+
+    """
+    A class to read a Shinyei PPD42NS Dust Sensor, e.g. as used
+    in the Grove dust sensor.
+
+    This code calculates the percentage of low pulse time and
+    calibrated concentration in particles per 1/100th of a cubic
+    foot at user chosen intervals.
+
+    You need to use a voltage divider to cut the sensor output
+    voltage to a Pi safe 3.3V (alternatively use an in-line
+    20k resistor to limit the current at your own risk).
+    """
+
     def __init__(self, gpio):
         """
-            Instantiate with the Pi and gpio to which the sensor
-            is connected.
-            """
-        self.gpio = gpio
-        
+        Instantiate with the Pi and gpio to which the sensor
+        is connected.
+        """
         GPIO.setwarnings(False)
         GPIO.setmode(GPIO.BOARD)
+
+        self.gpio = gpio
+        self._start_tick = None
+        self._last_tick = None
+        self._low_ticks = 0
+        self._high_ticks = 0
         
-        self.duration = 0
-        #self.starttime = time.time()
-        self.sampletime_ms = 5 # 30s
-        self.lowpulseoccupancy = 0
-        self.rato = 0
-        self.concentration = 0
+        self.collectionTime = 30
+
+        #GPIO.setup(gpio,GPIO.OUT)
+        #pi.set_mode(gpio, pigpio.INPUT)
         
-        GPIO.setup(gpio,GPIO.OUT)
+        #self._cb = pi.callback(gpio, pigpio.EITHER_EDGE, self._cbf)
+        GPIO.setup(gpio,GPIO.IN)
+        self._cb = GPIO.add_event_detect(gpio, GPIO.RISING, callback=self._cbf)
+
 
     def read(self):
-        self.starttime = time.time()
-        self.currenttime = 0
-        while self.currenttime < self.sampletime_ms:
-            self.currenttime = time.time()-self.starttime
-            print('time:',str(self.currenttime))
+        """
+        Calculates the percentage low pulse time and calibrated
+        concentration in particles per 1/100th of a cubic foot
+        since the last read.
+
+        For proper calibration readings should be made over
+        30 second intervals.
+
+        Returns a tuple of gpio, percentage, and concentration.
+        """
+        interval = self._low_ticks + self._high_ticks
+
+        if interval > 0:
+            ratio = float(self._low_ticks)/float(interval)*100.0
+            conc = 1.1*pow(ratio,3)-3.8*pow(ratio,2)+520*ratio+0.62;
+        else:
+            ratio = 0
+            conc = 0.0
+
+        self._start_tick = None
+        self._last_tick = None
+        self._low_ticks = 0
+        self._high_ticks = 0
+        
+        return (self.gpio, ratio, conc)
+
+    def _cbf(self, gpio, tick):
+
+        if self._start_tick is not None:
+
+            ticks = self.tickDiff(self._last_tick, tick)
+            self._last_tick = tick
+            self._high_ticks = self._high_ticks + ticks
             
-            if GPIO.input(self.gpio) == 0:
-                self.start = time.time()
-            if GPIO.input(self.gpio) == 1:
-                self.end = time.time()
-                if self.end > self.end:
-                    self.duration = self.end - self.start
-                    self.lowpulseoccupancy = self.lowpulseoccupancy + self.duration
+            
+            if level == 0: # Falling edge.
+                self._high_ticks = self._high_ticks + ticks
+
+            elif level == 1: # Rising edge.
+                self._low_ticks = self._low_ticks + ticks
+
+            else: # timeout level, not used
+                pass
+            
+        else:
+            self._start_tick = tick
+            self._last_tick = tick
+         
+
+    def pcs_to_ugm3(self, concentration_pcf):
+
+        #Convert concentration of PM2.5 particles per 0.01 cubic feet to µg/ metre cubed
+        #this method outlined by Drexel University students (2009) and is an approximation
+        #does not contain correction factors for humidity and rain
+
+        # Assume all particles are spherical, with a density of 1.65E12 µg/m3
+        densitypm25 = 1.65 * math.pow(10, 12)
+        
+        # Assume the radius of a particle in the PM2.5 channel is .44 µm
+        rpm25 = 0.44 * math.pow(10, -6)
+        
+        # Volume of a sphere = 4/3 * pi * radius^3
+        volpm25 = (4/3) * math.pi * (rpm25**3)
+        
+        # mass = density * volume
+        masspm25 = densitypm25 * volpm25
+        
+        # parts/m3 =  parts/foot3 * 3531.5
+        # µg/m3 = parts/m3 * mass in µg
+        concentration_ugm3 = concentration_pcf * 3531.5 * masspm25
+        
+        return concentration_ugm3
+
+
+    def tickDiff(t1, t2):
     
-            #time.sleep (10)
-
-        self.ratio = self.lowpulseoccupancy/(self.sampletime_ms*10.0);
-        self.concentration = 1.1*pow(self.ratio,3)-3.8*pow(self.ratio,2)+520*self.ratio+0.62
-
-        print(" Concentration:", self.concentration," pcs/0.01cf\n")
-        self.lowpulseoccupancy = 0
+        #Returns the microsecond difference between two ticks.
+        #t1:= the earlier tick
+        #t2:= the later tick
+        
+        tDiff = t2 - t1
+        if tDiff < 0:
+            tDiff += (1 << 32)
+        return tDiff
 
 #************************************
 ''' Class Database '''
