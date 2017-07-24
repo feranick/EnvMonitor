@@ -4,7 +4,7 @@
 **********************************************************
 *
 * GridEdge - Environmental Tracking - using classes
-* version: 20170724b
+* version: 20170724c
 *
 * By: Nicola Ferralis <feranick@hotmail.com>
 *
@@ -12,8 +12,9 @@
 '''
 #print(__doc__)
 
-import sys, time, json, os.path
+import sys, math, json, os.path, time
 from Adafruit_BME280 import *
+import RPi.GPIO as GPIO
 
 global MongoDBhost
 
@@ -31,9 +32,15 @@ def main():
     sensor1.printUI()
         
     print(" JSON:\n",sensor1.makeJSON(),"\n")
-    
-    print(" Pushing to MongoDB:")
-    sensor1.pushToMongoDB(mongoFile)
+
+    pms = PMSensor(26)
+    pms.read()
+
+
+    #print(" Pushing to MongoDB:")
+    #sensor1.pushToMongoDB(mongoFile)
+
+
 
 #************************************
 ''' Class T/RH Sensor '''
@@ -107,10 +114,6 @@ class TRHSensor:
 ''' Class Particulate Sensor '''
 #************************************
 class PMSensor:
-    
-    import math, time
-    import RPi.GPIO as GPIO
-    
     """
         A class to read a Shinyei PPD42NS Dust Sensor, e.g. as used
         in the Grove dust sensor.
@@ -136,7 +139,7 @@ class PMSensor:
         
         self.duration = 0
         #self.starttime = time.time()
-        self.sampletime_ms = 30000 # 30s
+        self.sampletime_ms = 5 # 30s
         self.lowpulseoccupancy = 0
         self.rato = 0
         self.concentration = 0
@@ -145,14 +148,20 @@ class PMSensor:
 
     def read(self):
         self.starttime = time.time()
-        while time.time() - self.starttime < self.sampletime_ms:
-            while GPIO.input(gpio)==0:
+        self.currenttime = 0
+        while self.currenttime < self.sampletime_ms:
+            self.currenttime = time.time()-self.starttime
+            print('time:',str(self.currenttime))
+            
+            if GPIO.input(self.gpio) == 0:
                 self.start = time.time()
-            while GPIO.input(gpio)==1:
+            if GPIO.input(self.gpio) == 1:
                 self.end = time.time()
                 if self.end > self.end:
                     self.duration = self.end - self.start
                     self.lowpulseoccupancy = self.lowpulseoccupancy + self.duration
+    
+            #time.sleep (10)
 
         self.ratio = self.lowpulseoccupancy/(self.sampletime_ms*10.0);
         self.concentration = 1.1*pow(self.ratio,3)-3.8*pow(self.ratio,2)+520*self.ratio+0.62
