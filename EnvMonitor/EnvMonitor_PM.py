@@ -4,7 +4,7 @@
 **********************************************************
 *
 * GridEdge - Environmental Tracking - using classes
-* version: 20170725b
+* version: 20170725c
 *
 * By: Nicola Ferralis <feranick@hotmail.com>
 *
@@ -48,7 +48,7 @@ def main():
     print(" Particulate PM2.5: \n {0:0.1f}".format(conc),
           " particles/m^3\n")
 
-    sensData.extend(['{0:0.1f}'.format(conc)])
+    sensData.extend([conc])
 
     #************************************
     ''' Make JSON and push o '''
@@ -192,7 +192,7 @@ def makeJSON(data):
         'temperature' : '{0:0.1f}'.format(data[4]),
         'pressure' : '{0:0.1f}'.format(data[5]),
         'humidity' : '{0:0.1f}'.format(data[6]),
-        'PM2.5_conc_ugm3' : '{0:0.1f}'.format(data[7]),
+        'PM2.5_particles_m3' : '{0:0.1f}'.format(data[7]),
     }
     return json.dumps(data)
     
