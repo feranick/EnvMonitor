@@ -4,7 +4,7 @@
 **********************************************************
 *
 * GridEdge - Environmental Tracking - using classes
-* version: 20170725e
+* version: 20170725f
 *
 * By: Nicola Ferralis <feranick@hotmail.com>
 *
@@ -37,11 +37,12 @@ def main():
     trhSensor.printUI()
     
     #************************************
-    ''' Make JSON and push o '''
+    ''' Make JSON and push to MongoDB '''
     #************************************
-    print("\n JSON:\n",makeJSON(sensData),"\n")
+    conn = GEmongoDB(sensData,mongoFile)
+    print("\n JSON:\n",conn.makeJSON(),"\n")
     print(" Pushing to MongoDB:")
-    pushToMongoDB(makeJSON(sensData), mongoFile)
+    conn.pushToMongoDB()
 
 #************************************
 ''' Class T/RH Sensor '''
@@ -85,7 +86,8 @@ class TRHSensor:
 ''' Class Database '''
 #************************************
 class GEmongoDB:
-    def __init__(self, file):
+    def __init__(self, data, file):
+        self.data = data
         with open(file, 'r') as f:
             f.readline()
             self.hostname = f.readline().rstrip('\n')
@@ -112,34 +114,27 @@ class GEmongoDB:
         print(self.username)
         print(self.password)
 
-#************************************
-''' Make JSON '''
-#************************************
-def makeJSON(data):
-    data = {
-        'lab' : data[0],
-        'IP' : data[1],
-        'date' : data[2],
-        'time' : data[3],
-        'temperature' : '{0:0.1f}'.format(data[4]),
-        'pressure' : '{0:0.1f}'.format(data[5]),
-        'humidity' : '{0:0.1f}'.format(data[6]),
-    }
-    return json.dumps(data)
+    def makeJSON(self):
+        dataj = {
+            'lab' : self.data[0],
+            'IP' : self.data[1],
+            'date' : self.data[2],
+            'time' : self.data[3],
+            'temperature' : '{0:0.1f}'.format(self.data[4]),
+            'pressure' : '{0:0.1f}'.format(self.data[5]),
+            'humidity' : '{0:0.1f}'.format(self.data[6]),
+            }
+        return json.dumps(dataj)
     
-#****************************************
-''' Push to Mongo '''
-#****************************************
-def pushToMongoDB(json, file):
-    connDB1 = GEmongoDB(file)
-    #connDB1.printAuthInfo()
-    client = connDB1.connectDB()
-    db = client.Tata
-    try:
-        db_entry = db.EnvTrack.insert_one(json.loads(json))
-        print(" Data entry successful (id:",db_entry.inserted_id,")\n")
-    except:
-        print(" Data entry failed.\n")
+    def pushToMongoDB(self):
+        jsonData = self.makeJSON()
+        client = self.connectDB()
+        db = client.Tata
+        try:
+            db_entry = db.EnvTrack.insert_one(json.loads(jsonData))
+            print(" Data entry successful (id:",db_entry.inserted_id,")\n")
+        except:
+            print(" Data entry failed.\n")
 
 
 #************************************

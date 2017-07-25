@@ -4,7 +4,7 @@
 **********************************************************
 *
 * GridEdge - Environmental Tracking - using classes
-* version: 20170725f
+* version: 20170725e
 *
 * By: Nicola Ferralis <feranick@hotmail.com>
 *
@@ -18,7 +18,7 @@ import RPi.GPIO as GPIO
 
 global MongoDBhost
 
-pms_gpio = 26
+PMtimewait = 5
 
 def main():
     if len(sys.argv)<3 or os.path.isfile(sys.argv[2]) == False:
@@ -37,21 +37,11 @@ def main():
     trhSensor.printUI()
     
     #************************************
-    ''' Read from PM sensor '''
+    ''' Make JSON and push o '''
     #************************************
-    pms = PMSensor(pms_gpio)
-    conc_imp, conc = pms.collect()
-    pms.printUI()
-    sensData.extend([conc])
-
-    #************************************
-    ''' Make JSON and push to MongoDB '''
-    #************************************
-    conn = GEmongoDB(sensData,mongoFile)
-    print("\n JSON:\n",conn.makeJSON(),"\n")
+    print("\n JSON:\n",makeJSON(sensData),"\n")
     print(" Pushing to MongoDB:")
-    conn.pushToMongoDB()
-    #pushToMongoDB(makeJSON(sensData), mongoFile)
+    pushToMongoDB(makeJSON(sensData), mongoFile)
 
 #************************************
 ''' Class T/RH Sensor '''
@@ -92,66 +82,10 @@ class TRHSensor:
         print(" Humidity = {0:0.1f} %".format(self.sensData[6]),"\n")
 
 #************************************
-''' Class Particulate Sensor '''
-#************************************
-class PMSensor:
-    
-    import time
-    import RPi.GPIO as GPIO
-
-    '''
-    A class to read a Shinyei PPD42NS Dust Sensor, e.g. as used
-    in the Grove dust sensor.
-
-    This code calculates the percentage of low pulse time and
-    calibrated concentration in particles per 1/100th of a cubic
-    foot at user chosen intervals.
-    '''
-
-    def __init__(self, gpio):
-        """
-        Instantiate with the Pi and gpio to which the sensor
-        is connected.
-        """
-        GPIO.setwarnings(False)
-        GPIO.setmode(GPIO.BOARD)
-        GPIO.setup(gpio,GPIO.IN)
-
-        self.gpio = gpio
-        self.collectionTime = 30
-
-    def collect(self):
-        runTime = time.time()
-        lowpulseoccupancy = 0
-        GPIO.remove_event_detect(self.gpio)
-        GPIO.add_event_detect(self.gpio, GPIO.BOTH, bouncetime = 1)
-        
-        while time.time() - runTime < self.collectionTime:
-            print(" Waiting",int(time.time() - runTime),
-                  "/",int(self.collectionTime),"s for PM sensor...", end="\r")
-            #time.sleep(0.005)
-            startTime = time.time()
-            if GPIO.event_detected(self.gpio):
-                GPIO.remove_event_detect(self.gpio)
-                duration = time.time() - startTime
-                lowpulseoccupancy = lowpulseoccupancy+duration
-                GPIO.add_event_detect(self.gpio, GPIO.BOTH, bouncetime=1)
-    
-        self.ratio = lowpulseoccupancy*100/(self.collectionTime);
-        self.conc_imp = 1.1*pow(self.ratio,3)-3.8*pow(self.ratio,2)+520*self.ratio+0.62
-        self.conc = self.conc_imp*0.000238 # concentration in particles/L
-        return (self.conc_imp, self.conc)
-
-    def printUI(self):
-        print(" Particulate PM2.5: \n particles/m^3: {0:0.4f}".format(self.conc),
-              "\n particles/cu-ft: {0:0.2f}".format(self.conc_imp))
-
-#************************************
 ''' Class Database '''
 #************************************
 class GEmongoDB:
-    def __init__(self, data, file):
-        self.data = data
+    def __init__(self, file):
         with open(file, 'r') as f:
             f.readline()
             self.hostname = f.readline().rstrip('\n')
@@ -178,28 +112,35 @@ class GEmongoDB:
         print(self.username)
         print(self.password)
 
-    def makeJSON(self):
-        dataj = {
-            'lab' : self.data[0],
-            'IP' : self.data[1],
-            'date' : self.data[2],
-            'time' : self.data[3],
-            'temperature' : '{0:0.1f}'.format(self.data[4]),
-            'pressure' : '{0:0.1f}'.format(self.data[5]),
-            'humidity' : '{0:0.1f}'.format(self.data[6]),
-            'PM2.5_particles_m3' : '{0:0.3f}'.format(self.data[7]),
-            }
-        return json.dumps(dataj)
+#************************************
+''' Make JSON '''
+#************************************
+def makeJSON(data):
+    data = {
+        'lab' : data[0],
+        'IP' : data[1],
+        'date' : data[2],
+        'time' : data[3],
+        'temperature' : '{0:0.1f}'.format(data[4]),
+        'pressure' : '{0:0.1f}'.format(data[5]),
+        'humidity' : '{0:0.1f}'.format(data[6]),
+    }
+    return json.dumps(data)
+    
+#****************************************
+''' Push to Mongo '''
+#****************************************
+def pushToMongoDB(json, file):
+    connDB1 = GEmongoDB(file)
+    #connDB1.printAuthInfo()
+    client = connDB1.connectDB()
+    db = client.Tata
+    try:
+        db_entry = db.EnvTrack.insert_one(json.loads(json))
+        print(" Data entry successful (id:",db_entry.inserted_id,")\n")
+    except:
+        print(" Data entry failed.\n")
 
-    def pushToMongoDB(self):
-        jsonData = self.makeJSON()
-        client = self.connectDB()
-        db = client.Tata
-        try:
-            db_entry = db.EnvTrack.insert_one(json.loads(jsonData))
-            print(" Data entry successful (id:",db_entry.inserted_id,")\n")
-        except:
-            print(" Data entry failed.\n")
 
 #************************************
 ''' Get system IP '''
