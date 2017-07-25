@@ -4,7 +4,7 @@
 **********************************************************
 *
 * GridEdge - Environmental Tracking - using classes
-* version: 20170725c
+* version: 20170725c`
 *
 * By: Nicola Ferralis <feranick@hotmail.com>
 *
@@ -42,11 +42,9 @@ def main():
     pms = PMSensor(pms_gpio)
 
     print(" Waiting",int(pms.collectionTime),"s for PM sensor...")
-    conc = pms.collect()
-    # convert to SI units
-    #conc_ugm3=pms.pcs_to_ugm3(conc)
-    print(" Particulate PM2.5: \n {0:0.1f}".format(conc),
-          " particles/m^3\n")
+    conc_imp, conc = pms.collect()
+    print(" Particulate PM2.5: \n particles/m^3: {0:0.2f}".format(conc),
+          "\n particles/cu-ft: {0:0.4f}".format(conc_imp))
 
     sensData.extend([conc])
 
@@ -147,7 +145,7 @@ class PMSensor:
         ratio = lowpulseoccupancy*100/(self.collectionTime);
         conc_imp = 1.1*pow(ratio,3)-3.8*pow(ratio,2)+520*ratio+0.62
         conc = conc_imp*0.000238 # concentration in particles/L
-        return (conc)
+        return (conc_imp, conc)
 
 #************************************
 ''' Class Database '''
