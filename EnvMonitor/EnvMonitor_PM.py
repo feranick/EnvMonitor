@@ -4,7 +4,7 @@
 **********************************************************
 *
 * GridEdge - Environmental Tracking - using classes
-* version: 20170724d
+* version: 20170725a
 *
 * By: Nicola Ferralis <feranick@hotmail.com>
 *
@@ -18,45 +18,47 @@ import RPi.GPIO as GPIO
 
 global MongoDBhost
 
+PMtimewait = 5
+
 def main():
     if len(sys.argv)<3 or os.path.isfile(sys.argv[2]) == False:
         print(__doc__)
         print(' Usage:\n  python3 GridEdge_EnvMonitor_class.py <lab-identifier> <mongoFile>\n')
         return
     
-    mongoFile = sys.argv[2]
-
     lab = sys.argv[1]
-    sensor1 = TRHSensor(lab)
-    sensor1.readSensors()
-    sensor1.printUI()
-        
-    print(" JSON:\n",sensor1.makeJSON(),"\n")
-
+    mongoFile = sys.argv[2]
+    
+    #************************************
+    ''' Read from T/RH sensor '''
+    #************************************
+    trhSensor = TRHSensor(lab)
+    sensData = trhSensor.readSensors()
+    trhSensor.printUI()
+    
+    #************************************
+    ''' Read from PM sensor '''
+    #************************************
     pms = PMSensor(26)
-    print(" Waiting for PM sensor...")
-    time.sleep(30)
+    print(" Waiting",str(PMtimewait),"s for PM sensor...")
+    time.sleep(PMtimewait)
     g, r, c = pms.read()
-
     if (c==1114000.62):
         print(" Error\n")
-
-    print("Air Quality Measurements for PM2.5:",
-          "  ", str(int(c)), " particles/0.01ft^3")
-        
     # convert to SI units
     concentration_ugm3=pms.pcs_to_ugm3(c)
-    print("  ", str(int(concentration_ugm3))," ugm^3")
+    print(" Particulate PM2.5: \n ",
+          str(int(c)), " particles/0.01ft^3\n ",
+          str(int(concentration_ugm3))," ugm^3")
 
-    # convert SI units to US AQI
-    # input should be 24 hour average of ugm3, not instantaneous reading
-    aqi=pms.ugm3_to_aqi(concentration_ugm3)
-        
-    print("  Current AQI (not 24 hour avg): ",str(int(aqi)), "\n")
+    sensData.extend([int(concentration_ugm3)])
 
-    #print(" Pushing to MongoDB:")
-    #sensor1.pushToMongoDB(mongoFile)
-
+    #************************************
+    ''' Make JSON and push o '''
+    #************************************
+    print("\n JSON:\n",makeJSON(sensData),"\n")
+    print(" Pushing to MongoDB:")
+    #pushToMongoDB(sensData, mongoFile)
 
 
 #************************************
@@ -74,16 +76,15 @@ class TRHSensor:
     ''' Read Sensors '''
     #************************************
     def readSensors(self):
+        self.sensData.extend([self.lab, self.ip, self.date, self.time])
         try:
             sensor = BME280(t_mode=BME280_OSAMPLE_8, p_mode=BME280_OSAMPLE_8, h_mode=BME280_OSAMPLE_8)
-            self.sensData.append(sensor.read_temperature())
-            self.sensData.append(sensor.read_pressure() / 100)
-            self.sensData.append(sensor.read_humidity())
+            self.sensData.extend([sensor.read_temperature(),
+                                  sensor.read_pressure() / 100,
+                                  sensor.read_humidity()])
         except:
             print("\n SENSOR NOT CONNECTED ")
-            self.sensData.append(0.0)
-            self.sensData.append(0.0/100)
-            self.sensData.append(0.0)
+            self.sensData.extend([0.0,0.0,0.0])
         return self.sensData
 
     #************************************
@@ -94,39 +95,9 @@ class TRHSensor:
         print(" IP: ", self.ip)
         print(" Date: ", self.date)
         print(" Time: ", self.time)
-        print(" Temperature = {0:0.1f} deg C".format(self.sensData[0]))
-        print(" Pressure = {0:0.1f} hPa".format(self.sensData[1]))
-        print(" Humidity = {0:0.1f} %".format(self.sensData[2]),"\n")
-
-    #************************************
-    ''' Make JSON '''
-    #************************************
-    def makeJSON(self):
-        data = {
-            'lab' : self.lab,
-            'IP' : self.ip,
-            'date' : self.date,
-            'time' : self.time,
-            'temperature' : '{0:0.1f}'.format(self.sensData[0]),
-            'pressure' : '{0:0.1f}'.format(self.sensData[1]),
-            'humidity' : '{0:0.1f}'.format(self.sensData[2])
-        }
-        return json.dumps(data)
-        
-    #****************************************
-    ''' Push to Mongo '''
-    #****************************************
-    def pushToMongoDB(self, file):
-        connDB1 = GEmongoDB(file)
-        #connDB1.printAuthInfo()
-        client = connDB1.connectDB()
-        db = client.Tata
-        try:
-            db_entry = db.EnvTrack.insert_one(json.loads(self.makeJSON()))
-            print(" Data entry successful (id:",db_entry.inserted_id,")\n")
-        except:
-            print(" Data entry failed.\n")
-
+        print(" Temperature = {0:0.1f} deg C".format(self.sensData[4]))
+        print(" Pressure = {0:0.1f} hPa".format(self.sensData[5]))
+        print(" Humidity = {0:0.1f} %".format(self.sensData[6]),"\n")
 
 #************************************
 ''' Class Particulate Sensor '''
@@ -162,6 +133,7 @@ class PMSensor:
         self._last_tick = None
         self._low_ticks = 0
         self._high_ticks = 0
+        self.tick = 0
         
         self.collectionTime = 30
 
@@ -170,7 +142,7 @@ class PMSensor:
         
         #self._cb = pi.callback(gpio, pigpio.EITHER_EDGE, self._cbf)
         GPIO.setup(gpio,GPIO.IN)
-        self._cb = GPIO.add_event_detect(gpio, GPIO.RISING, callback=self._cbf)
+        self._cb = GPIO.add_event_detect(gpio, GPIO.BOTH, callback=self._cbf)
 
 
     def read(self):
@@ -200,8 +172,8 @@ class PMSensor:
         
         return (self.gpio, ratio, conc)
 
-    def _cbf(self, gpio, tick):
-
+    def _cbf(self, gpio):
+        tick = self.tick
         if self._start_tick is not None:
 
             ticks = self.tickDiff(self._last_tick, tick)
@@ -209,10 +181,10 @@ class PMSensor:
             self._high_ticks = self._high_ticks + ticks
             
             
-            if level == 0: # Falling edge.
+            if GPIO.FALLING: # Falling edge.
                 self._high_ticks = self._high_ticks + ticks
 
-            elif level == 1: # Rising edge.
+            elif GPIO.RISING: # Rising edge.
                 self._low_ticks = self._low_ticks + ticks
 
             else: # timeout level, not used
@@ -248,7 +220,7 @@ class PMSensor:
         return concentration_ugm3
 
 
-    def tickDiff(t1, t2):
+    def tickDiff(self, t1, t2):
     
         #Returns the microsecond difference between two ticks.
         #t1:= the earlier tick
@@ -289,6 +261,37 @@ class GEmongoDB:
         print(self.dbname)
         print(self.username)
         print(self.password)
+
+#************************************
+''' Make JSON '''
+#************************************
+def makeJSON(data):
+    data = {
+        'lab' : data[0],
+        'IP' : data[1],
+        'date' : data[2],
+        'time' : data[3],
+        'temperature' : '{0:0.1f}'.format(data[4]),
+        'pressure' : '{0:0.1f}'.format(data[5]),
+        'humidity' : '{0:0.1f}'.format(data[6]),
+        'PM2.5_conc_ugm3' : data[7],
+    }
+    return json.dumps(data)
+    
+#****************************************
+''' Push to Mongo '''
+#****************************************
+def pushToMongoDB(json, file):
+    connDB1 = GEmongoDB(file)
+    #connDB1.printAuthInfo()
+    client = connDB1.connectDB()
+    db = client.Tata
+    try:
+        db_entry = db.EnvTrack.insert_one(json.loads(json))
+        print(" Data entry successful (id:",db_entry.inserted_id,")\n")
+    except:
+        print(" Data entry failed.\n")
+
 
 #************************************
 ''' Get system IP '''

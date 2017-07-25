@@ -4,7 +4,7 @@
 **********************************************************
 *
 * GridEdge - Environmental Tracking - using classes
-* version: 20170725a
+* version: 20170724a
 *
 * By: Nicola Ferralis <feranick@hotmail.com>
 *
@@ -12,13 +12,10 @@
 '''
 #print(__doc__)
 
-import sys, math, json, os.path, time
+import sys, time, json, os.path
 from Adafruit_BME280 import *
-import RPi.GPIO as GPIO
 
 global MongoDBhost
-
-PMtimewait = 5
 
 def main():
     if len(sys.argv)<3 or os.path.isfile(sys.argv[2]) == False:
@@ -26,27 +23,22 @@ def main():
         print(' Usage:\n  python3 GridEdge_EnvMonitor_class.py <lab-identifier> <mongoFile>\n')
         return
     
-    lab = sys.argv[1]
     mongoFile = sys.argv[2]
+
+    lab = sys.argv[1]
+    sensor1 = Sensor(lab)
+    sensor1.readSensors()
+    sensor1.printUI()
+        
+    print(" JSON:\n",sensor1.makeJSON(),"\n")
     
-    #************************************
-    ''' Read from T/RH sensor '''
-    #************************************
-    trhSensor = TRHSensor(lab)
-    sensData = trhSensor.readSensors()
-    trhSensor.printUI()
-    
-    #************************************
-    ''' Make JSON and push o '''
-    #************************************
-    print("\n JSON:\n",makeJSON(sensData),"\n")
     print(" Pushing to MongoDB:")
-    pushToMongoDB(sensData, mongoFile)
+    sensor1.pushToMongoDB(mongoFile)
 
 #************************************
-''' Class T/RH Sensor '''
+''' Class Sensor '''
 #************************************
-class TRHSensor:
+class Sensor:
     def __init__(self, lab):
         self.lab = lab
         self.date = time.strftime("%Y%m%d")
@@ -58,15 +50,16 @@ class TRHSensor:
     ''' Read Sensors '''
     #************************************
     def readSensors(self):
-        self.sensData.extend([self.lab, self.ip, self.date, self.time])
         try:
             sensor = BME280(t_mode=BME280_OSAMPLE_8, p_mode=BME280_OSAMPLE_8, h_mode=BME280_OSAMPLE_8)
-            self.sensData.extend([sensor.read_temperature(),
-                                  sensor.read_pressure() / 100,
-                                  sensor.read_humidity()])
+            self.sensData.append(sensor.read_temperature())
+            self.sensData.append(sensor.read_pressure() / 100)
+            self.sensData.append(sensor.read_humidity())
         except:
             print("\n SENSOR NOT CONNECTED ")
-            self.sensData.extend([0.0,0.0,0.0])
+            self.sensData.append(0.0)
+            self.sensData.append(0.0/100)
+            self.sensData.append(0.0)
         return self.sensData
 
     #************************************
@@ -77,9 +70,38 @@ class TRHSensor:
         print(" IP: ", self.ip)
         print(" Date: ", self.date)
         print(" Time: ", self.time)
-        print(" Temperature = {0:0.1f} deg C".format(self.sensData[4]))
-        print(" Pressure = {0:0.1f} hPa".format(self.sensData[5]))
-        print(" Humidity = {0:0.1f} %".format(self.sensData[6]),"\n")
+        print(" Temperature = {0:0.1f} deg C".format(self.sensData[0]))
+        print(" Pressure = {0:0.1f} hPa".format(self.sensData[1]))
+        print(" Humidity = {0:0.1f} %".format(self.sensData[2]),"\n")
+
+    #************************************
+    ''' Make JSON '''
+    #************************************
+    def makeJSON(self):
+        data = {
+            'lab' : self.lab,
+            'IP' : self.ip,
+            'date' : self.date,
+            'time' : self.time,
+            'temperature' : '{0:0.1f}'.format(self.sensData[0]),
+            'pressure' : '{0:0.1f}'.format(self.sensData[1]),
+            'humidity' : '{0:0.1f}'.format(self.sensData[2])
+        }
+        return json.dumps(data)
+        
+    #****************************************
+    ''' Push to Mongo '''
+    #****************************************
+    def pushToMongoDB(self, file):
+        connDB1 = GEmongoDB(file)
+        #connDB1.printAuthInfo()
+        client = connDB1.connectDB()
+        db = client.Tata
+        try:
+            db_entry = db.EnvTrack.insert_one(json.loads(self.makeJSON()))
+            print(" Data entry successful (id:",db_entry.inserted_id,")\n")
+        except:
+            print(" Data entry failed.\n")
 
 #************************************
 ''' Class Database '''
@@ -111,36 +133,6 @@ class GEmongoDB:
         print(self.dbname)
         print(self.username)
         print(self.password)
-
-#************************************
-''' Make JSON '''
-#************************************
-def makeJSON(data):
-    data = {
-        'lab' : data[0],
-        'IP' : data[1],
-        'date' : data[2],
-        'time' : data[3],
-        'temperature' : '{0:0.1f}'.format(data[4]),
-        'pressure' : '{0:0.1f}'.format(data[5]),
-        'humidity' : '{0:0.1f}'.format(data[6]),
-    }
-    return json.dumps(data)
-    
-#****************************************
-''' Push to Mongo '''
-#****************************************
-def pushToMongoDB(json, file):
-    connDB1 = GEmongoDB(file)
-    #connDB1.printAuthInfo()
-    client = connDB1.connectDB()
-    db = client.Tata
-    try:
-        db_entry = db.EnvTrack.insert_one(json.loads(json))
-        print(" Data entry successful (id:",db_entry.inserted_id,")\n")
-    except:
-        print(" Data entry failed.\n")
-
 
 #************************************
 ''' Get system IP '''
