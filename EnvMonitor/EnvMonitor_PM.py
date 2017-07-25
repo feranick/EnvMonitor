@@ -4,7 +4,7 @@
 **********************************************************
 *
 * GridEdge - Environmental Tracking - using classes
-* version: 20170725a
+* version: 20170725b
 *
 * By: Nicola Ferralis <feranick@hotmail.com>
 *
@@ -18,7 +18,7 @@ import RPi.GPIO as GPIO
 
 global MongoDBhost
 
-PMtimewait = 5
+pms_gpio = 26
 
 def main():
     if len(sys.argv)<3 or os.path.isfile(sys.argv[2]) == False:
@@ -39,19 +39,16 @@ def main():
     #************************************
     ''' Read from PM sensor '''
     #************************************
-    pms = PMSensor(26)
-    print(" Waiting",str(PMtimewait),"s for PM sensor...")
-    time.sleep(PMtimewait)
-    g, r, c = pms.read()
-    if (c==1114000.62):
-        print(" Error\n")
-    # convert to SI units
-    concentration_ugm3=pms.pcs_to_ugm3(c)
-    print(" Particulate PM2.5: \n ",
-          str(int(c)), " particles/0.01ft^3\n ",
-          str(int(concentration_ugm3))," ugm^3")
+    pms = PMSensor(pms_gpio)
 
-    sensData.extend([int(concentration_ugm3)])
+    print(" Waiting",int(pms.collectionTime),"s for PM sensor...")
+    conc = pms.collect()
+    # convert to SI units
+    #conc_ugm3=pms.pcs_to_ugm3(conc)
+    print(" Particulate PM2.5: \n {0:0.1f}".format(conc),
+          " particles/m^3\n")
+
+    sensData.extend(['{0:0.1f}'.format(conc)])
 
     #************************************
     ''' Make JSON and push o '''
@@ -125,111 +122,32 @@ class PMSensor:
         Instantiate with the Pi and gpio to which the sensor
         is connected.
         """
-        GPIO.setwarnings(False)
+        #GPIO.setwarnings(False)
         GPIO.setmode(GPIO.BOARD)
+        GPIO.setup(gpio,GPIO.IN)
 
         self.gpio = gpio
-        self._start_tick = None
-        self._last_tick = None
-        self._low_ticks = 0
-        self._high_ticks = 0
-        self.tick = 0
-        
         self.collectionTime = 30
 
-        #GPIO.setup(gpio,GPIO.OUT)
-        #pi.set_mode(gpio, pigpio.INPUT)
+    def collect(self):
+        runTime = time.time()
+        lowpulseoccupancy = 0
+        GPIO.remove_event_detect(self.gpio)
+        GPIO.add_event_detect(self.gpio, GPIO.BOTH, bouncetime = 1)
         
-        #self._cb = pi.callback(gpio, pigpio.EITHER_EDGE, self._cbf)
-        GPIO.setup(gpio,GPIO.IN)
-        self._cb = GPIO.add_event_detect(gpio, GPIO.BOTH, callback=self._cbf)
-
-
-    def read(self):
-        """
-        Calculates the percentage low pulse time and calibrated
-        concentration in particles per 1/100th of a cubic foot
-        since the last read.
-
-        For proper calibration readings should be made over
-        30 second intervals.
-
-        Returns a tuple of gpio, percentage, and concentration.
-        """
-        interval = self._low_ticks + self._high_ticks
-
-        if interval > 0:
-            ratio = float(self._low_ticks)/float(interval)*100.0
-            conc = 1.1*pow(ratio,3)-3.8*pow(ratio,2)+520*ratio+0.62;
-        else:
-            ratio = 0
-            conc = 0.0
-
-        self._start_tick = None
-        self._last_tick = None
-        self._low_ticks = 0
-        self._high_ticks = 0
-        
-        return (self.gpio, ratio, conc)
-
-    def _cbf(self, gpio):
-        tick = self.tick
-        if self._start_tick is not None:
-
-            ticks = self.tickDiff(self._last_tick, tick)
-            self._last_tick = tick
-            self._high_ticks = self._high_ticks + ticks
-            
-            
-            if GPIO.FALLING: # Falling edge.
-                self._high_ticks = self._high_ticks + ticks
-
-            elif GPIO.RISING: # Rising edge.
-                self._low_ticks = self._low_ticks + ticks
-
-            else: # timeout level, not used
-                pass
-            
-        else:
-            self._start_tick = tick
-            self._last_tick = tick
-         
-
-    def pcs_to_ugm3(self, concentration_pcf):
-
-        #Convert concentration of PM2.5 particles per 0.01 cubic feet to µg/ metre cubed
-        #this method outlined by Drexel University students (2009) and is an approximation
-        #does not contain correction factors for humidity and rain
-
-        # Assume all particles are spherical, with a density of 1.65E12 µg/m3
-        densitypm25 = 1.65 * math.pow(10, 12)
-        
-        # Assume the radius of a particle in the PM2.5 channel is .44 µm
-        rpm25 = 0.44 * math.pow(10, -6)
-        
-        # Volume of a sphere = 4/3 * pi * radius^3
-        volpm25 = (4/3) * math.pi * (rpm25**3)
-        
-        # mass = density * volume
-        masspm25 = densitypm25 * volpm25
-        
-        # parts/m3 =  parts/foot3 * 3531.5
-        # µg/m3 = parts/m3 * mass in µg
-        concentration_ugm3 = concentration_pcf * 3531.5 * masspm25
-        
-        return concentration_ugm3
-
-
-    def tickDiff(self, t1, t2):
+        while time.time() - runTime < self.collectionTime:
+            time.sleep(0.005)
+            startTime = time.time()
+            if GPIO.event_detected(self.gpio):
+                GPIO.remove_event_detect(self.gpio)
+                duration = time.time() - startTime
+                lowpulseoccupancy = lowpulseoccupancy+duration
+                GPIO.add_event_detect(self.gpio, GPIO.BOTH, bouncetime=1)
     
-        #Returns the microsecond difference between two ticks.
-        #t1:= the earlier tick
-        #t2:= the later tick
-        
-        tDiff = t2 - t1
-        if tDiff < 0:
-            tDiff += (1 << 32)
-        return tDiff
+        ratio = lowpulseoccupancy*100/(self.collectionTime);
+        conc_imp = 1.1*pow(ratio,3)-3.8*pow(ratio,2)+520*ratio+0.62
+        conc = conc_imp*0.000238 # concentration in particles/L
+        return (conc)
 
 #************************************
 ''' Class Database '''
@@ -274,7 +192,7 @@ def makeJSON(data):
         'temperature' : '{0:0.1f}'.format(data[4]),
         'pressure' : '{0:0.1f}'.format(data[5]),
         'humidity' : '{0:0.1f}'.format(data[6]),
-        'PM2.5_conc_ugm3' : data[7],
+        'PM2.5_conc_ugm3' : '{0:0.1f}'.format(data[7]),
     }
     return json.dumps(data)
     
@@ -291,7 +209,6 @@ def pushToMongoDB(json, file):
         print(" Data entry successful (id:",db_entry.inserted_id,")\n")
     except:
         print(" Data entry failed.\n")
-
 
 #************************************
 ''' Get system IP '''
