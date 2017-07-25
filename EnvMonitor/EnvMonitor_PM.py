@@ -4,7 +4,7 @@
 **********************************************************
 *
 * GridEdge - Environmental Tracking - using classes
-* version: 20170725c`
+* version: 20170725d
 *
 * By: Nicola Ferralis <feranick@hotmail.com>
 *
@@ -41,7 +41,6 @@ def main():
     #************************************
     pms = PMSensor(pms_gpio)
 
-    print(" Waiting",int(pms.collectionTime),"s for PM sensor...")
     conc_imp, conc = pms.collect()
     print(" Particulate PM2.5: \n particles/m^3: {0:0.2f}".format(conc),
           "\n particles/cu-ft: {0:0.4f}".format(conc_imp))
@@ -120,7 +119,7 @@ class PMSensor:
         Instantiate with the Pi and gpio to which the sensor
         is connected.
         """
-        #GPIO.setwarnings(False)
+        GPIO.setwarnings(False)
         GPIO.setmode(GPIO.BOARD)
         GPIO.setup(gpio,GPIO.IN)
 
@@ -134,6 +133,8 @@ class PMSensor:
         GPIO.add_event_detect(self.gpio, GPIO.BOTH, bouncetime = 1)
         
         while time.time() - runTime < self.collectionTime:
+            print(" Waiting",int(time.time() - runTime),
+                  "/",int(self.collectionTime),"s for PM sensor...", end="\r")
             time.sleep(0.005)
             startTime = time.time()
             if GPIO.event_detected(self.gpio):
