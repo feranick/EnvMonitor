@@ -4,7 +4,7 @@
 **********************************************************
 *
 * GridEdge - Environmental Tracking - using classes
-* version: 20170725a
+* version: 20170725e
 *
 * By: Nicola Ferralis <feranick@hotmail.com>
 *
@@ -41,7 +41,7 @@ def main():
     #************************************
     print("\n JSON:\n",makeJSON(sensData),"\n")
     print(" Pushing to MongoDB:")
-    pushToMongoDB(sensData, mongoFile)
+    pushToMongoDB(makeJSON(sensData), mongoFile)
 
 #************************************
 ''' Class T/RH Sensor '''

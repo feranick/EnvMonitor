@@ -4,7 +4,7 @@
 **********************************************************
 *
 * GridEdge - Environmental Tracking - using classes
-* version: 20170725d
+* version: 20170725e
 *
 * By: Nicola Ferralis <feranick@hotmail.com>
 *
@@ -40,11 +40,8 @@ def main():
     ''' Read from PM sensor '''
     #************************************
     pms = PMSensor(pms_gpio)
-
     conc_imp, conc = pms.collect()
-    print(" Particulate PM2.5: \n particles/m^3: {0:0.2f}".format(conc),
-          "\n particles/cu-ft: {0:0.4f}".format(conc_imp))
-
+    pms.printUI()
     sensData.extend([conc])
 
     #************************************
@@ -52,8 +49,7 @@ def main():
     #************************************
     print("\n JSON:\n",makeJSON(sensData),"\n")
     print(" Pushing to MongoDB:")
-    #pushToMongoDB(sensData, mongoFile)
-
+    pushToMongoDB(makeJSON(sensData), mongoFile)
 
 #************************************
 ''' Class T/RH Sensor '''
@@ -98,21 +94,17 @@ class TRHSensor:
 #************************************
 class PMSensor:
     
-    import math, time
+    import time
     import RPi.GPIO as GPIO
 
-    """
+    '''
     A class to read a Shinyei PPD42NS Dust Sensor, e.g. as used
     in the Grove dust sensor.
 
     This code calculates the percentage of low pulse time and
     calibrated concentration in particles per 1/100th of a cubic
     foot at user chosen intervals.
-
-    You need to use a voltage divider to cut the sensor output
-    voltage to a Pi safe 3.3V (alternatively use an in-line
-    20k resistor to limit the current at your own risk).
-    """
+    '''
 
     def __init__(self, gpio):
         """
@@ -135,7 +127,7 @@ class PMSensor:
         while time.time() - runTime < self.collectionTime:
             print(" Waiting",int(time.time() - runTime),
                   "/",int(self.collectionTime),"s for PM sensor...", end="\r")
-            time.sleep(0.005)
+            #time.sleep(0.005)
             startTime = time.time()
             if GPIO.event_detected(self.gpio):
                 GPIO.remove_event_detect(self.gpio)
@@ -143,10 +135,14 @@ class PMSensor:
                 lowpulseoccupancy = lowpulseoccupancy+duration
                 GPIO.add_event_detect(self.gpio, GPIO.BOTH, bouncetime=1)
     
-        ratio = lowpulseoccupancy*100/(self.collectionTime);
-        conc_imp = 1.1*pow(ratio,3)-3.8*pow(ratio,2)+520*ratio+0.62
-        conc = conc_imp*0.000238 # concentration in particles/L
-        return (conc_imp, conc)
+        self.ratio = lowpulseoccupancy*100/(self.collectionTime);
+        self.conc_imp = 1.1*pow(self.ratio,3)-3.8*pow(self.ratio,2)+520*self.ratio+0.62
+        self.conc = self.conc_imp*0.000238 # concentration in particles/L
+        return (self.conc_imp, self.conc)
+
+    def printUI(self):
+        print(" Particulate PM2.5: \n particles/m^3: {0:0.4f}".format(self.conc),
+              "\n particles/cu-ft: {0:0.2f}".format(self.conc_imp))
 
 #************************************
 ''' Class Database '''
@@ -191,7 +187,7 @@ def makeJSON(data):
         'temperature' : '{0:0.1f}'.format(data[4]),
         'pressure' : '{0:0.1f}'.format(data[5]),
         'humidity' : '{0:0.1f}'.format(data[6]),
-        'PM2.5_particles_m3' : '{0:0.1f}'.format(data[7]),
+        'PM2.5_particles_m3' : '{0:0.3f}'.format(data[7]),
     }
     return json.dumps(data)
     
