@@ -9,11 +9,11 @@ track RH/T.
 
 ## Requirements
 - [Raspberry PI zero w](https://www.raspberrypi.org/products/pi-zero-w/)
-- [Adafruit BME280 R/P/RH sensor](https://learn.adafruit.com/adafruit-bme280-humidity-barometric-pressure-temperature-sensor-breakout)
+- [Adafruit BME280 T/P/RH sensor](https://learn.adafruit.com/adafruit-bme280-humidity-barometric-pressure-temperature-sensor-breakout)
 - [Shinyei PPD42NS particle sensor](https://www.seeedstudio.com/Grove-Dust-Sensor-p-1050.html) ([data sheet](http://www.mouser.com/ds/2/744/Seeed_101020012-838657.pdf))
   
 ## Hardware Installation
-### Adafruit BME280 R/P/RH sensor
+### Adafruit BME280 T/P/RH sensor
     Vin -> pin4
     GND -> pin6
     SCK -> pin5
@@ -40,7 +40,10 @@ This sensor requires a voltage divider to reduce the output voltage from 5V to 3
     sudo python3 setup.py install
 
 ## Usage:
- 	python3 GridEdge_EnvMonitor_class.py <lab-identifier> <mongodb-auth-file>
+- T/P/RH sensor only:
+ 	python3 EnvMonitor.py <lab-identifier> <mongodb-auth-file>
+- T/P/RH and particle sensor
+    python3 EnvMonitor_PM.py <lab-identifier> <mongodb-auth-file>
     
 The software will be automated through a script (EnvMonitor_launcher.sh). Since the RPi is 
 connected online via WiFi-DHCP, the IP may change. Through this script, the IP is collected
