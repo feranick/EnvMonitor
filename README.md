@@ -10,12 +10,17 @@ track RH/T.
 Requirements
 ============
 - Raspberry Pi
-- Adafruit BME280
+- Adafruit BME280 
 - Shinyei PPD42NS particulate sensor (under development)
   - data sheet: http://www.mouser.com/ds/2/744/Seeed_101020012-838657.pdf
+  
+Hardware Installation
+======================
 
-Installation
-============
+- Adafruit BME R/P/RH sensor
+
+Software Installation
+======================
 	sudo apt-get update
 	sudo apt-get install build-essential python3-pip python3-dev python3-smbus git python3-rpi.gpio
     mkdir ~/software

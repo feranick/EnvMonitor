@@ -4,7 +4,7 @@
 **********************************************************
 *
 * GridEdge - Environmental Tracking - using classes
-* version: 20170726f
+* version: 20170726g
 *
 * By: Nicola Ferralis <feranick@hotmail.com>
 *
@@ -17,7 +17,7 @@ from Adafruit_BME280 import *
 
 global MongoDBhost
 
-pms_gpio = 26
+pms_gpio = 10
 
 def main():
     if len(sys.argv)<3 or os.path.isfile(sys.argv[2]) == False:
