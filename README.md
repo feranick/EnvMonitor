@@ -39,7 +39,7 @@ This sensor requires a voltage divider to reduce the output voltage from 5V to 3
     cd Adafruit_Python_BME280
     sudo python3 setup.py install
 
-## Usage:
+## Usage
 ### T/P/RH sensor only:
     python3 EnvMonitor.py <lab-identifier> <mongodb-auth-file>
 ### T/P/RH and particle sensor
@@ -53,5 +53,8 @@ on boot and saved on a dedicated server. This is achieved by adding the followin
     su pi -c 'home/pi/EnvMonitor/EnvMonitor_launcher.sh'
 
 The same script will eventually run the software itself at periodic intervals. 
+
+## Contact
+Nicola Ferralis <feranick@hotmail.com>
     
 
