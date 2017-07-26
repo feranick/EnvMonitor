@@ -4,7 +4,7 @@
 **********************************************************
 *
 * GridEdge - Environmental Tracking - using classes
-* version: 20170726b
+* version: 20170726f
 *
 * By: Nicola Ferralis <feranick@hotmail.com>
 *
@@ -39,7 +39,7 @@ def main():
     ''' Read from PM sensor '''
     #************************************
     pms = PMSensor(pms_gpio)
-    conc_imp, conc = pms.collect()
+    conc, conc_pcf, conc_ugm3 = pms.collect()
     pms.printUI()
     sensData.extend([conc])
     pms.cleanup()
@@ -48,7 +48,7 @@ def main():
     ''' Make JSON and push to MongoDB '''
     #************************************
     conn = GEmongoDB(sensData,mongoFile)
-    print("\n JSON:\n",conn.makeJSON(),"\n")
+    #print(" JSON:\n",conn.makeJSON(),"\n")
     print(" Pushing to MongoDB:")
     #conn.pushToMongoDB()
 
@@ -129,19 +129,46 @@ class PMSensor:
         while time.time() - runTime <= self.collectionTime:
             print(" Waiting",int(time.time() - runTime),
                   "/",int(self.collectionTime),"s for PM sensor...", end="\r")
-    
+        
+        time.sleep(0.01)
+        self.GPIO.remove_event_detect(self.gpio)
         self.ratio = self.lowpulseoccupancy*100/(self.collectionTime);
-        self.conc_imp = 1.1*pow(self.ratio,3)-3.8*pow(self.ratio,2)+520*self.ratio+0.62
-        self.conc = self.conc_imp*0.000238 # concentration in particles/L
-        return (self.conc_imp, self.conc)
+        self.conc_pcf = 1.1*pow(self.ratio,3)-3.8*pow(self.ratio,2)+520*self.ratio+0.62
+        self.conc = self.conc_pcf*0.000238 # concentration in particles/L
+        self.conc_ugm3 = self.pcf_to_ugm3(self.conc)
+        return (self.conc, self.conc_pcf, self.conc_ugm3)
     
     def callback(self, gpio):
         duration = time.time() - self.startTime
         self.lowpulseoccupancy = self.lowpulseoccupancy+duration
-
+    
+    def pcf_to_ugm3(self, conc_pcf):
+        '''
+        Convert concentration of PM2.5 particles per 0.01 cubic feet to µg/ metre cubed
+        this method outlined by Drexel University students (2009) and is an approximation
+        does not contain correction factors for humidity and rain
+        '''
+        # Assume all particles are spherical, with a density of 1.65E12 µg/m3
+        densitypm25 = 1.65 * math.pow(10, 12)
+        
+        # Assume the radius of a particle in the PM2.5 channel is .44 µm
+        rpm25 = 0.44 * math.pow(10, -6)
+        
+        # Volume of a sphere = 4/3 * pi * radius^3
+        volpm25 = (4/3) * math.pi * (rpm25**3)
+        
+        # mass = density * volume
+        masspm25 = densitypm25 * volpm25
+        
+        # parts/m3 =  parts/foot3 * 3531.5
+        # µg/m3 = parts/m3 * mass in µg
+        conc_ugm3 = conc_pcf * 3531.5 * masspm25
+        return conc_ugm3
+    
     def printUI(self):
         print(" Particulate Sensor for PM2.5:     \n  particles/m^3: {0:0.4f}".format(self.conc),
-              "\n  particles/cu-ft: {0:0.2f}".format(self.conc_imp))
+              "\n  particles/cu-ft: {0:0.2f}".format(self.conc_pcf),
+              "\n  ug/m^3: {0:0.5f}".format(self.conc_ugm3), "\n")
 
     def cleanup(self):
         self.GPIO.cleanup()
