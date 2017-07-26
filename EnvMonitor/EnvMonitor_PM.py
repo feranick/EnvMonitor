@@ -142,8 +142,8 @@ class PMSensor:
         return (self.conc_imp, self.conc)
 
     def printUI(self):
-        print(" Particulate PM2.5: \n particles/m^3: {0:0.4f}".format(self.conc),
-              "\n particles/cu-ft: {0:0.2f}".format(self.conc_imp))
+        print(" Particulate Sensor for PM2.5:    \n  particles/m^3: {0:0.4f}".format(self.conc),
+              "\n  particles/cu-ft: {0:0.2f}".format(self.conc_imp))
 
     def cleanup(self):
         self.GPIO.cleanup()
