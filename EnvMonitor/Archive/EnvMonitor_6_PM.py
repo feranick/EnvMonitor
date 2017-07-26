@@ -4,7 +4,7 @@
 **********************************************************
 *
 * GridEdge - Environmental Tracking - using classes
-* version: 20170726b
+* version: 20170726d
 *
 * By: Nicola Ferralis <feranick@hotmail.com>
 *
@@ -50,7 +50,7 @@ def main():
     conn = GEmongoDB(sensData,mongoFile)
     print("\n JSON:\n",conn.makeJSON(),"\n")
     print(" Pushing to MongoDB:")
-    #conn.pushToMongoDB()
+    conn.pushToMongoDB()
 
 #************************************
 ''' Class T/RH Sensor '''
@@ -121,23 +121,25 @@ class PMSensor:
 
     def collect(self):
         runTime = time.time()
-        self.lowpulseoccupancy = 0
+        lowpulseoccupancy = 0
         self.GPIO.remove_event_detect(self.gpio)
-        time.sleep(0.01)
-        self.GPIO.add_event_detect(self.gpio, self.GPIO.FALLING, callback = self.callback, bouncetime = self.bouncetime)
-        self.startTime = time.time()
-        while time.time() - runTime <= self.collectionTime:
+        self.GPIO.add_event_detect(self.gpio, self.GPIO.BOTH, bouncetime = self.bouncetime)
+        
+        while time.time() - runTime < self.collectionTime:
             print(" Waiting",int(time.time() - runTime),
                   "/",int(self.collectionTime),"s for PM sensor...", end="\r")
+            #time.sleep(0.005)
+            startTime = time.time()
+            if self.GPIO.event_detected(self.gpio):
+                self.GPIO.remove_event_detect(self.gpio)
+                duration = time.time() - startTime
+                lowpulseoccupancy = lowpulseoccupancy+duration
+                self.GPIO.add_event_detect(self.gpio, self.GPIO.BOTH, bouncetime = self.bouncetime)
     
-        self.ratio = self.lowpulseoccupancy*100/(self.collectionTime);
+        self.ratio = lowpulseoccupancy*100/(self.collectionTime);
         self.conc_imp = 1.1*pow(self.ratio,3)-3.8*pow(self.ratio,2)+520*self.ratio+0.62
         self.conc = self.conc_imp*0.000238 # concentration in particles/L
         return (self.conc_imp, self.conc)
-    
-    def callback(self, gpio):
-        duration = time.time() - self.startTime
-        self.lowpulseoccupancy = self.lowpulseoccupancy+duration
 
     def printUI(self):
         print(" Particulate Sensor for PM2.5:     \n  particles/m^3: {0:0.4f}".format(self.conc),
