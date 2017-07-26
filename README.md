@@ -1,5 +1,5 @@
 # EnvMonitor
-Record Enviromental Parameters
+## Record Enviromental Parameters
 
 Track relative humidity (RH), Temperature (T) and pressure (P) continuously with timestamp 
 and location in several relevant location and submit to DB independently of experiment. 
@@ -7,26 +7,26 @@ Connection between exp. and environmental tracking data is done through the data
 user intervention (as long as the user lists the right time/date/location). Parameters to 
 track RH/T.
 
-##Requirements
+## Requirements
 - [Raspberry PI zero w](https://www.raspberrypi.org/products/pi-zero-w/)
 - [Adafruit BME280 R/P/RH sensor](https://learn.adafruit.com/adafruit-bme280-humidity-barometric-pressure-temperature-sensor-breakout)
 - [Shinyei PPD42NS particle sensor](https://www.seeedstudio.com/Grove-Dust-Sensor-p-1050.html) ([data sheet](http://www.mouser.com/ds/2/744/Seeed_101020012-838657.pdf))
   
-##Hardware Installation
-###Adafruit BME280 R/P/RH sensor
+## Hardware Installation
+### Adafruit BME280 R/P/RH sensor
     Vin -> pin4
     GND -> pin6
     SCK -> pin5
     SD1 -> pin3
 
-###Shinyei PPD42NS particle sensor
+### Shinyei PPD42NS particle sensor
 This sensor requires a voltage divider to reduce the output voltage from 5V to 3.3V
     
     Red -> pin2
     Black -> pin9
     Yellow -> pin10    
 
-##Software Installation
+## Software Installation
 	sudo apt-get update
 	sudo apt-get install build-essential python3-pip python3-dev python3-smbus git python3-rpi.gpio
     mkdir ~/software
@@ -39,7 +39,7 @@ This sensor requires a voltage divider to reduce the output voltage from 5V to 3
     cd Adafruit_Python_BME280
     sudo python3 setup.py install
 
-##Usage:
+## Usage:
  	python3 GridEdge_EnvMonitor_class.py <lab-identifier> <mongodb-auth-file>
     
 The software will be automated through a script (EnvMonitor_launcher.sh). Since the RPi is 
