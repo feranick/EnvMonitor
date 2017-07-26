@@ -4,7 +4,7 @@
 **********************************************************
 *
 * GridEdge - Environmental Tracking - using classes
-* version: 20170725f
+* version: 20170726a
 *
 * By: Nicola Ferralis <feranick@hotmail.com>
 *
@@ -13,8 +13,6 @@
 #print(__doc__)
 
 import sys, math, json, os.path, time
-from Adafruit_BME280 import *
-import RPi.GPIO as GPIO
 
 global MongoDBhost
 
@@ -43,7 +41,8 @@ def main():
     conc_imp, conc = pms.collect()
     pms.printUI()
     sensData.extend([conc])
-
+    pms.cleanup()
+    
     #************************************
     ''' Make JSON and push to MongoDB '''
     #************************************
@@ -51,7 +50,6 @@ def main():
     print("\n JSON:\n",conn.makeJSON(),"\n")
     print(" Pushing to MongoDB:")
     conn.pushToMongoDB()
-    #pushToMongoDB(makeJSON(sensData), mongoFile)
 
 #************************************
 ''' Class T/RH Sensor '''
@@ -95,10 +93,6 @@ class TRHSensor:
 ''' Class Particulate Sensor '''
 #************************************
 class PMSensor:
-    
-    import time
-    import RPi.GPIO as GPIO
-
     '''
     A class to read a Shinyei PPD42NS Dust Sensor, e.g. as used
     in the Grove dust sensor.
@@ -113,9 +107,16 @@ class PMSensor:
         Instantiate with the Pi and gpio to which the sensor
         is connected.
         """
-        GPIO.setwarnings(False)
-        GPIO.setmode(GPIO.BOARD)
-        GPIO.setup(gpio,GPIO.IN)
+        try:
+            import RPi.GPIO
+        except:
+            self.GPIO = None
+        else:
+            self.GPIO = RPi.GPIO
+        
+        self.GPIO.setwarnings(False)
+        self.GPIO.setmode(self.GPIO.BOARD)
+        self.GPIO.setup(gpio,self.GPIO.IN)
 
         self.gpio = gpio
         self.collectionTime = 30
@@ -123,19 +124,19 @@ class PMSensor:
     def collect(self):
         runTime = time.time()
         lowpulseoccupancy = 0
-        GPIO.remove_event_detect(self.gpio)
-        GPIO.add_event_detect(self.gpio, GPIO.BOTH, bouncetime = 1)
+        self.GPIO.remove_event_detect(self.gpio)
+        self.GPIO.add_event_detect(self.gpio, self.GPIO.BOTH, bouncetime = 1)
         
         while time.time() - runTime < self.collectionTime:
             print(" Waiting",int(time.time() - runTime),
                   "/",int(self.collectionTime),"s for PM sensor...", end="\r")
             #time.sleep(0.005)
             startTime = time.time()
-            if GPIO.event_detected(self.gpio):
-                GPIO.remove_event_detect(self.gpio)
+            if self.GPIO.event_detected(self.gpio):
+                self.GPIO.remove_event_detect(self.gpio)
                 duration = time.time() - startTime
                 lowpulseoccupancy = lowpulseoccupancy+duration
-                GPIO.add_event_detect(self.gpio, GPIO.BOTH, bouncetime=1)
+                self.GPIO.add_event_detect(self.gpio, self.GPIO.BOTH, bouncetime=1)
     
         self.ratio = lowpulseoccupancy*100/(self.collectionTime);
         self.conc_imp = 1.1*pow(self.ratio,3)-3.8*pow(self.ratio,2)+520*self.ratio+0.62
@@ -145,6 +146,9 @@ class PMSensor:
     def printUI(self):
         print(" Particulate PM2.5: \n particles/m^3: {0:0.4f}".format(self.conc),
               "\n particles/cu-ft: {0:0.2f}".format(self.conc_imp))
+
+    def cleanup(self):
+        self.GPIO.cleanup()
 
 #************************************
 ''' Class Database '''
