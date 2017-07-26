@@ -1,14 +1,13 @@
 # EnvMonitor
 ## Record Enviromental Parameters
 
-Track relative humidity (RH), Temperature (T) and pressure (P) continuously with timestamp 
-and location in several relevant location and submit to DB independently of experiment. 
+Track temperature (T), pressure (P), relative humidity (RH), and particulate matter PM2.5 content
+continuously with timestamp and location in several relevant locations and submit to DB independently of experiment. 
 Connection between exp. and environmental tracking data is done through the database with no 
-user intervention (as long as the user lists the right time/date/location). Parameters to 
-track RH/T.
+user intervention (as long as the user lists the right time/date/location).
 
 ## Requirements
-- [Raspberry PI zero w](https://www.raspberrypi.org/products/pi-zero-w/)
+- [Raspberry PI Zero W](https://www.raspberrypi.org/products/pi-zero-w/)
 - [Adafruit BME280 T/P/RH sensor](https://learn.adafruit.com/adafruit-bme280-humidity-barometric-pressure-temperature-sensor-breakout)
 - [Shinyei PPD42NS particle sensor](https://www.seeedstudio.com/Grove-Dust-Sensor-p-1050.html) ([data sheet](http://www.mouser.com/ds/2/744/Seeed_101020012-838657.pdf))
   
