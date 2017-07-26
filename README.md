@@ -40,11 +40,12 @@ This sensor requires a voltage divider to reduce the output voltage from 5V to 3
     sudo python3 setup.py install
 
 ## Usage:
-- T/P/RH sensor only:
- 	python3 EnvMonitor.py <lab-identifier> <mongodb-auth-file>
-- T/P/RH and particle sensor
+### T/P/RH sensor only:
+    python3 EnvMonitor.py <lab-identifier> <mongodb-auth-file>
+### T/P/RH and particle sensor
     python3 EnvMonitor_PM.py <lab-identifier> <mongodb-auth-file>
     
+### Launcher    
 The software will be automated through a script (EnvMonitor_launcher.sh). Since the RPi is 
 connected online via WiFi-DHCP, the IP may change. Through this script, the IP is collected
 on boot and saved on a dedicated server. This is achieved by adding the following to /etc/rc.local:
