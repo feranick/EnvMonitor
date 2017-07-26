@@ -4,7 +4,7 @@
 **********************************************************
 *
 * GridEdge - Environmental Tracking - using classes
-* version: 20170726a
+* version: 20170726c
 *
 * By: Nicola Ferralis <feranick@hotmail.com>
 *
@@ -13,6 +13,7 @@
 #print(__doc__)
 
 import sys, math, json, os.path, time
+from Adafruit_BME280 import *
 
 global MongoDBhost
 
@@ -103,10 +104,6 @@ class PMSensor:
     '''
 
     def __init__(self, gpio):
-        """
-        Instantiate with the Pi and gpio to which the sensor
-        is connected.
-        """
         try:
             import RPi.GPIO
         except:
@@ -114,18 +111,19 @@ class PMSensor:
         else:
             self.GPIO = RPi.GPIO
         
+        self.gpio = gpio
+        self.collectionTime = 30
+        self.bouncetime = 1
+        
         self.GPIO.setwarnings(False)
         self.GPIO.setmode(self.GPIO.BOARD)
         self.GPIO.setup(gpio,self.GPIO.IN)
-
-        self.gpio = gpio
-        self.collectionTime = 30
 
     def collect(self):
         runTime = time.time()
         lowpulseoccupancy = 0
         self.GPIO.remove_event_detect(self.gpio)
-        self.GPIO.add_event_detect(self.gpio, self.GPIO.BOTH, bouncetime = 1)
+        self.GPIO.add_event_detect(self.gpio, self.GPIO.BOTH, bouncetime = self.bouncetime)
         
         while time.time() - runTime < self.collectionTime:
             print(" Waiting",int(time.time() - runTime),
@@ -136,7 +134,7 @@ class PMSensor:
                 self.GPIO.remove_event_detect(self.gpio)
                 duration = time.time() - startTime
                 lowpulseoccupancy = lowpulseoccupancy+duration
-                self.GPIO.add_event_detect(self.gpio, self.GPIO.BOTH, bouncetime=1)
+                self.GPIO.add_event_detect(self.gpio, self.GPIO.BOTH, bouncetime = self.bouncetime)
     
         self.ratio = lowpulseoccupancy*100/(self.collectionTime);
         self.conc_imp = 1.1*pow(self.ratio,3)-3.8*pow(self.ratio,2)+520*self.ratio+0.62
