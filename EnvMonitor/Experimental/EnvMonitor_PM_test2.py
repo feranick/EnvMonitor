@@ -4,7 +4,7 @@
 **********************************************************
 *
 * GridEdge - Environmental Tracking - using classes
-* version: 20170726g
+* version: 20170727a-test2
 *
 * By: Nicola Ferralis <feranick@hotmail.com>
 *
@@ -122,10 +122,10 @@ class PMSensor:
     def collect(self):
         runTime = time.time()
         self.lowpulseoccupancy = 0
+        self.flag = False
         self.GPIO.remove_event_detect(self.gpio)
         time.sleep(0.01)
-        self.GPIO.add_event_detect(self.gpio, self.GPIO.FALLING, callback = self.callback, bouncetime = self.bouncetime)
-        self.startTime = time.time()
+        self.GPIO.add_event_detect(self.gpio, self.GPIO.BOTH, callback = self.callback, bouncetime = self.bouncetime)
         while time.time() - runTime <= self.collectionTime:
             print(" Waiting",int(time.time() - runTime),
                   "/",int(self.collectionTime),"s for PM sensor...", end="\r")
@@ -139,7 +139,14 @@ class PMSensor:
         return (self.conc, self.conc_pcf, self.conc_ugm3)
     
     def callback(self, gpio):
-        duration = time.time() - self.startTime
+        print("detected")
+        if self.GPIO.event_detected(gpio) is True:
+            if self.flag is True:
+                self.startTime = time.time()
+                self.flag = False
+                duration = 0
+            else:
+                duration = time.time() - self.startTime
         self.lowpulseoccupancy = self.lowpulseoccupancy+duration
     
     def pcf_to_ugm3(self, conc_pcf):
