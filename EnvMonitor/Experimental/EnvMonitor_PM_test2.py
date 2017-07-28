@@ -122,6 +122,7 @@ class PMSensor:
     def collect(self):
         runTime = time.time()
         self.lowpulseoccupancy = 0
+        self.startTime = 0
         self.flag = False
         self.GPIO.remove_event_detect(self.gpio)
         time.sleep(0.01)
@@ -139,15 +140,19 @@ class PMSensor:
         return (self.conc, self.conc_pcf, self.conc_ugm3)
     
     def callback(self, gpio):
-        print("detected")
         if self.GPIO.event_detected(gpio) is True:
             if self.flag is True:
+                print("True")
                 self.startTime = time.time()
                 self.flag = False
                 duration = 0
             else:
+                print("False")
                 duration = time.time() - self.startTime
+                self.flag = True
         self.lowpulseoccupancy = self.lowpulseoccupancy+duration
+        print("Duration:",duration, "Lowpulseoc",self.lowpulseoccupancy)
+        
     
     def pcf_to_ugm3(self, conc_pcf):
         '''

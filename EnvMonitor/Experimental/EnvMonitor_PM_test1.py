@@ -141,7 +141,7 @@ class PMSensor:
         return (self.conc, self.conc_pcf, self.conc_ugm3)
     
     def pulseIn(self, gpio):
-        '''
+        
         #version 1
         self.GPIO.wait_for_edge(gpio, self.GPIO.FALLING)
         startTime = time.time()
@@ -150,8 +150,8 @@ class PMSensor:
         self.GPIO.wait_for_edge(gpio, self.GPIO.RISING)
         #print("Detected: Rising")
         duration = time.time() - startTime
+        
         '''
-    
         # version 2
         while not self.GPIO.input(gpio):
             continue
@@ -159,7 +159,7 @@ class PMSensor:
         while self.GPIO.input(gpio):
             continue
         duration = time.time() - startTime
-    
+        '''
         
         print(duration)
         self.GPIO.remove_event_detect(gpio)
