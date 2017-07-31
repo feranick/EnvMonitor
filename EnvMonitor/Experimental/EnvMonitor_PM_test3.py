@@ -4,7 +4,7 @@
 **********************************************************
 *
 * GridEdge - Environmental Tracking - using classes
-* version: 20170731a-test2
+* version: 20170731b-test3
 *
 * By: Nicola Ferralis <feranick@hotmail.com>
 *
@@ -105,20 +105,67 @@ class PMSensor:
 
     def __init__(self, gpio):
         try:
-            import RPi.GPIO
+            import pigpio
         except:
             self.GPIO = None
         else:
-            self.GPIO = RPi.GPIO
+            self.GPIO = pigpio
         
-        self.gpio = gpio
         self.collectionTime = 30
-        self.bouncetime = 1
+        self.pi = pigpio.pi()
+        self.gpio = gpio
+        self._start_tick = None
+        self._last_tick = None
+        self._low_ticks = 0
+        self._high_ticks = 0
+        self.ratio = 0
         
-        self.GPIO.setwarnings(False)
-        self.GPIO.setmode(self.GPIO.BOARD)
-        self.GPIO.setup(gpio,self.GPIO.IN)
+        self.pi.set_mode(gpio, pigpio.INPUT)
+        self._cb = self.pi.callback(gpio, pigpio.EITHER_EDGE, self._cbf)
 
+    def collect(self):
+        runTime = time.time()
+        while time.time() - runTime <= self.collectionTime:
+            print(" Waiting",int(time.time() - runTime),
+                  "/",int(self.collectionTime),"s for PM sensor...", end="\r")
+        self.read()
+        print("Ratio:", self.ratio)
+        return (self.conc, self.conc_pcf, self.conc_ugm3)
+    
+    def read(self):
+        interval = self._low_ticks + self._high_ticks
+        if interval > 0:
+            self.ratio = float(self._low_ticks)/float(interval)*100.0
+            self.conc = 1.1*pow(ratio,3)-3.8*pow(ratio,2)+520*ratio+0.62;
+        else:
+            self.ratio = 0
+            self.conc = 0.0
+        self._start_tick = None
+        self._last_tick = None
+        self._low_ticks = 0
+        self._high_ticks = 0
+        self.conc_pcf = 1.1*pow(self.ratio,3)-3.8*pow(self.ratio,2)+520*self.ratio+0.62
+        #conc = self.conc_pcf*0.000238 # concentration in particles/L
+        self.conc_ugm3 = self.pcf_to_ugm3(self.conc)
+        print("Ratio: ", self.ratio)
+        #return (self.conc, self.conc_pcf, self.conc_ugm3)
+
+    def _cbf(self, gpio, level, tick):
+        if self._start_tick is not None:
+            ticks = pigpio.tickDiff(self._last_tick, tick)
+            self._last_tick = tick
+            if level == 0: # Falling edge.
+                self._high_ticks = self._high_ticks + ticks
+            elif level == 1: # Rising edge.
+                self._low_ticks = self._low_ticks + ticks
+            else: # timeout level, not used
+                pass
+        else:
+            self._start_tick = tick
+            self._last_tick = tick
+ 
+
+    '''
     def collect(self):
         runTime = time.time()
         self.lowpulseoccupancy = 0
@@ -155,6 +202,7 @@ class PMSensor:
                 self.flag = False
         self.lowpulseoccupancy = self.lowpulseoccupancy+duration
         print("Duration:",duration, "Lowpulseoc:",self.lowpulseoccupancy)
+    '''
         
     
     def pcf_to_ugm3(self, conc_pcf):
@@ -186,7 +234,8 @@ class PMSensor:
               "\n  ug/m^3: {0:0.5f}".format(self.conc_ugm3), "\n")
 
     def cleanup(self):
-        self.GPIO.cleanup()
+        #self.GPIO.cleanup()
+        self.pi.stop()
 
 #************************************
 ''' Class Database '''

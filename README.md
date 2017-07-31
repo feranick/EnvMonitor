@@ -25,6 +25,8 @@ This sensor requires a voltage divider to reduce the output voltage from 5V to 3
     Black -> pin9
     Yellow -> pin10    
 
+This sensors require high frequency edge detection that is not supported by the rpi.gpio library. While that might change, in the meantime we rely on the [pigpio library](http://abyz.co.uk/rpi/pigpio/), a library for low level GPIO operations.  This is based on [this repo](https://github.com/andy-pi/weather-monitor)
+
 ## Software Installation
 	sudo apt-get update
 	sudo apt-get install build-essential python3-pip python3-dev python3-smbus git python3-rpi.gpio
@@ -37,11 +39,17 @@ This sensor requires a voltage divider to reduce the output voltage from 5V to 3
 	git clone https://github.com/adafruit/Adafruit_Python_BME280.git
     cd Adafruit_Python_BME280
     sudo python3 setup.py install
+    wget abyz.co.uk/rpi/pigpio/pigpio.zip
+    unzip pigpio.zip
+    cd PIGPIO
+    make
+    sudo make install
 
 ## Usage
 ### T/P/RH sensor only:
     python3 EnvMonitor.py <lab-identifier> <mongodb-auth-file>
 ### T/P/RH and particle sensor
+    sudo pigpiod
     python3 EnvMonitor_PM.py <lab-identifier> <mongodb-auth-file>
     
 ### Launcher    
