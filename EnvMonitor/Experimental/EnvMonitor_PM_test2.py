@@ -4,7 +4,7 @@
 **********************************************************
 *
 * GridEdge - Environmental Tracking - using classes
-* version: 20170727a-test2
+* version: 20170731a-test2
 *
 * By: Nicola Ferralis <feranick@hotmail.com>
 *
@@ -122,7 +122,7 @@ class PMSensor:
     def collect(self):
         runTime = time.time()
         self.lowpulseoccupancy = 0
-        self.startTime = 0
+        self.startTime = time.time()
         self.flag = False
         self.GPIO.remove_event_detect(self.gpio)
         time.sleep(0.01)

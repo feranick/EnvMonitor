@@ -4,7 +4,7 @@
 **********************************************************
 *
 * GridEdge - Environmental Tracking - using classes
-* version: 20170727a-2
+* version: 20170731a-test1
 *
 * By: Nicola Ferralis <feranick@hotmail.com>
 *
