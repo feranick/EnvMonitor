@@ -189,7 +189,7 @@ class PMSensor:
         return conc_ugm3
     
     def printUI(self):
-        print(" Particulate Sensor for PM2.5:     \n  particles/m^3: {0:0.4f}".format(self.conc),
+        print("\n Particulate Sensor for PM2.5:     \n  particles/m^3: {0:0.4f}".format(self.conc),
               "\n  particles/cu-ft: {0:0.2f}".format(self.conc_pcf),
               "\n  ug/m^3: {0:0.5f}".format(self.conc_ugm3), "\n")
 

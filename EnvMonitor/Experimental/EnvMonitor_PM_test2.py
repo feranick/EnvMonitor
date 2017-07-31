@@ -123,7 +123,7 @@ class PMSensor:
         runTime = time.time()
         self.lowpulseoccupancy = 0
         self.startTime = time.time()
-        self.flag = False
+        self.flag = True
         self.GPIO.remove_event_detect(self.gpio)
         time.sleep(0.01)
         self.GPIO.add_event_detect(self.gpio, self.GPIO.BOTH, callback = self.callback, bouncetime = self.bouncetime)
@@ -133,13 +133,14 @@ class PMSensor:
         
         time.sleep(0.01)
         self.GPIO.remove_event_detect(self.gpio)
-        self.ratio = self.lowpulseoccupancy*100/(self.collectionTime);
+        self.ratio = self.lowpulseoccupancy/(self.collectionTime);
         self.conc_pcf = 1.1*pow(self.ratio,3)-3.8*pow(self.ratio,2)+520*self.ratio+0.62
         self.conc = self.conc_pcf*0.000238 # concentration in particles/L
         self.conc_ugm3 = self.pcf_to_ugm3(self.conc)
         return (self.conc, self.conc_pcf, self.conc_ugm3)
     
     def callback(self, gpio):
+        
         if self.GPIO.event_detected(gpio) is True:
             if self.flag is True:
                 print("True")
@@ -151,7 +152,7 @@ class PMSensor:
                 duration = time.time() - self.startTime
                 self.flag = True
         self.lowpulseoccupancy = self.lowpulseoccupancy+duration
-        print("Duration:",duration, "Lowpulseoc",self.lowpulseoccupancy)
+        print("Duration:",duration, "Lowpulseoc:",self.lowpulseoccupancy)
         
     
     def pcf_to_ugm3(self, conc_pcf):
@@ -178,7 +179,7 @@ class PMSensor:
         return conc_ugm3
     
     def printUI(self):
-        print(" Particulate Sensor for PM2.5:     \n  particles/m^3: {0:0.4f}".format(self.conc),
+        print("\n Particulate Sensor for PM2.5:     \n  particles/m^3: {0:0.4f}".format(self.conc),
               "\n  particles/cu-ft: {0:0.2f}".format(self.conc_pcf),
               "\n  ug/m^3: {0:0.5f}".format(self.conc_ugm3), "\n")
 
