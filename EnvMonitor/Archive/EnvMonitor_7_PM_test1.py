@@ -4,7 +4,7 @@
 **********************************************************
 *
 * GridEdge - Environmental Tracking - using classes
-* version: 20170731a-test1
+* version: 20170731b-test1
 *
 * By: Nicola Ferralis <feranick@hotmail.com>
 *
@@ -134,32 +134,32 @@ class PMSensor:
         
         print("lowpulse:",lowpulseoccupancy)
         self.ratio = lowpulseoccupancy*100/(self.collectionTime);
-        print(self.ratio)
+        print("\n Ratio:",self.ratio)
         self.conc_pcf = 1.1*pow(self.ratio,3)-3.8*pow(self.ratio,2)+520*self.ratio+0.62
         self.conc = self.conc_pcf*0.000238 # concentration in particles/L
         self.conc_ugm3 = self.pcf_to_ugm3(self.conc)
         return (self.conc, self.conc_pcf, self.conc_ugm3)
     
     def pulseIn(self, gpio):
-        
-        #version 1
+        duration = 0
         self.GPIO.wait_for_edge(gpio, self.GPIO.FALLING)
-        startTime = time.time()
-        #print("Detected: Falling")
+        time.sleep(0.005)
+        
+        if self.GPIO.input(gpio) == 0:
+            print("  FALLING")
+            startTime = time.time()
+        else:
+            print("  FALSE FALLING")
+        
         self.GPIO.remove_event_detect(self.gpio)
         self.GPIO.wait_for_edge(gpio, self.GPIO.RISING)
-        #print("Detected: Rising")
-        duration = time.time() - startTime
-        
-        '''
-        # version 2
-        while not self.GPIO.input(gpio):
-            continue
-        startTime = time.time()
-        while self.GPIO.input(gpio):
-            continue
-        duration = time.time() - startTime
-        '''
+        time.sleep(0.005)
+
+        if self.GPIO.input(gpio) == 1:
+            print("  RISING")
+            duration = time.time() - startTime
+        else:
+            print("  FALSE RISING")
         
         print(duration)
         self.GPIO.remove_event_detect(gpio)

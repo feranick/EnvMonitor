@@ -4,7 +4,7 @@
 **********************************************************
 *
 * GridEdge - Environmental Tracking - using classes
-* version: 20170731b-test1
+* version: 20170731c
 *
 * By: Nicola Ferralis <feranick@hotmail.com>
 *
@@ -17,7 +17,7 @@ from Adafruit_BME280 import *
 
 global MongoDBhost
 
-pms_gpio = 10
+pms_gpio = 15  # (GPIO15, pin 10)
 
 def main():
     if len(sys.argv)<3 or os.path.isfile(sys.argv[2]) == False:
@@ -105,66 +105,60 @@ class PMSensor:
 
     def __init__(self, gpio):
         try:
-            import RPi.GPIO
+            import pigpio
         except:
             self.GPIO = None
         else:
-            self.GPIO = RPi.GPIO
+            self.GPIO = pigpio
         
-        self.gpio = gpio
         self.collectionTime = 30
-        self.bouncetime = 1
+        self.pi = pigpio.pi()
+        self.gpio = gpio
+        self._start_tick = None
+        self._last_tick = None
+        self._low_ticks = 0
+        self._high_ticks = 0
+        self.ratio = 0
         
-        self.GPIO.setwarnings(False)
-        self.GPIO.setmode(self.GPIO.BOARD)
-        self.GPIO.setup(gpio,self.GPIO.IN)
+        self.pi.set_mode(gpio, pigpio.INPUT)
+        self._cb = self.pi.callback(gpio, pigpio.EITHER_EDGE, self._cbf)
 
     def collect(self):
         runTime = time.time()
-        lowpulseoccupancy = 0
-        self.GPIO.remove_event_detect(self.gpio)
-        time.sleep(0.01)
         while time.time() - runTime <= self.collectionTime:
             print(" Waiting",int(time.time() - runTime),
                   "/",int(self.collectionTime),"s for PM sensor...", end="\r")
-
-            duration = self.pulseIn(self.gpio)
-            print("duration:", duration)
-            lowpulseoccupancy = lowpulseoccupancy+duration
-        
-        print("lowpulse:",lowpulseoccupancy)
-        self.ratio = lowpulseoccupancy*100/(self.collectionTime);
-        print("\n Ratio:",self.ratio)
-        self.conc_pcf = 1.1*pow(self.ratio,3)-3.8*pow(self.ratio,2)+520*self.ratio+0.62
-        self.conc = self.conc_pcf*0.000238 # concentration in particles/L
-        self.conc_ugm3 = self.pcf_to_ugm3(self.conc)
+        self.read()
         return (self.conc, self.conc_pcf, self.conc_ugm3)
     
-    def pulseIn(self, gpio):
-        duration = 0
-        self.GPIO.wait_for_edge(gpio, self.GPIO.FALLING)
-        time.sleep(0.005)
-        
-        if self.GPIO.input(gpio) == 0:
-            print("  FALLING")
-            startTime = time.time()
+    def read(self):
+        interval = self._low_ticks + self._high_ticks
+        if interval > 0:
+            self.ratio = float(self._low_ticks)/float(interval)*100.0
         else:
-            print("  FALSE FALLING")
+            self.ratio = 0
+        self._start_tick = None
+        self._last_tick = None
+        self._low_ticks = 0
+        self._high_ticks = 0
+        self.conc_pcf = 1.1*pow(self.ratio,3)-3.8*pow(self.ratio,2)+520*self.ratio+0.62
+        self.conc = self.conc_pcf/0.2831685 # concentration in particles/L
+        self.conc_ugm3 = self.pcf_to_ugm3(self.conc)
         
-        self.GPIO.remove_event_detect(self.gpio)
-        self.GPIO.wait_for_edge(gpio, self.GPIO.RISING)
-        time.sleep(0.005)
+    def _cbf(self, gpio, level, tick):
+        if self._start_tick is not None:
+            ticks = self.GPIO.tickDiff(self._last_tick, tick)
+            self._last_tick = tick
+            if level == 0: # Falling edge.
+                self._high_ticks = self._high_ticks + ticks
+            elif level == 1: # Rising edge.
+                self._low_ticks = self._low_ticks + ticks
+            else: # timeout level, not used
+                pass
+        else:
+            self._start_tick = tick
+            self._last_tick = tick
 
-        if self.GPIO.input(gpio) == 1:
-            print("  RISING")
-            duration = time.time() - startTime
-        else:
-            print("  FALSE RISING")
-        
-        print(duration)
-        self.GPIO.remove_event_detect(gpio)
-        return duration
-    
     def pcf_to_ugm3(self, conc_pcf):
         '''
         Convert concentration of PM2.5 particles per 0.01 cubic feet to µg/ metre cubed
@@ -189,12 +183,13 @@ class PMSensor:
         return conc_ugm3
     
     def printUI(self):
-        print("\n Particulate Sensor for PM2.5:     \n  particles/m^3: {0:0.4f}".format(self.conc),
+        print("\n Particulate Sensor for PM2.5:     \n  particles/L: {0:0.4f}".format(self.conc),
               "\n  particles/cu-ft: {0:0.2f}".format(self.conc_pcf),
               "\n  ug/m^3: {0:0.5f}".format(self.conc_ugm3), "\n")
 
     def cleanup(self):
-        self.GPIO.cleanup()
+        #self.GPIO.cleanup()
+        self.pi.stop()
 
 #************************************
 ''' Class Database '''
@@ -237,7 +232,7 @@ class GEmongoDB:
             'temperature' : '{0:0.1f}'.format(self.data[4]),
             'pressure' : '{0:0.1f}'.format(self.data[5]),
             'humidity' : '{0:0.1f}'.format(self.data[6]),
-            'PM2.5_particles_m3' : '{0:0.3f}'.format(self.data[7]),
+            'PM2.5_particles_L' : '{0:0.3f}'.format(self.data[7]),
             }
         return json.dumps(dataj)
 

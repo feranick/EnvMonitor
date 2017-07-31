@@ -4,7 +4,7 @@
 #
 # EnvMonitor IP and lanucher
 #
-# v. 20170719a
+# v. 20170731c
 #
 # Nicola Ferralis <ferralis@mit.edu>
 #
@@ -22,5 +22,8 @@ echo "EnvMonitor lab: "$lab > $file
 echo "IP: "$IP >> $file
 echo $(date) >> $file
 scp $file $remote
+
+# Start pigpiod
+sudo pigpiod
 
 # Eventually, the actual Softare for running the Environmental monitoring could be launched from here
