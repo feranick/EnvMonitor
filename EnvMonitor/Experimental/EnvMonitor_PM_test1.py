@@ -4,7 +4,7 @@
 **********************************************************
 *
 * GridEdge - Environmental Tracking - using classes
-* version: 20170731a-test2
+* version: 20170731b-test1
 *
 * By: Nicola Ferralis <feranick@hotmail.com>
 *
@@ -121,44 +121,49 @@ class PMSensor:
 
     def collect(self):
         runTime = time.time()
-        self.lowpulseoccupancy = 0
-        self.startTime = time.time()
-        self.flag = False
+        lowpulseoccupancy = 0
         self.GPIO.remove_event_detect(self.gpio)
         time.sleep(0.01)
-        self.GPIO.add_event_detect(self.gpio, self.GPIO.BOTH, callback = self.callback, bouncetime = self.bouncetime)
         while time.time() - runTime <= self.collectionTime:
             print(" Waiting",int(time.time() - runTime),
                   "/",int(self.collectionTime),"s for PM sensor...", end="\r")
-    
-        time.sleep(0.01)
-        self.GPIO.remove_event_detect(self.gpio)
-        self.ratio = self.lowpulseoccupancy*100/(self.collectionTime);
-        print("\n\nRatio: ", self.ratio)
+
+            duration = self.pulseIn(self.gpio)
+            print("duration:", duration)
+            lowpulseoccupancy = lowpulseoccupancy+duration
+        
+        print("lowpulse:",lowpulseoccupancy)
+        self.ratio = lowpulseoccupancy*100/(self.collectionTime);
+        print("\n Ratio:",self.ratio)
         self.conc_pcf = 1.1*pow(self.ratio,3)-3.8*pow(self.ratio,2)+520*self.ratio+0.62
         self.conc = self.conc_pcf*0.000238 # concentration in particles/L
         self.conc_ugm3 = self.pcf_to_ugm3(self.conc)
         return (self.conc, self.conc_pcf, self.conc_ugm3)
     
-    def callback(self, gpio):
+    def pulseIn(self, gpio):
+        duration = 0
+        self.GPIO.wait_for_edge(gpio, self.GPIO.FALLING)
+        time.sleep(0.005)
         
-        if self.GPIO.event_detected(gpio) is True:
-            print(self.GPIO.FALLING)
-            print(self.GPIO.RISING)
-            print(self.GPIO.BOTH)
+        if self.GPIO.input(gpio) == 0:
+            print("  FALLING")
+            startTime = time.time()
+        else:
+            print("  FALSE FALLING")
+        
+        self.GPIO.remove_event_detect(self.gpio)
+        self.GPIO.wait_for_edge(gpio, self.GPIO.RISING)
+        time.sleep(0.005)
 
-            if self.flag is False:
-                print("False: setting to True")
-                self.startTime = time.time()
-                self.flag = True
-                duration = 0
-            else:
-                print("True")
-                duration = time.time() - self.startTime
-                self.flag = False
-        self.lowpulseoccupancy = self.lowpulseoccupancy+duration
-        print("Duration:",duration, "Lowpulseoc:",self.lowpulseoccupancy)
+        if self.GPIO.input(gpio) == 1:
+            print("  RISING")
+            duration = time.time() - startTime
+        else:
+            print("  FALSE RISING")
         
+        print(duration)
+        self.GPIO.remove_event_detect(gpio)
+        return duration
     
     def pcf_to_ugm3(self, conc_pcf):
         '''
