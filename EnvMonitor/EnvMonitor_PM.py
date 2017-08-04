@@ -4,7 +4,7 @@
 **********************************************************
 *
 * GridEdge - Environmental Tracking - using classes
-* version: 20170731c
+* version: 20170803a
 *
 * By: Nicola Ferralis <feranick@hotmail.com>
 *
@@ -39,9 +39,9 @@ def main():
     ''' Read from PM sensor '''
     #************************************
     pms = PMSensor(pms_gpio)
-    conc, conc_pcf, conc_ugm3 = pms.collect()
+    conc, conc_pcf, conc_ugm3, conc_aqi = pms.collect()
     pms.printUI()
-    sensData.extend([conc])
+    sensData.extend([conc, conc_aqi])
     pms.cleanup()
     
     #************************************
@@ -129,7 +129,7 @@ class PMSensor:
             print(" Waiting",int(time.time() - runTime),
                   "/",int(self.collectionTime),"s for PM sensor...", end="\r")
         self.read()
-        return (self.conc, self.conc_pcf, self.conc_ugm3)
+        return (self.conc, self.conc_pcf, self.conc_ugm3, self.conc_aqi)
     
     def read(self):
         interval = self._low_ticks + self._high_ticks
@@ -144,6 +144,7 @@ class PMSensor:
         self.conc_pcf = 1.1*pow(self.ratio,3)-3.8*pow(self.ratio,2)+520*self.ratio+0.62
         self.conc = self.conc_pcf/0.2831685 # concentration in particles/L
         self.conc_ugm3 = self.pcf_to_ugm3(self.conc)
+        self.conc_aqi = self.ugm3_to_aqi(self.conc_ugm3)
         
     def _cbf(self, gpio, level, tick):
         if self._start_tick is not None:
@@ -182,13 +183,41 @@ class PMSensor:
         conc_ugm3 = conc_pcf * 3531.5 * masspm25
         return conc_ugm3
     
+    def ugm3_to_aqi(self, ugm3):
+        '''
+        Convert concentration of PM2.5 particles in µg/ metre cubed to the USA 
+        Environment Agency Air Quality Index - AQI
+        https://en.wikipedia.org/wiki/Air_quality_index
+	    Computing_the_AQI
+        https://goo.gl/biYDqq
+        '''
+        cbreakpointspm25 = [ [0.0, 12, 0, 50],\
+                        [12.1, 35.4, 51, 100],\
+                        [35.5, 55.4, 101, 150],\
+                        [55.5, 150.4, 151, 200],\
+                        [150.5, 250.4, 201, 300],\
+                        [250.5, 350.4, 301, 400],\
+                        [350.5, 500.4, 401, 500], ]
+        C=ugm3
+        if C > 500.4:
+            aqi=500
+        else:
+           for breakpoint in cbreakpointspm25:
+               if breakpoint[0] <= C <= breakpoint[1]:
+                   Clow = breakpoint[0]
+                   Chigh = breakpoint[1]
+                   Ilow = breakpoint[2]
+                   Ihigh = breakpoint[3]
+                   aqi=(((Ihigh-Ilow)/(Chigh-Clow))*(C-Clow))+Ilow
+        return aqi
+
     def printUI(self):
         print("\n Particulate Sensor for PM2.5:     \n  particles/L: {0:0.4f}".format(self.conc),
               "\n  particles/cu-ft: {0:0.2f}".format(self.conc_pcf),
-              "\n  ug/m^3: {0:0.5f}".format(self.conc_ugm3), "\n")
+              "\n  ug/m^3: {0:0.5f}".format(self.conc_ugm3),
+              "\n  aqi: ",self.conc_aqi, "\n")
 
     def cleanup(self):
-        #self.GPIO.cleanup()
         self.pi.stop()
 
 #************************************
@@ -233,6 +262,7 @@ class GEmongoDB:
             'pressure' : '{0:0.1f}'.format(self.data[5]),
             'humidity' : '{0:0.1f}'.format(self.data[6]),
             'PM2.5_particles_L' : '{0:0.3f}'.format(self.data[7]),
+            'aqi' : self.data[7],
             }
         return json.dumps(dataj)
 
