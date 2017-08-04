@@ -4,7 +4,7 @@
 **********************************************************
 *
 * GridEdge - Environmental Tracking - using classes
-* version: 20170803a
+* version: 20170804a
 *
 * By: Nicola Ferralis <feranick@hotmail.com>
 *
@@ -49,8 +49,13 @@ def main():
     #************************************
     conn = GEmongoDB(sensData,mongoFile)
     #print(" JSON:\n",conn.makeJSON(),"\n")
+
     print(" Pushing to MongoDB:")
-    #conn.pushToMongoDB()
+    try:
+        conn.pushToMongoDB()
+        print(" Submission to MongoDB successful\n")
+    except:
+        print(" Submission to MongoDB failed\n")
 
 #************************************
 ''' Class T/RH Sensor '''
@@ -128,6 +133,7 @@ class PMSensor:
         while time.time() - runTime <= self.collectionTime:
             print(" Waiting",int(time.time() - runTime),
                   "/",int(self.collectionTime),"s for PM sensor...", end="\r")
+        print("                                           ", "\r")
         self.read()
         return (self.conc, self.conc_pcf, self.conc_ugm3, self.conc_aqi)
     
@@ -212,10 +218,10 @@ class PMSensor:
         return aqi
 
     def printUI(self):
-        print("\n Particulate Sensor for PM2.5:     \n  particles/L: {0:0.4f}".format(self.conc),
+        print("\n Particulate Sensor for PM2.5:     \n  particles/L: {0:0.2f}".format(self.conc),
               "\n  particles/cu-ft: {0:0.2f}".format(self.conc_pcf),
-              "\n  ug/m^3: {0:0.5f}".format(self.conc_ugm3),
-              "\n  aqi: ",self.conc_aqi, "\n")
+              "\n  ug/m^3: {0:0.2f}".format(self.conc_ugm3),
+              "\n  aqi: {0:0d}".format(int(self.conc_aqi)), "\n")
 
     def cleanup(self):
         self.pi.stop()
@@ -261,8 +267,8 @@ class GEmongoDB:
             'temperature' : '{0:0.1f}'.format(self.data[4]),
             'pressure' : '{0:0.1f}'.format(self.data[5]),
             'humidity' : '{0:0.1f}'.format(self.data[6]),
-            'PM2.5_particles_L' : '{0:0.3f}'.format(self.data[7]),
-            'aqi' : self.data[7],
+            'PM2.5_particles_L' : '{0:0.2f}'.format(self.data[7]),
+            'aqi' : '{0:0d}'.format(int(self.data[8])),
             }
         return json.dumps(dataj)
 
