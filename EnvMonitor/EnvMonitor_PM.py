@@ -4,7 +4,7 @@
 **********************************************************
 *
 * GridEdge - Environmental Tracking - using classes
-* version: 20170804a
+* version: 20170824a
 *
 * By: Nicola Ferralis <feranick@hotmail.com>
 *
@@ -275,7 +275,7 @@ class GEmongoDB:
     def pushToMongoDB(self):
         jsonData = self.makeJSON()
         client = self.connectDB()
-        db = client.Tata
+        db = client.[self.dbname]
         try:
             db_entry = db.EnvTrack.insert_one(json.loads(jsonData))
             print(" Data entry successful (id:",db_entry.inserted_id,")\n")

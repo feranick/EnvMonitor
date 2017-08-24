@@ -1,12 +1,12 @@
 host name 
 localhost
 port number 
-7101
+27017
 database name 
-test1
+test
 username 
-user1
+
 password  
-user1
+
 mechanism 
 SCRAM-SHA-1
