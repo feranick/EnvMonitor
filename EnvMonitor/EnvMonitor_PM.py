@@ -275,7 +275,7 @@ class GEmongoDB:
     def pushToMongoDB(self):
         jsonData = self.makeJSON()
         client = self.connectDB()
-        db = client.[self.dbname]
+        db = client[self.dbname]
         try:
             db_entry = db.EnvTrack.insert_one(json.loads(jsonData))
             print(" Data entry successful (id:",db_entry.inserted_id,")\n")
