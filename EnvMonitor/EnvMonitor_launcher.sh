@@ -2,11 +2,11 @@
 
 #####################################
 #
-# EnvMonitor IP and lanucher
+# EnvMonitor IP and launcher
 #
-# v. 20170731c
+# v. 20180413a
 #
-# Nicola Ferralis <ferralis@mit.edu>
+# Nicola Ferralis <feranick@hotmail.com>
 #
 #####################################
 
@@ -26,4 +26,4 @@ scp $file $remote
 # Start pigpiod
 sudo pigpiod
 
-# Eventually, the actual Softare for running the Environmental monitoring could be launched from here
+# Eventually, the actual Software for running the Environmental monitoring could be launched from here
