@@ -12,26 +12,24 @@
 '''
 #print(__doc__)
 
-import sys, math, json, os.path, time, configparser
+import sys, math, json, os.path, time, configparser, logging
 from pathlib import Path
 from datetime import datetime
 from pymongo import MongoClient
 #from Adafruit_BME280 import *
 #import RPi.GPIO as GPIO
 
+#************************************
+''' Main '''
+#************************************
 def main():
-    #if len(sys.argv)<3 or os.path.isfile(sys.argv[2]) == False:
-    #    print(__doc__)
-    #    print(' Usage:\n  python3 EnvMonitor.py\n')
-    #    return
-    
+  
     #************************************
     ''' NEW: Read from T/RH sensor '''
     #************************************
     trhSensor = TRHSensor()
     sensData = trhSensor.readSensors()
     trhSensor.printUI()
-    jsonData, sub = trhSensor.makeJson()
     try:
             conn = SubMongoDB(sensData)
             #conn.checkCreateLotDM(sub)
@@ -51,12 +49,13 @@ class TRHSensor:
         self.sensData = []
         self.ip = getIP()
         self.lab = config.lab
+        self.measType = config.measType
     
     #************************************
     ''' Read Sensors '''
     #************************************
     def readSensors(self):
-        self.sensData.extend([self.lab, self.ip, self.date, self.time])
+        self.sensData.extend([self.lab, self.measType, self.ip, self.date, self.time])
         try:
             sensor = BME280(t_mode=BME280_OSAMPLE_8, p_mode=BME280_OSAMPLE_8, h_mode=BME280_OSAMPLE_8)
             self.sensData.extend([sensor.read_temperature(),
@@ -64,12 +63,13 @@ class TRHSensor:
                                   sensor.read_humidity()])
             dataj = {
             'lab' : self.sensData[0],
-            'IP' : self.sensData[1],
-            'date' : self.sensData[2],
-            'time' : self.sensData[3],
-            'temperature' : '{0:0.1f}'.format(self.sensData[4]),
-            'pressure' : '{0:0.1f}'.format(self.sensData[5]),
-            'humidity' : '{0:0.1f}'.format(self.sensData[6]),
+            'measType' : self.sensData[1],
+            'IP' : self.sensData[2],
+            'date' : self.sensData[3],
+            'time' : self.sensData[4],
+            'temperature' : '{0:0.1f}'.format(self.sensData[5]),
+            'pressure' : '{0:0.1f}'.format(self.sensData[6]),
+            'humidity' : '{0:0.1f}'.format(self.sensData[7]),
             }
         except:
             print("\n SENSOR NOT CONNECTED ")
@@ -81,12 +81,13 @@ class TRHSensor:
     #************************************
     def printUI(self):
         print("\n Lab: ", self.lab)
+        print(" Measurement type: ", self.measType)
         print(" IP: ", self.ip)
         print(" Date: ", self.date)
         print(" Time: ", self.time)
-        print(" Temperature = {0:0.1f} deg C".format(self.sensData[4]))
-        print(" Pressure = {0:0.1f} hPa".format(self.sensData[5]))
-        print(" Humidity = {0:0.1f} %".format(self.sensData[6]),"\n")
+        print(" Temperature = {0:0.1f} deg C".format(self.sensData[5]))
+        print(" Pressure = {0:0.1f} hPa".format(self.sensData[6]))
+        print(" Humidity = {0:0.1f} %".format(self.sensData[7]),"\n")
 
 
 #************************************
@@ -181,7 +182,7 @@ class Configuration():
         try:
             self.defineSystem()
             self.defineInstrumentation()
-            self.defineData()
+            #self.defineData()
             self.defineConfDM()
             with open(self.configFile, 'w') as configfile:
                 self.conf.write(configfile)
@@ -199,7 +200,7 @@ class Configuration():
     def defineInstrumentation(self):
         self.conf['Instrumentation'] = {
             'measType' : 'test',
-            'equipment' : 'test',
+            'lab' : 'test',
             'name' : 'test',
             'itemId' : '1'
             }
@@ -243,6 +244,7 @@ class Configuration():
 
     # Read configuration file into usable variables
     def readConfig(self, configFile):
+        self.createConfig()
         self.conf.read(configFile)
         self.sysConfig = self.conf['System']
         self.appVersion = self.sysConfig['appVersion']
@@ -255,7 +257,7 @@ class Configuration():
             self.loggingFilename = self.sysConfig['loggingFilename']
             self.dataFolder = self.sysConfig['dataFolder']
 
-            self.equipment = self.instrumentationConfig['equipment']
+            self.lab = self.instrumentationConfig['lab']
             self.name = self.instrumentationConfig['name']
             self.measType = self.instrumentationConfig['measType']
             #self.architecture = self.instrumentationConfig['architecture']
