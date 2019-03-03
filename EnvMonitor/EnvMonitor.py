@@ -186,7 +186,7 @@ class Configuration():
         self.configFile = self.home+"EnvMonitor.ini"
         self.generalFolder = self.home+"EnvMonitor/"
         #Path(self.generalFolder).mkdir(parents=True, exist_ok=True)
-        self.logFile = self.generalFolder+"EnvmoNitor.log"
+        self.logFile = self.generalFolder+"EnvMonitor.log"
         self.conf = configparser.ConfigParser()
         self.conf.optionxform = str
     
