@@ -12,6 +12,14 @@
 '''
 #print(__doc__)
 
+#***************************************************
+''' This is needed for installation through pip '''
+#***************************************************
+def EnvMonitor():
+    main()
+#***************************************************
+
+
 import sys, math, json, os.path, time, configparser, logging
 from pathlib import Path
 from datetime import datetime
@@ -23,7 +31,12 @@ from pymongo import MongoClient
 ''' Main '''
 #************************************
 def main():
-  
+    conf = Configuration()
+    if os.path.isfile(conf.configFile) is False:
+        print("Configuration file does not exist: Creating one.")
+        conf.createConfig()
+    conf.readConfig(conf.configFile)
+    
     #************************************
     ''' NEW: Read from T/RH sensor '''
     #************************************
