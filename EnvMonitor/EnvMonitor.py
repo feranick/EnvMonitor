@@ -12,10 +12,12 @@
 '''
 #print(__doc__)
 
-import sys, math, json, os.path, time
+import sys, math, json, os.path, time, configparser
+from pathlib import Path
+from datetime import datetime
 from pymongo import MongoClient
-from Adafruit_BME280 import *
-import RPi.GPIO as GPIO
+#from Adafruit_BME280 import *
+#import RPi.GPIO as GPIO
 
 def main():
     #if len(sys.argv)<3 or os.path.isfile(sys.argv[2]) == False:
@@ -26,7 +28,7 @@ def main():
     #************************************
     ''' NEW: Read from T/RH sensor '''
     #************************************
-    trhSensor = TRHSensor(lab)
+    trhSensor = TRHSensor()
     sensData = trhSensor.readSensors()
     trhSensor.printUI()
     jsonData, sub = trhSensor.makeJson()
@@ -34,20 +36,22 @@ def main():
             conn = SubMongoDB(sensData)
             #conn.checkCreateLotDM(sub)
             conn.pushToMongoDB()
-        except:
-            print("\n Submission to database failed!\n")
+    except:
+        print("\n Submission to database failed!\n")
 
 #************************************
 ''' Class T/RH Sensor '''
 #************************************
 class TRHSensor:
-    def __init__(self, lab):
-        self.lab = lab
+    def __init__(self):
+        config = Configuration()
+        config.readConfig(config.configFile)
         self.date = time.strftime("%Y%m%d")
         self.time = time.strftime("%H:%M:%S")
         self.sensData = []
         self.ip = getIP()
-
+        self.lab = config.lab
+    
     #************************************
     ''' Read Sensors '''
     #************************************
