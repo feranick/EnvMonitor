@@ -20,7 +20,7 @@ def EnvMonitor():
 #***************************************************
 
 
-import sys, math, json, os.path, time, configparser, logging
+import sys, math, json, os.path, time, configparser, logging, schedule
 from pathlib import Path
 from datetime import datetime
 from pymongo import MongoClient
@@ -30,6 +30,12 @@ import RPi.GPIO as GPIO
 #************************************
 ''' Main '''
 #************************************
+#def main():
+#    schedule.every(10).minutes.do(runAcq)
+#    while True:
+#        schedule.run_pending()
+#        time.sleep(1)
+
 def main():
     conf = Configuration()
     if os.path.isfile(conf.configFile) is False:
