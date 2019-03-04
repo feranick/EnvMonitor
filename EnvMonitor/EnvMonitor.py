@@ -4,7 +4,7 @@
 **********************************************************
 *
 * GridEdge - Environmental Tracking
-* version: 20190303a
+* version: 20190303b
 *
 * By: Nicola Ferralis <feranick@hotmail.com>
 *
@@ -19,34 +19,38 @@ def EnvMonitor():
     main()
 #***************************************************
 
-
-import sys, math, json, os.path, time, configparser, logging, schedule
+import sys, math, json, os.path, time, configparser, logging, sched
 from pathlib import Path
 from datetime import datetime
 from pymongo import MongoClient
-from Adafruit_BME280 import *
-import RPi.GPIO as GPIO
+#from Adafruit_BME280 import *
+#import RPi.GPIO as GPIO
 
 #************************************
-''' Main '''
+''' Main - Scheduler '''
 #************************************
-#def main():
-#    schedule.every(10).minutes.do(runAcq)
-#    while True:
-#        schedule.run_pending()
-#        time.sleep(1)
-
 def main():
+    s = sched.scheduler(time.time, time.sleep)
+    while True:
+        conf = Configuration()
+        if os.path.isfile(conf.configFile) is False:
+            print("Configuration file does not exist: Creating one.")
+            conf.createConfig()
+        conf.readConfig(conf.configFile)
+        s.enter(conf.runSeconds, conf.sleepSeconds, runAcq)
+        s.run()
+
+#************************************
+''' Run Acquistion '''
+#************************************
+def runAcq():
     conf = Configuration()
-    if os.path.isfile(conf.configFile) is False:
-        print("Configuration file does not exist: Creating one.")
-        conf.createConfig()
     conf.readConfig(conf.configFile)
     
     #************************************
     ''' NEW: Read from T/RH sensor '''
     #************************************
-    trhSensor = TRHSensor()
+    trhSensor = TRHSensor(conf)
     sensData = trhSensor.readSensors()
     trhSensor.printUI()
     try:
@@ -60,9 +64,9 @@ def main():
 ''' Class T/RH Sensor '''
 #************************************
 class TRHSensor:
-    def __init__(self):
-        config = Configuration()
-        config.readConfig(config.configFile)
+    def __init__(self, config):
+        #config = Configuration()
+        #config.readConfig(config.configFile)
         self.date = time.strftime("%Y%m%d")
         self.time = time.strftime("%H:%M:%S")
         self.sensData = []
@@ -113,9 +117,10 @@ class TRHSensor:
 ''' Class Database '''
 #************************************
 class SubMongoDB:
-    def __init__(self, jsonData):
-        self.config = Configuration()
-        self.config.readConfig(self.config.configFile)
+    def __init__(self, jsonData, config):
+        self.config = config
+        #self.config = Configuration()
+        #self.config.readConfig(self.config.configFile)
         if self.config.dataType == 0:
             self.jsonData = jsonData
         else:
@@ -215,6 +220,8 @@ class Configuration():
             'loggingLevel' : logging.INFO,
             'loggingFilename' : self.logFile,
             'dataFolder' : ".",
+            'runSeconds' : 5,
+            'sleepSeconds' : 1,
             }
     def defineInstrumentation(self):
         self.conf['Instrumentation'] = {
@@ -275,6 +282,8 @@ class Configuration():
             self.loggingLevel = self.sysConfig['loggingLevel']
             self.loggingFilename = self.sysConfig['loggingFilename']
             self.dataFolder = self.sysConfig['dataFolder']
+            self.runSeconds = self.conf.getint('System','runSeconds')
+            self.sleepSeconds = self.conf.getint('System','sleepSeconds')
 
             self.lab = self.instrumentationConfig['lab']
             self.name = self.instrumentationConfig['name']
