@@ -53,6 +53,29 @@ This sensors require high frequency edge detection that is not supported by the 
     sudo pigpiod
     python3 EnvMonitor_PM.py <lab-identifier> <mongodb-auth-file>
     
+### MongoDB: Quick installation
+While this is far from being a comprehensive guide, this will get you going. Install the required packages according to your OS. Then edit the config file:
+
+    sudo nano /etc/mongodb.conf
+    
+to make sure the correct IP and port are selected. Restart the ```mongodb``` service. Then run:
+
+    mongo
+
+Set administration rights and authentication:
+
+    use admin
+    db.createUser({user:'admin',pwd:'pwd',roles:[{role:"userAdminAnyDatabase", db:'admin'}]})
+    use DataSubmitter
+    db.createUser({user:'user1',pwd:'user1',roles:[{role:"readWrite", db:'Envmon'}]})
+    quit()
+    
+Make sure the authentication is enabled in the ```mongodb.conf```. Edit the config by uncommenting this line:
+
+    auth = true
+    
+Restart ```mongodb``` service. Use EnvMonitor.
+
 ### Launcher    
 The software will be automated through a script (EnvMonitor_launcher.sh). Since the RPi is 
 connected online via WiFi-DHCP, the IP may change. Through this script, the IP is collected
