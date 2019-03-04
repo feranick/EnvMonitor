@@ -23,8 +23,8 @@ import sys, math, json, os.path, time, configparser, logging, sched
 from pathlib import Path
 from datetime import datetime
 from pymongo import MongoClient
-from Adafruit_BME280 import *
-import RPi.GPIO as GPIO
+#from Adafruit_BME280 import *
+#import RPi.GPIO as GPIO
 
 #************************************
 ''' Main - Scheduler '''
@@ -54,7 +54,7 @@ def runAcq():
     sensData = trhSensor.readSensors()
     trhSensor.printUI()
     try:
-            conn = SubMongoDB(sensData)
+            conn = SubMongoDB(json.dumps(sensData))
             #conn.checkCreateLotDM(sub)
             conn.pushToMongoDB()
     except:
@@ -97,8 +97,9 @@ class TRHSensor:
         except:
             print("\n SENSOR NOT CONNECTED ")
             dataj = self.sensData.extend([0.0,0.0,0.0])
-        return json.dumps(dataj)
-
+        #return json.dumps(dataj)
+        return dataj
+        
     #************************************
     ''' Print Values on screen '''
     #************************************
