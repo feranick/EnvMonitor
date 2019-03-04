@@ -23,8 +23,8 @@ import sys, math, json, os.path, time, configparser, logging, sched
 from pathlib import Path
 from datetime import datetime
 from pymongo import MongoClient
-#from Adafruit_BME280 import *
-#import RPi.GPIO as GPIO
+from Adafruit_BME280 import *
+import RPi.GPIO as GPIO
 
 #************************************
 ''' Main - Scheduler '''

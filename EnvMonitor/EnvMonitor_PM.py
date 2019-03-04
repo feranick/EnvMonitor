@@ -23,8 +23,10 @@ import sys, math, json, os.path, time, configparser, logging, sched
 from pathlib import Path
 from datetime import datetime
 from pymongo import MongoClient
-#from Adafruit_BME280 import *
-#import RPi.GPIO as GPIO
+from Adafruit_BME280 import *
+import RPi.GPIO as GPIO
+
+pms_gpio = 15  # (GPIO15, pin 10)
 
 #************************************
 ''' Main - Scheduler '''
@@ -62,8 +64,8 @@ def runAcq():
     pms.printUI()
     #sensData.extend([conc, conc_aqi])
     pms.cleanup()
-    sensData['PM2.5_particles_L'] : '{0:0.2f}'.format(conc),
-    sensData['aqi'] : '{0:0d}'.format(int(conc_aqi)),
+    sensData['PM2.5_particles_L'] : '{0:0.2f}'.format(conc)
+    sensData['aqi'] : '{0:0d}'.format(int(conc_aqi))
     
     try:
             conn = SubMongoDB(json.dumps(sensData))
