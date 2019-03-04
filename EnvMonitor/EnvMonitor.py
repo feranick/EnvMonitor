@@ -53,12 +53,12 @@ def runAcq():
     trhSensor = TRHSensor(conf)
     sensData = trhSensor.readSensors()
     trhSensor.printUI()
-    try:
-            conn = SubMongoDB(json.dumps(sensData))
-            #conn.checkCreateLotDM(sub)
-            conn.pushToMongoDB()
-    except:
-        print("\n Submission to database failed!\n")
+    #try:
+    conn = SubMongoDB(json.dumps(sensData),conf)
+    #conn.checkCreateLotDM(sub)
+    conn.pushToMongoDB()
+    #except:
+    #    print("\n Submission to database failed!\n")
 
 #************************************
 ''' Class T/RH Sensor '''
@@ -122,10 +122,10 @@ class SubMongoDB:
         self.config = config
         #self.config = Configuration()
         #self.config.readConfig(self.config.configFile)
-        if self.config.dataType == 0:
-            self.jsonData = jsonData
-        else:
-            self.jsonData = json.loads(jsonData)
+        #if self.config.dataType == 0:
+        self.jsonData = jsonData
+        #else:
+        #self.jsonData = json.loads(jsonData)
 
     def connectDB(self):
         client = MongoClient(self.config.DbHostname, int(self.config.DbPortNumber))

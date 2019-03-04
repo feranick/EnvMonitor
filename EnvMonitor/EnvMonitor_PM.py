@@ -68,7 +68,7 @@ def runAcq():
     sensData['aqi'] : '{0:0d}'.format(int(conc_aqi))
     
     try:
-            conn = SubMongoDB(json.dumps(sensData))
+            conn = SubMongoDB(json.dumps(sensData),conf)
             #conn.checkCreateLotDM(sub)
             conn.pushToMongoDB()
     except:
