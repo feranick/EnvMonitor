@@ -339,10 +339,10 @@ class Configuration():
     def __init__(self):
         self.home = str(Path.home())+"/"
         #self.home = str(Path.cwd())+"/"
-        self.configFile = self.home+"EnvMonitor.ini"
-        self.generalFolder = self.home+"EnvMonitor/"
+        self.configFile = self.home+"EnvMonitor_PM.ini"
+        self.generalFolder = self.home+"EnvMonitor_PM/"
         #Path(self.generalFolder).mkdir(parents=True, exist_ok=True)
-        self.logFile = self.generalFolder+"EnvMonitor.log"
+        self.logFile = self.generalFolder+"EnvMonitor_PM.log"
         self.conf = configparser.ConfigParser()
         self.conf.optionxform = str
     
