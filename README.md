@@ -48,7 +48,7 @@ This sensors require high frequency edge detection that is not supported by the 
 
 ## Usage
 ### T/P/RH sensor only:
-    python3 EnvMonitor.py <lab-identifier> <mongodb-auth-file>
+    python3 EnvMonitor.py 
 ### T/P/RH and particle sensor
     sudo pigpiod
     python3 EnvMonitor_PM.py <lab-identifier> <mongodb-auth-file>
