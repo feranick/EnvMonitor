@@ -67,7 +67,7 @@ Set administration rights and authentication:
     use admin
     db.createUser({user:'admin',pwd:'pwd',roles:[{role:"userAdminAnyDatabase", db:'admin'}]})
     use DataSubmitter
-    db.createUser({user:'user1',pwd:'user1',roles:[{role:"readWrite", db:'Envmon'}]})
+    db.createUser({user:'user1',pwd:'user1',roles:[{role:"readWrite", db:'EnvMon'}]})
     quit()
     
 Make sure the authentication is enabled in the ```mongodb.conf```. Edit the config by uncommenting this line:
