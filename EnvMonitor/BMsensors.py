@@ -89,7 +89,7 @@ class TRHSensor:
              self.sensData.extend([sensor.read_temperature(),
                                   sensor.read_pressure() / 100])
              self.sensData.extend([sensor.read_altitude()])
-             self.sensData.extend([sensor.read_sealevel_pressure()])
+             self.sensData.extend([sensor.read_sealevel_pressure() / 100])
         except:
             print("\n SENSOR NOT CONNECTED ")
             self.sensData.extend([0,0,0,0])
@@ -120,5 +120,5 @@ class TRHSensor:
         print(" Temperature = {0:0.1f} deg C".format(self.sensData[6]))
         print(" Pressure = {0:0.1f} hPa".format(self.sensData[7]))
         print(" Altitude = {0:0.1f} m".format(self.sensData[8]))
-        print(" Sealevel pressure = {0:0.1f} Pa".format(self.sensData[9]),"\n")
+        print(" Sealevel pressure = {0:0.1f} hPa".format(self.sensData[9]),"\n")
         return dataj
