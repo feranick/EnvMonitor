@@ -16,9 +16,9 @@ from pathlib import Path
 from datetime import datetime
 import numpy as np
 from libEnvMonitor import *
-#from Adafruit_BME280 import *
-#import Adafruit_BMP.BMP085 as BMP085
-#import RPi.GPIO as GPIO
+from Adafruit_BME280 import *
+import Adafruit_BMP.BMP085 as BMP085
+import RPi.GPIO as GPIO
 
 #************************************
 ''' Class T/RH Sensor '''
