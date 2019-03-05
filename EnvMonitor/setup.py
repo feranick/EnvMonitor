@@ -6,7 +6,7 @@ setup(
     install_requires=['pymongo'],
     entry_points={'console_scripts' : ['EnvMonitor=EnvMonitor:EnvMonitor','EnvMonitor_PM=EnvMonitor_PM:EnvMonitor_PM']},
     py_modules=['EnvMonitor','EnvMonitor_PM'],
-    version='20190303b',
+    version='20190304a',
     description='Environmental tracking monitor with submission to mongo',
     long_description= """ Environmental tracking monitor with submission to mongo """,
     author_email='ferralis@mit.edu',

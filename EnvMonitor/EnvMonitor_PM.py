@@ -4,7 +4,7 @@
 **********************************************************
 *
 * GridEdge - Environmental Tracking with PM
-* version: 20190303b
+* version: 20190304a
 *
 * By: Nicola Ferralis <feranick@hotmail.com>
 *
@@ -67,7 +67,6 @@ def runAcq():
     pms.cleanup()
     sensData['PM2.5_particles_L'] : '{0:0.2f}'.format(conc)
     sensData['aqi'] : '{0:0d}'.format(int(conc_aqi))
-    
     try:
             conn = SubMongoDB(json.dumps(sensData),conf)
             #conn.checkCreateLotDM(sub)
@@ -99,7 +98,11 @@ class TRHSensor:
             self.sensData.extend([sensor.read_temperature(),
                                   sensor.read_pressure() / 100,
                                   sensor.read_humidity()])
-            dataj = {
+        except:
+            print("\n SENSOR NOT CONNECTED ")
+            self.sensData.extend([0,0,0])
+            
+        dataj = {
             'lab' : self.sensData[0],
             'measType' : self.sensData[1],
             'IP' : self.sensData[2],
@@ -109,9 +112,6 @@ class TRHSensor:
             'pressure' : '{0:0.1f}'.format(self.sensData[6]),
             'humidity' : '{0:0.1f}'.format(self.sensData[7]),
             }
-        except:
-            print("\n SENSOR NOT CONNECTED ")
-            dataj = self.sensData.extend([0.0,0.0,0.0])
         #return json.dumps(dataj)
         return dataj
         

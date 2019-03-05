@@ -4,7 +4,7 @@
 **********************************************************
 *
 * GridEdge - Environmental Tracking
-* version: 20190303b
+* version: 20190304a
 *
 * By: Nicola Ferralis <feranick@hotmail.com>
 *
@@ -23,8 +23,8 @@ import sys, math, json, os.path, time, configparser, logging, sched
 from pathlib import Path
 from datetime import datetime
 from pymongo import MongoClient
-#from Adafruit_BME280 import *
-#import RPi.GPIO as GPIO
+from Adafruit_BME280 import *
+import RPi.GPIO as GPIO
 
 #************************************
 ''' Main - Scheduler '''
@@ -36,7 +36,6 @@ def main():
         print("Configuration file does not exist: Creating one.")
         conf.createConfig()
     conf.readConfig(conf.configFile)
-    print(conf.DbHostname)
     while True:
         s.enter(conf.runSeconds, conf.sleepSeconds, runAcq)
         s.run()
@@ -54,12 +53,12 @@ def runAcq():
     trhSensor = TRHSensor(conf)
     sensData = trhSensor.readSensors()
     trhSensor.printUI()
-    #try:
-    conn = SubMongoDB(json.dumps(sensData),conf)
-    #conn.checkCreateLotDM(sub)
-    conn.pushToMongoDB()
-    #except:
-    #    print("\n Submission to database failed!\n")
+    try:
+        conn = SubMongoDB(json.dumps(sensData),conf)
+        #conn.checkCreateLotDM(sub)
+        conn.pushToMongoDB()
+    except:
+        print("\n Submission to database failed!\n")
 
 #************************************
 ''' Class T/RH Sensor '''
@@ -85,7 +84,11 @@ class TRHSensor:
             self.sensData.extend([sensor.read_temperature(),
                                   sensor.read_pressure() / 100,
                                   sensor.read_humidity()])
-            dataj = {
+        except:
+            print("\n SENSOR NOT CONNECTED ")
+            self.sensData.extend([0,0,0])
+    
+        dataj = {
             'lab' : self.sensData[0],
             'measType' : self.sensData[1],
             'IP' : self.sensData[2],
@@ -95,9 +98,6 @@ class TRHSensor:
             'pressure' : '{0:0.1f}'.format(self.sensData[6]),
             'humidity' : '{0:0.1f}'.format(self.sensData[7]),
             }
-        except:
-            print("\n SENSOR NOT CONNECTED ")
-            dataj = self.sensData.extend([0.0,0.0,0.0])
         #return json.dumps(dataj)
         return dataj
         
@@ -114,19 +114,13 @@ class TRHSensor:
         print(" Pressure = {0:0.1f} hPa".format(self.sensData[6]))
         print(" Humidity = {0:0.1f} %".format(self.sensData[7]),"\n")
 
-
 #************************************
 ''' Class Database '''
 #************************************
 class SubMongoDB:
     def __init__(self, jsonData, config):
         self.config = config
-        #self.config = Configuration()
-        #self.config.readConfig(self.config.configFile)
-        #if self.config.dataType == 0:
-        self.jsonData = jsonData
-        #else:
-        #self.jsonData = json.loads(jsonData)
+        self.jsonData = json.loads(jsonData)
 
     def connectDB(self):
         client = MongoClient(self.config.DbHostname, int(self.config.DbPortNumber))
@@ -145,7 +139,7 @@ class SubMongoDB:
         client = self.connectDB()
         db = client[self.config.DbName]
         try:
-            db_entry = db.Measurement.insert_one(self.jsonData)
+            db_entry = db.EnvMon.insert_one(self.jsonData)
             print(" Data entry successful (id:",db_entry.inserted_id,")\n")
         except:
             print(" Data entry failed.\n")
