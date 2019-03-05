@@ -4,7 +4,7 @@
 **********************************************************
 *
 * GetEnvData
-* version: 20190304a
+* version: 20190304b
 *
 * By: Nicola Ferralis <feranick@hotmail.com>
 *
@@ -25,7 +25,7 @@ import pandas as pd
 import numpy as np
 from pathlib import Path
 from datetime import datetime
-from EnvMonitor import *
+from libEnvMonitor import *
 import matplotlib.pyplot as plt
 
 #************************************
