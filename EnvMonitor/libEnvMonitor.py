@@ -27,10 +27,14 @@ class SubMongoDB:
         self.jsonData = json.loads(jsonData)
 
     def connectDB(self):
-        client = MongoClient(self.config.DbHostname, int(self.config.DbPortNumber))
-        auth_status = client[self.config.DbName].authenticate(self.config.DbUsername,self.config.DbPassword)
-        print("\n Connecting to MongoDB: Authentication status = {0}\n".format(auth_status))
-        return client
+        try:
+            client = MongoClient(self.config.DbHostname, int(self.config.DbPortNumber))
+            auth_status = client[self.config.DbName].authenticate(self.config.DbUsername,self.config.DbPassword)
+            print("\n Connecting to MongoDB: Authentication status = {0}\n".format(auth_status))
+            return client
+        except:
+            print("\n Connecting to MongoDB: Unsuccessful\n")
+            return None
 
     def printAuthInfo(self):
         print(self.config.DbHostname)
