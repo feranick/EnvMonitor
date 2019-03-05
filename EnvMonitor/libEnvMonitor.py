@@ -102,6 +102,15 @@ class SubMongoDB:
             data = np.vstack((data, [entry['date'], entry['time'], entry[type]]))
         return data
 
+    def deleteDB(self):
+        client = self.connectDB()
+        db = client[self.config.DbName]
+        i = 0
+        for entry in db[self.config.DbName].find():
+            db[self.config.DbName].delete_one({'_id': entry['_id']})
+            i+=1
+        print(" All",i,"entries for:",self.config.DbName, "deleted\n")
+
 ####################################################################
 # Configuration
 ####################################################################

@@ -39,12 +39,12 @@ def main():
     conf.readConfig(conf.configFile)
     path = conf.dataFolder
     
-    try:
-        opts, args = getopt.getopt(sys.argv[1:],
-                                   "tphif:", ["temperature", "pressure", "humidity", "id", "file"])
-    except:
-        usage()
-        sys.exit(2)
+    #try:
+    opts, args = getopt.getopt(sys.argv[1:],
+                                   "tphdif:", ["temperature", "pressure", "humidity", "delete", "id", "file"])
+    #except:
+    #    usage()
+    #    sys.exit(2)
 
     if opts == []:
         usage()
@@ -66,6 +66,8 @@ def main():
         if o in ("-h" , "--humidity"):
             data = conn.getByType("humidity")
             plotData(data, "temperature")
+        if o in ("-d" , "--delete"):
+            conn.deleteDB()
         '''
         if o in ("-i" , "--id"):
             data = conn.getById(sys.argv[2])
