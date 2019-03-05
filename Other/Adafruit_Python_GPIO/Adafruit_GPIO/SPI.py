@@ -41,8 +41,9 @@ class SpiDev(object):
         self._device = spidev.SpiDev()
         self._device.open(port, device)
         self._device.max_speed_hz=max_speed_hz
-        # Default to mode 0.
+        # Default to mode 0, and make sure CS is active low.
         self._device.mode = 0
+        self._device.cshigh = False
 
     def set_clock_hz(self, hz):
         """Set the speed of the SPI clock in hertz.  Note that not all speeds
@@ -107,15 +108,6 @@ class SpiDevMraa(object):
         """
         self._device.frequency(hz)
 
-    def set_mode(self,mode):
-        """Set SPI mode which controls clock polarity and phase.  Should be a
-        numeric value 0, 1, 2, or 3.  See wikipedia page for details on meaning:
-        http://en.wikipedia.org/wiki/Serial_Peripheral_Interface_Bus
-        """
-        if mode < 0 or mode > 3:
-            raise ValueError('Mode must be a value 0, 1, 2, or 3.')
-        self._device.mode(mode)
-     
     def set_mode(self,mode):
         """Set SPI mode which controls clock polarity and phase.  Should be a
         numeric value 0, 1, 2, or 3.  See wikipedia page for details on meaning:
@@ -299,7 +291,7 @@ class BitBang(object):
         """
         if self._mosi is None:
             raise RuntimeError('Write attempted with no MOSI pin specified.')
-        if self._mosi is None:
+        if self._miso is None:
             raise RuntimeError('Read attempted with no MISO pin specified.')
         if assert_ss and self._ss is not None:
             self._gpio.set_low(self._ss)
