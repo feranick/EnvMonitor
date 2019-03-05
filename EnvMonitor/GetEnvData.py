@@ -57,7 +57,6 @@ def main():
     for o, a in opts:
         jsonData={}
         conn = SubMongoDB(json.dumps(jsonData), conf)
-        print(o)
         if o in ("-t" , "--temperature"):
             data = conn.getByType("temperature")
             plotData(data, "temperature")
@@ -67,12 +66,12 @@ def main():
         if o in ("-h" , "--humidity"):
             data = conn.getByType("humidity")
             plotData(data, "temperature")
+        '''
         if o in ("-i" , "--id"):
             data = conn.getById(sys.argv[2])
         if o in ("-f" , "--file"):
             data = conn.getByFile(sys.argv[2])
-    print(data)
-    plotData(data, "temperature")
+        '''
     #except:
     #    print("\n Getting entry from database failed!\n")
 
