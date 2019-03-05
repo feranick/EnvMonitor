@@ -31,12 +31,13 @@ from pymongo import MongoClient
 #************************************
 def main():
     s = sched.scheduler(time.time, time.sleep)
+    conf = Configuration()
+    if os.path.isfile(conf.configFile) is False:
+        print("Configuration file does not exist: Creating one.")
+        conf.createConfig()
+    conf.readConfig(conf.configFile)
+    print(conf.DbHostname)
     while True:
-        conf = Configuration()
-        if os.path.isfile(conf.configFile) is False:
-            print("Configuration file does not exist: Creating one.")
-            conf.createConfig()
-        conf.readConfig(conf.configFile)
         s.enter(conf.runSeconds, conf.sleepSeconds, runAcq)
         s.run()
 
@@ -271,7 +272,6 @@ class Configuration():
 
     # Read configuration file into usable variables
     def readConfig(self, configFile):
-        self.createConfig()
         self.conf.read(configFile)
         self.sysConfig = self.conf['System']
         self.appVersion = self.sysConfig['appVersion']
