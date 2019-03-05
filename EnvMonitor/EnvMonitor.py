@@ -25,8 +25,8 @@ from datetime import datetime
 from pymongo import MongoClient
 import numpy as np
 from libEnvMonitor import *
-from Adafruit_BME280 import *
-import RPi.GPIO as GPIO
+#from Adafruit_BME280 import *
+#import RPi.GPIO as GPIO
 
 #************************************
 ''' Main - Scheduler '''

@@ -43,7 +43,7 @@ class SubMongoDB:
         client = self.connectDB()
         db = client[self.config.DbName]
         try:
-            db_entry = db.EnvMon.insert_one(self.jsonData)
+            db_entry = db[self.config.DbName].insert_one(self.jsonData)
             print(" Data entry successful (id:",db_entry.inserted_id,")\n")
         except:
             print(" Data entry failed.\n")
@@ -74,7 +74,7 @@ class SubMongoDB:
         from bson.objectid import ObjectId
         client = self.connectDB()
         db = client[self.config.DbName]
-        db_entry = db.EnvMon.find_one({"_id": ObjectId(id)})
+        db_entry = db[self.config.DbName].find_one({"_id": ObjectId(id)})
         print("\n Restoring file: :",db_entry['file'][2:])
         with open(db_entry['file'][2:], "wb") as fh:
             fh.write(base64.b64decode(db_entry[self.config.headers[0]]))
@@ -83,7 +83,7 @@ class SubMongoDB:
     def getByFile(self, file):
         client = self.connectDB()
         db = client[self.config.DbName]
-        db_entry = db.EnvMon.find_one({"file": "./"+file})
+        db_entry = db[self.config.DbName].find_one({"file": "./"+file})
         print("\n Restoring file: :",db_entry['file'][2:])
         with open(db_entry['file'][2:], "wb") as fh:
             fh.write(base64.b64decode(db_entry[self.config.headers[0]]))
@@ -93,7 +93,7 @@ class SubMongoDB:
         client = self.connectDB()
         db = client[self.config.DbName]
         data = np.empty((0,3))
-        for entry in db.EnvMon.find():
+        for entry in db[self.config.DbName].find():
             #print(entry['date'], entry['time'], entry[type])
             data = np.vstack((data, [entry['date'], entry['time'], entry[type]]))
         return data
