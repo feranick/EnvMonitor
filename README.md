@@ -40,6 +40,10 @@ This sensors require high frequency edge detection that is not supported by the 
     cd Adafruit_Python_BME280
     sudo python3 setup.py install
     cd ..
+    git clone https://github.com/adafruit/Adafruit_Python_BMP.git
+    cd Adafruit_Python_BMP
+    sudo python3 setup.py install
+    cd ..
     wget abyz.co.uk/rpi/pigpio/pigpio.zip
     unzip pigpio.zip
     cd PIGPIO
