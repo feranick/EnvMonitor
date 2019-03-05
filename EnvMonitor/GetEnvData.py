@@ -26,6 +26,7 @@ import numpy as np
 from pathlib import Path
 from datetime import datetime
 from EnvMonitor import *
+import matplotlib.pyplot as plt
 
 #************************************
 ''' Main '''
@@ -56,18 +57,56 @@ def main():
     for o, a in opts:
         jsonData={}
         conn = SubMongoDB(json.dumps(jsonData), conf)
+        print(o)
         if o in ("-t" , "--temperature"):
-            conn.getByType("temperature")
+            data = conn.getByType("temperature")
+            plotData(data, "temperature")
         if o in ("-p" , "--pressure"):
-            conn.getByType("pressure")
+            data = conn.getByType("pressure")
+            plotData(data, "temperature")
         if o in ("-h" , "--humidity"):
-            conn.getByType("humidity")
+            data = conn.getByType("humidity")
+            plotData(data, "temperature")
         if o in ("-i" , "--id"):
-            conn.getById(sys.argv[2])
+            data = conn.getById(sys.argv[2])
         if o in ("-f" , "--file"):
-            conn.getByFile(sys.argv[2])
+            data = conn.getByFile(sys.argv[2])
+    print(data)
+    plotData(data, "temperature")
     #except:
     #    print("\n Getting entry from database failed!\n")
+
+#************************************
+''' Plot data '''
+#************************************
+def plotData(data, type):
+    '''
+    learnFileRootNew = learnFileRoot
+    if step == 1:
+        start = 0
+        learnFileRootNew = learnFileRoot + '_full-set'
+        plt.title(learnFileRoot+'\nFull set (#'+str(M.shape[0])+')')
+    else:
+        start = random.randint(0,10)
+        learnFileRootNew = learnFileRoot + '_partial-' + str(step) + '_start-' + str(start)
+        plt.title(learnFileRootNew+'\nPartial Set (#'+str(M.shape[0])+'): every '+str(step)+' spectrum, start at: '+ str(start))
+
+    print(' Plotting Training dataset in: ' + learnFileRootNew + '.png\n')
+    
+    for i in range(start,M.shape[0], step):
+        plt.plot(En, M[i,:], label='Training data')
+    '''
+    plt.plot(data[:,1], data[:,2], label='EnvMon')
+
+    plt.xlabel('time')
+    plt.ylabel(type)
+
+    #plt.savefig(learnFileRootNew + '.png', dpi = 160, format = 'png')  # Save plot
+    
+    plt.show()
+    plt.close()
+
+
 
 #************************************
 ''' Lists the program usage '''

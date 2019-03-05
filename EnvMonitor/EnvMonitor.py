@@ -23,6 +23,7 @@ import sys, math, json, os.path, time, configparser, logging, sched
 from pathlib import Path
 from datetime import datetime
 from pymongo import MongoClient
+import numpy as np
 #from Adafruit_BME280 import *
 #import RPi.GPIO as GPIO
 
@@ -125,7 +126,7 @@ class SubMongoDB:
     def connectDB(self):
         client = MongoClient(self.config.DbHostname, int(self.config.DbPortNumber))
         auth_status = client[self.config.DbName].authenticate(self.config.DbUsername,self.config.DbPassword)
-        print("\n Connecting to MongoDB: Authentication status = {0}".format(auth_status))
+        print("\n Connecting to MongoDB: Authentication status = {0}\n".format(auth_status))
         return client
 
     def printAuthInfo(self):
@@ -174,6 +175,7 @@ class SubMongoDB:
         print("\n Restoring file: :",db_entry['file'][2:])
         with open(db_entry['file'][2:], "wb") as fh:
             fh.write(base64.b64decode(db_entry[self.config.headers[0]]))
+        return db_entry['file'][2:]
 
     def getByFile(self, file):
         client = self.connectDB()
@@ -182,12 +184,18 @@ class SubMongoDB:
         print("\n Restoring file: :",db_entry['file'][2:])
         with open(db_entry['file'][2:], "wb") as fh:
             fh.write(base64.b64decode(db_entry[self.config.headers[0]]))
+        return db_entry['file'][2:]
 
     def getByType(self, type):
         client = self.connectDB()
         db = client[self.config.DbName]
+        data = np.empty((0,3))
         for entry in db.EnvMon.find():
-            print(entry['date'], entry['time'], entry[type])
+            #print(entry['date'], entry['time'], entry[type])
+            data = np.vstack((data, [entry['date'], entry['time'], entry[type]]))
+        return data
+
+
 
 ####################################################################
 # Configuration
