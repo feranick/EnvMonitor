@@ -12,13 +12,6 @@
 '''
 #print(__doc__)
 
-#***************************************************
-''' This is needed for installation through pip '''
-#***************************************************
-def EnvMonitor():
-    main()
-#***************************************************
-
 import sys, math, json, os.path, time, configparser, logging, sched
 from pathlib import Path
 from datetime import datetime
