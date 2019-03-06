@@ -4,7 +4,7 @@
 **********************************************************
 *
 * GetEnvData
-* version: 20190305b
+* version: 20190305c
 *
 * By: Nicola Ferralis <feranick@hotmail.com>
 *
@@ -39,12 +39,12 @@ def main():
     conf.readConfig(conf.configFile)
     path = conf.dataFolder
     
-    #try:
-    opts, args = getopt.getopt(sys.argv[1:],
-                                   "tphdif:", ["temperature", "pressure", "humidity", "delete", "id", "file"])
-    #except:
-    #    usage()
-    #    sys.exit(2)
+    try:
+        opts, args = getopt.getopt(sys.argv[1:],
+                                   "tphpdif:", ["temperature", "pressure", "humidity", "dewpoint", "delete", "id", "file"])
+    except:
+        usage()
+        sys.exit(2)
 
     if opts == []:
         usage()
@@ -66,6 +66,9 @@ def main():
         if o in ("-h" , "--humidity"):
             dataH = conn.getByType("humidity")
             plotData(dataH, "humidity")
+        if o in ("-p" , "--dewpoint"):
+            dataH = conn.getByType("dewpoint")
+            plotData(dataH, "dewpoint")
             
         if o in ("-d" , "--delete"):
             conn.deleteDB()

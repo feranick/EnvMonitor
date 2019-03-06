@@ -4,7 +4,7 @@
 **********************************************************
 *
 * EnvMonitor - Environmental Tracking - BMsensors
-* version: 20190305b
+* version: 20190305c
 *
 * By: Nicola Ferralis <feranick@hotmail.com>
 *
@@ -57,11 +57,16 @@ class TRHSensor:
             'IP' : self.sensData[3],
             'date' : self.sensData[4],
             'time' : self.sensData[5],
-            'temperature' : '{0:0.1f}'.format(self.sensData[6]),
-            'pressure' : '{0:0.1f}'.format(self.sensData[7]),
-            'humidity' : '{0:0.1f}'.format(self.sensData[8]),
-            'dewpoint' : '{0:0.1f}'.format(self.sensData[9])
+            'temperature' : self.sensData[6],
+            'pressure' : self.sensData[7],
+            'humidity' : self.sensData[8],
+            'dewpoint' : self.sensData[9],
+            #'temperature' : '{0:0.1f}.format(self.sensData[6]),
+            #'pressure' : '{0:0.1f}'.format(self.sensData[7]),
+            #'humidity' : '{0:0.1f}'.format(self.sensData[8]),
+            #'dewpoint' : '{0:0.1f}'.format(self.sensData[9])
             }
+        print (dataj)
         #return json.dumps(dataj)
 
         #************************************
@@ -101,10 +106,14 @@ class TRHSensor:
             'IP' : self.sensData[3],
             'date' : self.sensData[4],
             'time' : self.sensData[5],
-            'temperature' : '{0:0.1f}'.format(self.sensData[6]),
-            'pressure' : '{0:0.1f}'.format(self.sensData[7]),
-            'altitude' : '{0:0.1f}'.format(self.sensData[8]),
-            'sealevel_pressure' : '{0:0.1f}'.format(self.sensData[9])
+            'temperature' : self.sensData[6],
+            'pressure' : self.sensData[7],
+            'altitude' : self.sensData[8],
+            'sealevel_pressure' : self.sensData[9],
+            #'temperature' : '{0:0.1f}'.format(self.sensData[6]),
+            #'pressure' : '{0:0.1f}'.format(self.sensData[7]),
+            #'altitude' : '{0:0.1f}'.format(self.sensData[8]),
+            #'sealevel_pressure' : '{0:0.1f}'.format(self.sensData[9])
             }
         #return json.dumps(dataj)
 
