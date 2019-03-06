@@ -41,7 +41,7 @@ def main():
     
     try:
         opts, args = getopt.getopt(sys.argv[1:],
-                                   "tphpdif:", ["temperature", "pressure", "humidity", "dewpoint", "delete", "id", "file"])
+                                   "tphwdif:", ["temperature", "pressure", "humidity", "dewpoint", "delete", "id", "file"])
     except:
         usage()
         sys.exit(2)
@@ -66,7 +66,7 @@ def main():
         if o in ("-h" , "--humidity"):
             dataH = conn.getByType("humidity")
             plotData(dataH, "humidity")
-        if o in ("-p" , "--dewpoint"):
+        if o in ("-w" , "--dewpoint"):
             dataH = conn.getByType("dewpoint")
             plotData(dataH, "dewpoint")
             
