@@ -4,7 +4,7 @@
 **********************************************************
 *
 * libEnvMonitor - Environmental Tracking
-* version: 20190305c
+* version: 20190306a
 *
 * By: Nicola Ferralis <feranick@hotmail.com>
 *
@@ -30,7 +30,8 @@ class SubMongoDB:
         try:
             client = MongoClient(self.config.DbHostname, int(self.config.DbPortNumber))
             auth_status = client[self.config.DbName].authenticate(self.config.DbUsername,self.config.DbPassword)
-            print("\n Connecting to MongoDB: Authentication status = {0}\n".format(auth_status))
+            if self.config.verbose:
+                print("\n Connecting to MongoDB: Authentication status = {0}\n".format(auth_status))
             return client
         except:
             print("\n Connecting to MongoDB: Unsuccessful\n")
@@ -48,31 +49,9 @@ class SubMongoDB:
         db = client[self.config.DbName]
         try:
             db_entry = db[self.config.DbName].insert_one(self.jsonData)
-            print(" Data entry successful (id:",db_entry.inserted_id,")\n")
+            print(" Data entry successful (id:",db_entry.inserted_id,")")
         except:
-            print(" Data entry failed.\n")
-    '''
-    # View entry in DM page for substrate/device
-    def checkCreateLotDM(self, deviceID):
-        client = self.connectDB()
-        db = client[self.config.DbName]
-        #try:
-        entry = db.Lot.find_one({'label':deviceID[:8]})
-        if entry:
-            #db.Lot.update_one({ '_id': entry['_id'] },{"$push": self.getArchConfig(deviceID, row, col)}, upsert=False)
-            msg = " Data entry for this batch found in DM. Created substrate: "+deviceID
-        else:
-            print(" No data entry for this substrate found in DM. Creating new one...")
-            jsonData = {'label' : deviceID[:8], 'date' : deviceID[2:8], 'description': '', 'notes': '', 'tags': [], 'substrates': [{'isCollapsed': False, 'label': deviceID, 'material': '', 'flex': False, 'area': '', 'layers': [], 'attachments': [], 'devices': [{'size': '', 'measurements': []}, {'size': '', 'measurements': []}, {'size': '', 'measurements': []}, {'size': '', 'measurements': []}, {'size': '', 'measurements': []}, {'size': '', 'measurements': []}]}]}
-            db_entry = db.Lot.insert_one(json.loads(json.dumps(jsonData)))
-                #db.Lot.update_one({ '_id': db_entry.inserted_id },{"$push": self.getArchConfig(deviceID,row,col)}, upsert=False)
-            msg = " Created batch: " + deviceID[:8] + " and device: "+deviceID
-        print(msg)
-    
-        
-        #except:
-        #    print(" Connection with DM via Mongo cannot be established.")
-    '''
+            print(" Data entry failed.")
 
     def getById(self, id):
         from bson.objectid import ObjectId
@@ -143,7 +122,8 @@ class Configuration():
             'appVersion' : 0,
             'loggingLevel' : logging.INFO,
             'loggingFilename' : self.logFile,
-            'dataFolder' : ".",
+            'dataFolder' : '.',
+            'verbose' : True,
             'runSeconds' : 5,
             'sleepSeconds' : 1,
             }
@@ -206,6 +186,7 @@ class Configuration():
             self.loggingLevel = self.sysConfig['loggingLevel']
             self.loggingFilename = self.sysConfig['loggingFilename']
             self.dataFolder = self.sysConfig['dataFolder']
+            self.verbose = self.conf.getboolean('System','verbose')
             self.runSeconds = self.conf.getint('System','runSeconds')
             self.sleepSeconds = self.conf.getint('System','sleepSeconds')
 
