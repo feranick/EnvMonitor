@@ -4,7 +4,7 @@
 **********************************************************
 *
 * GetEnvData
-* version: 20190305c
+* version: 20190306a
 *
 * By: Nicola Ferralis <feranick@hotmail.com>
 *
@@ -41,7 +41,7 @@ def main():
     
     try:
         opts, args = getopt.getopt(sys.argv[1:],
-                                   "tphwdif:", ["temperature", "pressure", "humidity", "dewpoint", "delete", "id", "file"])
+                                   "tphwadif:", ["temperature", "pressure", "humidity", "dewpoint", "all","delete", "id", "file"])
     except:
         usage()
         sys.exit(2)
@@ -58,18 +58,22 @@ def main():
         jsonData={}
         conn = SubMongoDB(json.dumps(jsonData), conf)
         if o in ("-t" , "--temperature"):
-            dataT = conn.getByType("temperature")
-            plotData(dataT, "temperature")
+            data = conn.getByType("temperature")
+            print(data)
+            plotSingleData(data[:,1], data[:,2], "temperature")
         if o in ("-p" , "--pressure"):
-            dataP = conn.getByType("pressure")
-            plotData(dataP, "pressure")
+            data = conn.getByType("pressure")
+            plotData(data[:,1], np.around(data[:,2], decimals=1), "pressure")
         if o in ("-h" , "--humidity"):
-            dataH = conn.getByType("humidity")
-            plotData(dataH, "humidity")
+            data = conn.getByType("humidity")
+            plotData(data[:,1], np.around(data[:,2], decimals=1), "humidity")
         if o in ("-w" , "--dewpoint"):
-            dataH = conn.getByType("dewpoint")
-            plotData(dataH, "dewpoint")
-            
+            data = conn.getByType("dewpoint")
+            plotData(data[:,1], np.around(data[:,2], decimals=1), "dewpoint")
+        if o in ("-a" , "--all"):
+            data = conn.getData()
+            for entry in data:
+                print(entry)
         if o in ("-d" , "--delete"):
             conn.deleteDB()
         '''
@@ -84,31 +88,15 @@ def main():
 #************************************
 ''' Plot data '''
 #************************************
-def plotData(data, type):
-    '''
-    learnFileRootNew = learnFileRoot
-    if step == 1:
-        start = 0
-        learnFileRootNew = learnFileRoot + '_full-set'
-        plt.title(learnFileRoot+'\nFull set (#'+str(M.shape[0])+')')
-    else:
-        start = random.randint(0,10)
-        learnFileRootNew = learnFileRoot + '_partial-' + str(step) + '_start-' + str(start)
-        plt.title(learnFileRootNew+'\nPartial Set (#'+str(M.shape[0])+'): every '+str(step)+' spectrum, start at: '+ str(start))
-
-    print(' Plotting Training dataset in: ' + learnFileRootNew + '.png\n')
-    
-    for i in range(start,M.shape[0], step):
-        plt.plot(En, M[i,:], label='Training data')
-    '''
-    numTicks = int(len(data[:,2])/10)
+def plotSingleData(x, y, type):
+    numTicks = int(len(y)/10)
     fig, ax1 = plt.subplots(1,1, figsize=(9,8))
-    ax1.plot(data[:,1], data[:,2], label='EnvMon')
+    ax1.plot(x,y, label='EnvMon')
     ax1.set_title(type)
     ax1.set_xlabel('time')
     ax1.set_ylabel(type)
-    ax1.set_xticks(data[:,1][::numTicks])
-    ax1.set_xticklabels(data[:,1][::numTicks], rotation=45)
+    ax1.set_xticks(x[::numTicks])
+    ax1.set_xticklabels(x[::numTicks], rotation=45)
 
     plt.show()
     plt.close()

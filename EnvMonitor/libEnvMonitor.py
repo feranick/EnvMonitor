@@ -80,6 +80,19 @@ class SubMongoDB:
             #print(entry['date'], entry['time'], entry[type])
             data = np.vstack((data, [entry['date'], entry['time'], entry[type]]))
         return data
+    
+    def getData(self):
+        client = self.connectDB()
+        db = client[self.config.DbName]
+        data = np.empty((0,1))
+        for entry in db[self.config.DbName].find():
+            '''data1 = np.empty((0,11))
+            for key in entry:
+                data1 = np.append(data1,entry[key])
+            data = np.vstack((data, data1))
+            '''
+            data = np.vstack((data, entry))
+        return data
 
     def deleteDB(self):
         client = self.connectDB()
