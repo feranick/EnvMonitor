@@ -103,7 +103,7 @@ def plotData(data, type):
     '''
     numTicks = int(len(data[:,2])/10)
     fig, ax1 = plt.subplots(1,1, figsize=(9,8))
-    ax1.plot(data[:,1], data[:,2].astype(float), label='EnvMon')
+    ax1.plot(data[:,1], data[:,2], label='EnvMon')
     ax1.set_title(type)
     ax1.set_xlabel('time')
     ax1.set_ylabel(type)
