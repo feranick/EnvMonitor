@@ -62,10 +62,10 @@ def main():
             plotData(data, "temperature")
         if o in ("-p" , "--pressure"):
             data = conn.getByType("pressure")
-            plotData(data, "temperature")
+            plotData(data, "pressure")
         if o in ("-h" , "--humidity"):
             data = conn.getByType("humidity")
-            plotData(data, "temperature")
+            plotData(data, "humidity")
         if o in ("-d" , "--delete"):
             conn.deleteDB()
         '''
@@ -97,17 +97,16 @@ def plotData(data, type):
     for i in range(start,M.shape[0], step):
         plt.plot(En, M[i,:], label='Training data')
     '''
-    plt.plot(data[:,1], data[:,2], label='EnvMon')
+    
+    plt.plot(data[:,1], data[:,2].astype(float), label='EnvMon')
 
     plt.xlabel('time')
     plt.ylabel(type)
-
-    #plt.savefig(learnFileRootNew + '.png', dpi = 160, format = 'png')  # Save plot
     
+    #plt.savefig(learnFileRootNew + '.png', dpi = 160, format = 'png')  # Save plot
+    plt.gcf().autofmt_xdate()
     plt.show()
     plt.close()
-
-
 
 #************************************
 ''' Lists the program usage '''
