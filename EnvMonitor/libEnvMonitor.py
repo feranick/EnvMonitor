@@ -86,12 +86,13 @@ class SubMongoDB:
         db = client[self.config.DbName]
         data = np.empty((0,1))
         for entry in db[self.config.DbName].find():
+            print(entry)
             '''data1 = np.empty((0,11))
             for key in entry:
                 data1 = np.append(data1,entry[key])
             data = np.vstack((data, data1))
             '''
-            data = np.vstack((data, entry))
+            data = np.append(data, entry)
         return data
 
     def deleteDB(self):
