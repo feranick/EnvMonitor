@@ -58,14 +58,15 @@ def main():
         jsonData={}
         conn = SubMongoDB(json.dumps(jsonData), conf)
         if o in ("-t" , "--temperature"):
-            data = conn.getByType("temperature")
-            plotData(data, "temperature")
+            dataT = conn.getByType("temperature")
+            plotData(dataT, "temperature")
         if o in ("-p" , "--pressure"):
-            data = conn.getByType("pressure")
-            plotData(data, "pressure")
+            dataP = conn.getByType("pressure")
+            plotData(dataP, "pressure")
         if o in ("-h" , "--humidity"):
-            data = conn.getByType("humidity")
-            plotData(data, "humidity")
+            dataH = conn.getByType("humidity")
+            plotData(dataH, "humidity")
+            
         if o in ("-d" , "--delete"):
             conn.deleteDB()
         '''
@@ -97,14 +98,15 @@ def plotData(data, type):
     for i in range(start,M.shape[0], step):
         plt.plot(En, M[i,:], label='Training data')
     '''
-    
-    plt.plot(data[:,1], data[:,2].astype(float), label='EnvMon')
+    numTicks = int(len(data[:,2])/10)
+    fig, ax1 = plt.subplots(1,1, figsize=(9,8))
+    ax1.plot(data[:,1], data[:,2].astype(float), label='EnvMon')
+    ax1.set_title(type)
+    ax1.set_xlabel('time')
+    ax1.set_ylabel(type)
+    ax1.set_xticks(data[:,1][::numTicks])
+    ax1.set_xticklabels(data[:,1][::numTicks], rotation=45)
 
-    plt.xlabel('time')
-    plt.ylabel(type)
-    
-    #plt.savefig(learnFileRootNew + '.png', dpi = 160, format = 'png')  # Save plot
-    plt.gcf().autofmt_xdate()
     plt.show()
     plt.close()
 
