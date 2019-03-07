@@ -4,7 +4,7 @@
 **********************************************************
 *
 * EnvMonitor - Environmental Tracking with PM
-* version: 20190306b
+* version: 20190307a
 *
 * By: Nicola Ferralis <feranick@hotmail.com>
 *
