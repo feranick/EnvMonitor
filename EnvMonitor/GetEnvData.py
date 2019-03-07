@@ -80,8 +80,8 @@ def main():
                 labels =['time','temperature','pressure','humidity']
                 plotMultiData(data, labels)
 
-        if o in ("-d" , "--delete"):
-            conn.deleteDB()
+            if o in ("-d" , "--delete"):
+                conn.deleteDB()
         '''
         if o in ("-i" , "--id"):
             data = conn.getById(sys.argv[2])
@@ -98,7 +98,10 @@ def main():
 def plotSingleData(data, type):
     x = data[:,1]
     y = np.around(data[:,2].astype(float), decimals=1)
-    numTicks = int(len(y)/10)
+    if int(len(x)) <10:
+        numTicks = int(len(x))
+    else:
+        numTicks = int(len(x)/10)
     fig, ax1 = plt.subplots(1,1, figsize=(9,8))
     ax1.plot(x,y, label='EnvMon')
     ax1.set_title('EnvMonitor')
@@ -114,16 +117,22 @@ def plotMultiData(data, labels):
     y1 = data[:,1].astype(float)
     y2 = data[:,2].astype(float)
     y3 = data[:,3].astype(float)
-    numTicks = int(len(x)/10)
+    if int(len(x)) <10:
+        numTicks = int(len(x))
+    else:
+        numTicks = int(len(x)/10)
     fig, (ax1, ax2, ax3) = plt.subplots(3,1, figsize=(9,8))
     ax1.plot(x,y1, label='EnvMon')
     ax1.set_title('EnvMonitor')
     ax1.set_ylabel(labels[1])
     ax1.set_xticks(x[::numTicks])
     ax1.set_xticklabels([])
+    
     ax2.plot(x,y2, label='EnvMon')
     ax2.set_ylabel(labels[2])
+    ax2.set_xticks(x[::numTicks])
     ax2.set_xticklabels([])
+    
     ax3.set_xticklabels([])
     ax3.plot(x,y3, label='EnvMon')
     ax3.set_xlabel(labels[0])
