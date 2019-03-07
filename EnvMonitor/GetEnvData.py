@@ -53,43 +53,43 @@ def main():
     #************************************
     ''' Push to MongoDB '''
     #************************************
-    try:
-        for o, a in opts:
-            jsonData={}
-            conn = SubMongoDB(json.dumps(jsonData), conf)
-            if o in ("-t" , "--temperature"):
-                plotSingleData(conn.getByType("temperature"), "temperature")
-            if o in ("-p" , "--pressure"):
-                plotSingleData(conn.getByType("pressure"), "pressure")
-        
-            if o in ("-h" , "--humidity"):
-                plotSingleData(conn.getByType("humidity"), "humidity")
-            if o in ("-w" , "--dewpoint"):
-                plotSingleData(conn.getByType("dewpoint"), "dewpoint")
+    #try:
+    for o, a in opts:
+        jsonData={}
+        conn = SubMongoDB(json.dumps(jsonData), conf)
+        if o in ("-t" , "--temperature"):
+            plotSingleData(conn.getByType("temperature"), "temperature")
+        if o in ("-p" , "--pressure"):
+            plotSingleData(conn.getByType("pressure"), "pressure")
+    
+        if o in ("-h" , "--humidity"):
+            plotSingleData(conn.getByType("humidity"), "humidity")
+        if o in ("-w" , "--dewpoint"):
+            plotSingleData(conn.getByType("dewpoint"), "dewpoint")
 
-            if o in ("-l" , "--altitude"):
-                plotSingleData(conn.getByType("altitude"), "altitude")
-            if o in ("-s" , "--sealevel"):
-                plotSingleData(conn.getByType("sealevel"), "sealevel pressure")
+        if o in ("-l" , "--altitude"):
+            plotSingleData(conn.getByType("altitude"), "altitude")
+        if o in ("-s" , "--sealevel"):
+            plotSingleData(conn.getByType("sealevel"), "sealevel pressure")
+            
+        if o in ("-a" , "--all"):
+            entries = conn.getData()
+            data = np.empty((0,4))
+            for entry in entries:
+                data = np.vstack([data, [entry['time'],entry['temperature'], entry['pressure'], entry['humidity']]])
+            labels =['time','temperature','pressure','humidity']
+            plotMultiData(data, labels)
 
-            if o in ("-a" , "--all"):
-                entries = conn.getData()
-                data = np.empty((0,4))
-                for entry in entries:
-                    data = np.vstack([data, [entry['time'],entry['temperature'], entry['pressure'], entry['humidity']]])
-                labels =['time','temperature','pressure','humidity']
-                plotMultiData(data, labels)
-
-            if o in ("-d" , "--delete"):
-                conn.deleteDB()
+        if o in ("-d" , "--delete"):
+            conn.deleteDB()
         '''
         if o in ("-i" , "--id"):
             data = conn.getById(sys.argv[2])
         if o in ("-f" , "--file"):
             data = conn.getByFile(sys.argv[2])
         '''
-    except:
-        print("\n Getting entry from database failed! Are you using the correct sensor?\n")
+    #except:
+    #    print("\n Getting entry from database failed! Are you using the correct sensor?\n")
 
 
 #************************************
@@ -114,6 +114,8 @@ def plotSingleData(data, type):
 
 def plotMultiData(data, labels):
     x = data[:,0]
+    #x = np.vectorize(convertTime)(x)
+    
     y1 = data[:,1].astype(float)
     y2 = data[:,2].astype(float)
     y3 = data[:,3].astype(float)
@@ -142,6 +144,11 @@ def plotMultiData(data, labels):
 
     plt.show()
     plt.close()
+
+def convertTime(time):
+    (h, m, s) = time.split(':')
+    #return int(h) * 3600 + int(m) * 60 + int(s)
+    return int(h+m+s)
 
 #************************************
 ''' Lists the program usage '''

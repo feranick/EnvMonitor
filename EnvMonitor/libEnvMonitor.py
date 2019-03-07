@@ -85,7 +85,7 @@ class SubMongoDB:
         client = self.connectDB()
         db = client[self.config.DbName]
         data = np.empty((0,1))
-        for entry in db[self.config.DbName].find():
+        for entry in db[self.config.DbName].find().sort([("time",1)]):
             data = np.append(data, entry)
         return data
 
