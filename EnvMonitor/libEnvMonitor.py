@@ -72,20 +72,20 @@ class SubMongoDB:
             fh.write(base64.b64decode(db_entry[self.config.headers[0]]))
         return db_entry['file'][2:]
 
-    def getByType(self, type):
+    def getByType(self, type, date):
         client = self.connectDB()
         db = client[self.config.DbName]
         data = np.empty((0,3))
-        for entry in db[self.config.DbName].find():
+        for entry in db[self.config.DbName].find(date).sort([("time",1)]):
             #print(entry['date'], entry['time'], entry[type])
             data = np.vstack((data, [entry['date'], entry['time'], entry[type]]))
         return data
     
-    def getData(self):
+    def getData(self, date):
         client = self.connectDB()
         db = client[self.config.DbName]
         data = np.empty((0,1))
-        for entry in db[self.config.DbName].find().sort([("time",1)]):
+        for entry in db[self.config.DbName].find(date).sort([("time",1)]):
             data = np.append(data, entry)
         return data
 
@@ -93,7 +93,7 @@ class SubMongoDB:
         client = self.connectDB()
         db = client[self.config.DbName]
         i = 0
-        for entry in db[self.config.DbName].find():
+        for entry in db[self.config.DbName].find(date):
             db[self.config.DbName].delete_one({'_id': entry['_id']})
             i+=1
         print(" All",i,"entries for:",self.config.DbName, "deleted\n")
