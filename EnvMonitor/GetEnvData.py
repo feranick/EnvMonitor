@@ -33,10 +33,6 @@ import matplotlib.pyplot as plt
 #************************************
 def main():
     conf = Configuration()
-    if os.path.isfile(conf.configFile) is False:
-        print("Configuration file does not exist: Creating one.")
-        conf.createConfig()
-    conf.readConfig(conf.configFile)
     path = conf.dataFolder
     
     try:

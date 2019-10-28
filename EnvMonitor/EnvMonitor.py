@@ -33,10 +33,6 @@ from BMsensors import *
 def main():
     s = sched.scheduler(time.time, time.sleep)
     conf = Configuration()
-    if os.path.isfile(conf.configFile) is False:
-        print("Configuration file does not exist: Creating one.")
-        conf.createConfig()
-    conf.readConfig(conf.configFile)
     while True:
         s.enter(conf.runSeconds, conf.sleepSeconds, runAcq)
         s.run()
@@ -46,7 +42,6 @@ def main():
 #************************************
 def runAcq():
     conf = Configuration()
-    conf.readConfig(conf.configFile)
     
     #************************************
     ''' NEW: Read from T/RH sensor '''

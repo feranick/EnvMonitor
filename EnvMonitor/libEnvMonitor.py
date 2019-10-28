@@ -111,6 +111,10 @@ class Configuration():
         self.logFile = self.generalFolder+"EnvMonitor.log"
         self.conf = configparser.ConfigParser()
         self.conf.optionxform = str
+        if os.path.isfile(self.configFile) is False:
+            print("Configuration file does not exist: Creating one.")
+            self.createConfig()
+        self.readConfig(conf.configFile)
     
     # Create configuration file
     def createConfig(self):
