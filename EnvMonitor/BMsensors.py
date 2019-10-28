@@ -4,7 +4,7 @@
 **********************************************************
 *
 * EnvMonitor - Environmental Tracking - BMsensors
-* version: 20190307a
+* version: 20191027a
 *
 * By: Nicola Ferralis <feranick@hotmail.com>
 *
@@ -35,17 +35,18 @@ class TRHSensor:
     #************************************
     def readSensors280(self):
         try:
-             sensor = BME280(t_mode=BME280_OSAMPLE_8, p_mode=BME280_OSAMPLE_8, h_mode=BME280_OSAMPLE_8)
-             self.temperature = sensor.read_temperature()
-             self.pressure = sensor.read_pressure() / 100
-             self.humidity = sensor.read_humidity()
-             self.dewpoint = sensor.read_dewpoint()
+            BME280_OSAMPLE_8 = 4
+            sensor = BME280(t_mode=BME280_OSAMPLE_8, p_mode=BME280_OSAMPLE_8, h_mode=BME280_OSAMPLE_8)
+            self.temperature = sensor.read_temperature()
+            self.pressure = sensor.read_pressure() / 100
+            self.humidity = sensor.read_humidity()
+            self.dewpoint = sensor.read_dewpoint()
         except:
-             print("\n SENSOR NOT CONNECTED ")
-             self.temperature = 0
-             self.pressure = 0
-             self.humidity = 0
-             self.dewpoint = 0
+            print("\n SENSOR NOT CONNECTED ")
+            self.temperature = 0
+            self.pressure = 0
+            self.humidity = 0
+            self.dewpoint = 0
         
         jsonData = {
             'lab' : self.config.lab,
