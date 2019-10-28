@@ -114,7 +114,7 @@ class Configuration():
         if os.path.isfile(self.configFile) is False:
             print("Configuration file does not exist: Creating one.")
             self.createConfig()
-        self.readConfig(conf.configFile)
+        self.readConfig(self.configFile)
     
     # Create configuration file
     def createConfig(self):
