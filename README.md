@@ -70,7 +70,7 @@ Set administration rights and authentication:
 
     use admin
     db.createUser({user:'admin',pwd:'pwd',roles:[{role:"userAdminAnyDatabase", db:'admin'}]})
-    use DataSubmitter
+    use EnvMonitor
     db.createUser({user:'user1',pwd:'user1',roles:[{role:"readWrite", db:'EnvMon'}]})
     quit()
     
