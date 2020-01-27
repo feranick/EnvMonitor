@@ -71,7 +71,7 @@ Set administration rights and authentication:
     use admin
     db.createUser({user:'admin',pwd:'pwd',roles:[{role:"userAdminAnyDatabase", db:'admin'}]})
     use EnvMonitor
-    db.createUser({user:'user1',pwd:'user1',roles:[{role:"readWrite", db:'EnvMon'}]})
+    db.createUser({user:'user1',pwd:'pwd1',roles:[{role:"readWrite", db:'EnvMonitor'}]})
     quit()
     
 Make sure the authentication is enabled in the ```mongodb.conf```. Edit the config by uncommenting this line:
