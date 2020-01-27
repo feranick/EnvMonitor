@@ -62,7 +62,8 @@ While this is far from being a comprehensive guide, this will get you going. Ins
 
     sudo nano /etc/mongodb.conf
     
-to make sure the correct IP and port are selected. Restart the ```mongodb``` service. Then run:
+to make sure the correct IP and port are selected. Keep the authentication flag `auth = true` commented. 
+Restart the ```mongodb``` service. Then run:
 
     mongo
 
@@ -74,11 +75,15 @@ Set administration rights and authentication:
     db.createUser({user:'user1',pwd:'pwd1',roles:[{role:"readWrite", db:'EnvMon'}]})
     quit()
     
-Make sure the authentication is enabled in the ```mongodb.conf```. Edit the config by uncommenting this line:
+Enable authentication in  ```mongodb.conf```, by uncommenting:
 
     auth = true
     
-Restart ```mongodb``` service. Use EnvMonitor.
+Restart ```mongodb``` service. 
+
+    sudo systemctl restart mongodb.service
+
+Use EnvMonitor.
 
 ### Launcher    
 The software will be automated through a script (EnvMonitor_launcher.sh). Since the RPi is 
