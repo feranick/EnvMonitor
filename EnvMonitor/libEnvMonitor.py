@@ -4,7 +4,7 @@
 **********************************************************
 *
 * libEnvMonitor - Environmental Tracking
-* version: 20191027a
+* version: 20210401a
 *
 * By: Nicola Ferralis <feranick@hotmail.com>
 *
@@ -128,7 +128,7 @@ class Configuration():
         except:
             print("Error in creating configuration file")
 
-    # Hadrcoded default definitions for the confoguration file
+    # Hardcoded default definitions for the configuration file
     def defineSystem(self):
         self.conf['System'] = {
             'appVersion' : 0,
@@ -145,7 +145,7 @@ class Configuration():
             'lab' : 'test',
             'name' : 'test',
             'itemId' : '1',
-            'BMsensor' : 'BME280',
+            'BMsensor' : 'MCP9808',
             }
     '''
     # for images/binary

@@ -7,9 +7,18 @@ Connection between exp. and environmental tracking data is done through the data
 user intervention (as long as the user lists the right time/date/location).
 
 ## Requirements
+A choice of:
 - [Raspberry PI Zero W](https://www.raspberrypi.org/products/pi-zero-w/)
+- [Raspberry Pi 2, 3, 4](https://www.raspberrypi.org)
+
+A choice of temperature sensors:
 - [Adafruit BME280 T/P/RH sensor](https://learn.adafruit.com/adafruit-bme280-humidity-barometric-pressure-temperature-sensor-breakout)
-- [Shinyei PPD42NS particle sensor](https://www.seeedstudio.com/Grove-Dust-Sensor-p-1050.html) ([data sheet](http://www.mouser.com/ds/2/744/Seeed_101020012-838657.pdf))
+- [Adafruit MCP9808 T sensor](https://learn.adafruit.com/adafruit-mcp9808-precision-i2c-temperature-sensor-guide)
+
+Equivalent CO2, Total Volative Organic Content Sensor:
+-[Adafruit SGP30](https://learn.adafruit.com/adafruit-sgp30-gas-tvoc-eco2-mox-sensor)
+
+- [DISCONTINUED - Shinyei PPD42NS particle sensor](https://www.seeedstudio.com/Grove-Dust-Sensor-p-1050.html) ([data sheet](http://www.mouser.com/ds/2/744/Seeed_101020012-838657.pdf))
   
 ## Hardware Installation
 ### Adafruit BME280 T/P/RH sensor
@@ -17,10 +26,21 @@ user intervention (as long as the user lists the right time/date/location).
     GND -> pin6
     SCK -> pin5
     SD1 -> pin3
+    
+### Adafruit MCP9089 T sensor
+    Vin -> pin1
+    GND -> pin6
+    SCL -> pin5
+    SDA -> pin3
+    
+### Adafruit SGP30 Gas sensor
+    Vin -> pin1
+    GND -> pin6
+    SCL -> pin5
+    SDA -> pin3
 
 ### Shinyei PPD42NS particle sensor
 This sensor requires a voltage divider to reduce the output voltage from 5V to 3.3V
-    
     Red -> pin2
     Black -> pin9
     Yellow -> pin10    
@@ -32,6 +52,17 @@ This sensors require high frequency edge detection that is not supported by the 
 	sudo apt-get install build-essential python3-pip python3-dev python3-smbus git python3-rpi.gpio
     mkdir ~/software
     cd ~/software
+    
+    mkdir blinka
+    cd blinka
+    sudo pip3 install --upgrade adafruit-python-shell
+    wget https://raw.githubusercontent.com/adafruit/Raspberry-Pi-Installer-Scripts/master/raspi-blinka.py
+    sudo python3 raspi-blinka.py
+    
+    sudo pip3 install adafruit-circuitpython-mcp9808
+    sudo pip3 install adafruit-circuitpython-sgp30
+    
+    cd ..
 	git clone https://github.com/adafruit/Adafruit_Python_GPIO.git
 	cd Adafruit_Python_GPIO
 	sudo python3 setup.py install
@@ -53,7 +84,7 @@ This sensors require high frequency edge detection that is not supported by the 
 ## Usage
 ### T/P/RH sensor only:
     python3 EnvMonitor.py 
-### T/P/RH and particle sensor
+### T/P/RH and particle sensor (discontinued)
     sudo pigpiod
     python3 EnvMonitor_PM.py
     
