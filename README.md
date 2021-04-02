@@ -59,13 +59,9 @@ This sensors require high frequency edge detection that is not supported by the 
     wget https://raw.githubusercontent.com/adafruit/Raspberry-Pi-Installer-Scripts/master/raspi-blinka.py
     sudo python3 raspi-blinka.py
     
-    sudo pip3 install adafruit-circuitpython-bmp280
+    sudo pip3 install adafruit-circuitpython-bme280
     sudo pip3 install adafruit-circuitpython-mcp9808
     sudo pip3 install adafruit-circuitpython-sgp30
-    
-There seem to be an issue with the Adafruit circuitpython library for the bmp280, where the `_CPU_ID` is expected to be `0x58`, when in reality, it's `0x60`. You can fix it by changing the variable _CPU_ID to 0x60 in 
-
-`/usr/local/lib/python3.7/dist-packages/adafruit_bmp280.py`
     
 The following is deprecated.    
 

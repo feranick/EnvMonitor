@@ -42,7 +42,7 @@ class TRHSensor:
             self.dewpoint = 0
         
         ### Deprecated as BMP280 uses CircuitPython now.
-        elif config.TPsensor == 'BMP280':
+        elif config.TPsensor == 'BME280':
             try:
                 BME280_OSAMPLE_8 = 4
                 sensor = BME280(t_mode=BME280_OSAMPLE_8, p_mode=BME280_OSAMPLE_8, h_mode=BME280_OSAMPLE_8)
