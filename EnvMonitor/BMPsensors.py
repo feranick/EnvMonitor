@@ -25,7 +25,7 @@ import RPi.GPIO as GPIO
 #************************************
 class TRHSensor:
     def __init__(self, config):
-        if config == 'BME280':
+        if config == 'BMP280':
             try:
                 BME280_OSAMPLE_8 = 4
                 sensor = BME280(t_mode=BME280_OSAMPLE_8, p_mode=BME280_OSAMPLE_8, h_mode=BME280_OSAMPLE_8)
