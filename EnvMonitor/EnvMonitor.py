@@ -4,7 +4,7 @@
 **********************************************************
 *
 * EnvMonitor - Environmental Tracking
-* version: 20210401a
+* version: 20210401b
 *
 * By: Nicola Ferralis <feranick@hotmail.com>
 *
@@ -46,10 +46,10 @@ def runAcq():
     from Gassensors import GasSensor
     gasSensor = GasSensor()
     
-    if config.TPsensor == 'MCP9808':
-        from MCPsensors import TRHSensor
-    else:
+    if config.TPsensor == 'BMP180':
         from BMPsensors import TRHSensor
+    else:
+        from MCPsensors import TRHSensor
     
     #************************************
     ''' NEW: Read from sensors '''

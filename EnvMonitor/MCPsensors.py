@@ -4,7 +4,7 @@
 **********************************************************
 *
 * EnvMonitor - Environmental Tracking - MCP9808 Temperature
-* version: 20210401a
+* version: 20210401b
 *
 * By: Nicola Ferralis <feranick@hotmail.com>
 *
@@ -27,10 +27,13 @@ class TRHSensor:
         self.i2c = busio.I2C(board.SCL, board.SDA, frequency=100000)
  
         # To initialise using the default address:
-        self.mcp = adafruit_mcp9808.MCP9808(self.i2c)
+        if config.TPsensor == 'MCP9808':
+            self.sensor = adafruit_mcp9808.MCP9808(self.i2c)
+        elif config.TPsensor == 'BMP280'
+            self.sensor = adafruit_bmp280.BMP280(self.i2c)
         
         try:
-            self.temperature = self.mcp.temperature
+            self.temperature = self.sensor.temperature
         except:
             print("\n SENSOR NOT CONNECTED ")
             self.temperature = 0
