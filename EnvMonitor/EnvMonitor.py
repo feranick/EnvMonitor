@@ -74,7 +74,7 @@ def runAcq():
     sensData = {
             'lab' : config.lab,
             'measType' : config.measType,
-            'TPsensor' : config.BMsensor,
+            'TPsensor' : config.TPsensor,
             'IP' : ip,
             'date' : date,
             'time' : time1,
