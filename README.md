@@ -92,7 +92,9 @@ The following is deprecated.
     python3 EnvMonitor_PM.py
     
 ### MongoDB: Quick installation
-While this is far from being a comprehensive guide, this will get you going. Install the required packages according to your OS. Then edit the config file:
+The version of MongoDB currently in Raspberry PI OS is severely outdated and most likely won't work. This means if you want to save data you will need to do it through a different computer running mongoDB and accessible online. The following is a short guide to get you going to install and setup MongoDB on a remote computer. 
+
+Install the required packages according to your OS. Then edit the config file:
 
     sudo nano /etc/mongodb.conf
     
@@ -117,9 +119,9 @@ Restart ```mongodb``` service.
 
     sudo systemctl restart mongodb.service
 
-Use EnvMonitor.
+Customize `EnvMonitor.ini` with the correct information for connecting to the MongoDB server. 
 
-### Launcher    
+### Launcher - Deprecated   
 The software will be automated through a script (EnvMonitor_launcher.sh). Since the RPi is 
 connected online via WiFi-DHCP, the IP may change. Through this script, the IP is collected
 on boot and saved on a dedicated server. This is achieved by adding the following to /etc/rc.local:
