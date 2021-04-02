@@ -52,7 +52,6 @@ def runAcq():
     else:
         from BMPsensors import TRHSensor
 
-    
     #************************************
     ''' NEW: Read from sensors '''
     #************************************

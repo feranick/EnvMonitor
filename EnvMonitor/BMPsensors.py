@@ -4,7 +4,7 @@
 **********************************************************
 *
 * EnvMonitor - Environmental Tracking - BMP Sensors
-* version: 20210401a
+* version: 20210401b
 *
 * By: Nicola Ferralis <feranick@hotmail.com>
 *
@@ -25,7 +25,7 @@ import RPi.GPIO as GPIO
 #************************************
 class TRHSensor:
     def __init__(self, config):
-        if config == 'BMP280':
+        if config.TPsensor == 'BMP280':
             try:
                 BME280_OSAMPLE_8 = 4
                 sensor = BME280(t_mode=BME280_OSAMPLE_8, p_mode=BME280_OSAMPLE_8, h_mode=BME280_OSAMPLE_8)
@@ -42,7 +42,7 @@ class TRHSensor:
             self.altitude = 0
             self.sealevel = 0
                 
-        elif config == 'BME180':
+        elif config.TPsensor == 'BME180':
             try:
                 sensor = BMP085.BMP085()
                 self.temperature = sensor.read_temperature()
