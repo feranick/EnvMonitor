@@ -138,6 +138,8 @@ class Configuration():
             'verbose' : True,
             'runSeconds' : 5,
             'sleepSeconds' : 1,
+            'saveCSV' : False,
+            'saveMongoDB' : True,
             }
     def defineInstrumentation(self):
         self.conf['Instrumentation'] = {
@@ -203,7 +205,9 @@ class Configuration():
             self.verbose = self.conf.getboolean('System','verbose')
             self.runSeconds = self.conf.getint('System','runSeconds')
             self.sleepSeconds = self.conf.getint('System','sleepSeconds')
-
+            self.saveCSV = self.conf.getboolean('System','saveCSV')
+            self.saveMongoDB = self.conf.getboolean('System','saveMongoDB')
+            
             self.lab = self.instrumentationConfig['lab']
             self.name = self.instrumentationConfig['name']
             self.measType = self.instrumentationConfig['measType']

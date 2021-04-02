@@ -109,13 +109,19 @@ def runAcq():
         print(" Sealevel pressure = {0:0.1f} hPa".format(sealevel),)
         print(" CO2 = {0:0.1f} ppm".format(CO2))
         print(" Total Volatile Organic Content = {0:0.1f} ppb".format(TVOC),"\n")
-            
-    try:
-        conn = SubMongoDB(json.dumps(sensData),config)
-        #conn.checkCreateLotDM(sub)
-        conn.pushToMongoDB()
-    except:
-        print("\n Submission to database failed!\n")
+      
+    if config.saveMongoDB:
+        try:
+            conn = SubMongoDB(json.dumps(sensData),config)
+            #conn.checkCreateLotDM(sub)
+            conn.pushToMongoDB()
+        except:
+            print("\n Submission to database failed!\n")
+    if config.saveCSV:
+        try:
+            pass
+        except:
+            print("\n Saving to CSV failed!\n")
 
 #************************************
 ''' Main initialization routine '''
