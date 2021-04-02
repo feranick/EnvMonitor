@@ -42,10 +42,16 @@ def main():
 def runAcq():
     config = Configuration()
     
-    if config.TPsensor == 'BMP180':
-        from BMPsensors import TRHSensor
-    else:
+    #if config.TPsensor == 'BMP180':
+    #    from BMPsensors import TRHSensor
+    #else:
+    #    from MCPsensors import TRHSensor
+        
+    if config.TPsensor == 'MCP9808':
         from MCPsensors import TRHSensor
+    else:
+        from BMPsensors import TRHSensor
+
     
     #************************************
     ''' NEW: Read from sensors '''
