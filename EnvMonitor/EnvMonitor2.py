@@ -121,6 +121,8 @@ def runAcq():
     if config.saveCSV:
         try:
             file = 'test.csv'
+            print(sensData)
+            print(json.dumps(sensData))
             df = pd.read_json(sensData)
             print(df)
             
