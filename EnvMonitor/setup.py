@@ -6,7 +6,7 @@ setup(
     install_requires=['pymongo','numpy'],
     entry_points={'console_scripts' : ['EnvMonitor=EnvMonitor:EnvMonitor',
         'GetEnvData=GetEnvData:GetEnvData']},
-    py_modules=['EnvMonitor','EnvMonitor_PM','GetEnvData','libEnvMonitor','PMsensor','BMsensors'],
+    py_modules=['EnvMonitor','GetEnvData','libEnvMonitor','PMsensor','BMP180sensors','Tsensors','Gassensors'],
     version='20210402a',
     description='Environmental tracking monitor with submission to mongo',
     long_description= """ Environmental tracking monitor with submission to mongo """,
