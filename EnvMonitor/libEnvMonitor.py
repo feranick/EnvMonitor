@@ -145,7 +145,7 @@ class Configuration():
             'lab' : 'test',
             'name' : 'test',
             'itemId' : '1',
-            'BMsensor' : 'MCP9808',
+            'TPsensor' : 'MCP9808',
             }
     '''
     # for images/binary
@@ -207,7 +207,7 @@ class Configuration():
             self.measType = self.instrumentationConfig['measType']
             #self.architecture = self.instrumentationConfig['architecture']
             self.itemId = self.instrumentationConfig['itemId']
-            self.BMsensor = self.instrumentationConfig['BMsensor']
+            self.TPsensor = self.instrumentationConfig['TPsensor']
             
             '''
             self.headers = eval(self.dataConfig['headers'])

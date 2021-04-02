@@ -46,7 +46,7 @@ def runAcq():
     from Gassensors import GasSensor
     gasSensor = GasSensor()
     
-    if config.BMsensor == 'MCP9808':
+    if config.TPsensor == 'MCP9808':
         from MCPsensors import TRHSensor
     else:
         from BMPsensors import TRHSensor
@@ -74,7 +74,7 @@ def runAcq():
     sensData = {
             'lab' : config.lab,
             'measType' : config.measType,
-            'BMsensor' : config.BMsensor,
+            'TPsensor' : config.BMsensor,
             'IP' : ip,
             'date' : date,
             'time' : time1,
@@ -94,7 +94,7 @@ def runAcq():
     if config.verbose:
         print("\n Lab: ", config.lab)
         print(" Measurement type: ", config.measType)
-        print(" BM sensor: ", config.BMsensor)
+        print(" TP sensor: ", config.TPsensor)
         print(" IP: ", ip)
         print(" Date: ", date)
         print(" Time: ", time1)
