@@ -26,7 +26,7 @@ elapsed_sec = 0
  
 while True:
     #print("eCO2 = %d ppm \t TVOC = %d ppb" % (sgp30.eCO2, sgp30.TVOC))
-    print("eCO2 = %d ppm \t TVOC = %d ppb \t TempC = %d" % (sgp30.eCO2, sgp30.TVOC, mcp.temperature))
+    print("eCO2 = %d ppm \t TVOC = %d ppb \t TempC = %0.1f" % (sgp30.eCO2, sgp30.TVOC, mcp.temperature))
     time.sleep(1)
     elapsed_sec += 1
     if elapsed_sec > 10:
