@@ -147,6 +147,7 @@ class Configuration():
             'itemId' : '1',
             'TPsensor' : 'MCP9808',
             'Gassensor' : 'SGP30',
+            'SeaLevelPressure' : '1019.0'
             }
     '''
     # for images/binary
@@ -210,6 +211,7 @@ class Configuration():
             self.itemId = self.instrumentationConfig['itemId']
             self.TPsensor = self.instrumentationConfig['TPsensor']
             self.Gassensor = self.instrumentationConfig['Gassensor']
+            self.SeaLevelPressure = self.instrumentationConfig['SeaLevelPressure']
             
             '''
             self.headers = eval(self.dataConfig['headers'])

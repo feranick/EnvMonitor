@@ -42,7 +42,7 @@ class TRHSensor:
             import adafruit_bme280
             self.sensor = adafruit_bme280.Adafruit_BME280_I2C(self.i2c)
             try:
-                self.sensor.sea_level_pressure = 1013.25
+                #self.sensor.sea_level_pressure = 1013.25
                 self.sensor.mode = adafruit_bme280.MODE_NORMAL
                 self.sensor.standby_period = adafruit_bme280.STANDBY_TC_500
                 self.sensor.iir_filter = adafruit_bme280.IIR_FILTER_X16
