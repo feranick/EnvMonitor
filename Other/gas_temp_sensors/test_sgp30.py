@@ -1,5 +1,4 @@
-# SPDX-FileCopyrightText: 2021 ladyada for Adafruit Industries
-# SPDX-License-Identifier: MIT
+#!/usr/bin/env python3
  
 """ Example for using the SGP30 with CircuitPython and the Adafruit library"""
  
