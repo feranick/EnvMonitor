@@ -23,17 +23,26 @@ print("SGP30 serial #", [hex(i) for i in sgp30.serial])
 sgp30.iaq_init()
 sgp30.set_iaq_baseline(0x8973, 0x8AAE)
 elapsed_sec = 0
+elapsed_2 = 0
  
 while True:
     #print("eCO2 = %d ppm \t TVOC = %d ppb" % (sgp30.eCO2, sgp30.TVOC))
     print("eCO2 = %d ppm \t TVOC = %d ppb \t TempC = %0.1f" % (sgp30.eCO2, sgp30.TVOC, mcp.temperature))
     time.sleep(1)
     elapsed_sec += 1
+    elapsed_2 += 1
     if elapsed_sec > 10:
         elapsed_sec = 0
         print(
             "**** Baseline values: eCO2 = 0x%x, TVOC = 0x%x"
             % (sgp30.baseline_eCO2, sgp30.baseline_TVOC)
         )
+    if elapsed_2 > 20
+        elapsed_2 = 0
+        print(
+            "**** SET Baseline values: eCO2 = 0x%x, TVOC = 0x%x"
+            % (sgp30.baseline_eCO2, sgp30.baseline_TVOC)
+        )
+        sgp30.set_iaq_baseline(sgp30.baseline_eCO2, sgp30.baseline_TVOC)
 
 
