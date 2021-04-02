@@ -77,6 +77,7 @@ def runAcq():
             'lab' : config.lab,
             'measType' : config.measType,
             'TPsensor' : config.TPsensor,
+            'Gassensor' : config.Gassensor,
             'IP' : ip,
             'date' : date,
             'time' : time1,
@@ -97,6 +98,7 @@ def runAcq():
         print("\n Lab: ", config.lab)
         print(" Measurement type: ", config.measType)
         print(" TP sensor: ", config.TPsensor)
+        print(" Gas sensor: ", config.Gassensor)
         print(" IP: ", ip)
         print(" Date: ", date)
         print(" Time: ", time1)
