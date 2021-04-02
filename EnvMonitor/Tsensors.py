@@ -11,13 +11,10 @@
 ***********************************************************
 '''
 #print(__doc__)
-import sys, math, json, os.path, time, configparser, logging, sched
-from pathlib import Path
+import time
 from datetime import datetime
-#import numpy as np
 from libEnvMonitor import *
 import board, busio
-import adafruit_mcp9808
 
 #************************************
 ''' Class T/RH Sensor '''
@@ -33,6 +30,14 @@ class TRHSensor:
         elif config.TPsensor == 'BMP280':
             import adafruit_bmp280
             self.sensor = adafruit_bmp280.Adafruit_BMP280_I2C(self.i2c)
+            self.sensor.sea_level_pressure = 1013.25
+            self.sensor.mode = adafruit_bmp280.MODE_NORMAL
+            self.sensor.standby_period = adafruit_bmp280.STANDBY_TC_500
+            self.sensor.iir_filter = adafruit_bmp280.IIR_FILTER_X16
+            self.sensor.overscan_pressure = adafruit_bmp280.OVERSCAN_X16
+            self.sensor.overscan_temperature = adafruit_bmp280.OVERSCAN_X2
+            # The sensor will need a moment to gather inital readings
+            time.sleep(1)
         
         try:
             self.temperature = self.sensor.temperature
