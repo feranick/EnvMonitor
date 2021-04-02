@@ -59,6 +59,7 @@ This sensors require high frequency edge detection that is not supported by the 
     wget https://raw.githubusercontent.com/adafruit/Raspberry-Pi-Installer-Scripts/master/raspi-blinka.py
     sudo python3 raspi-blinka.py
     
+    sudo pip3 install adafruit-circuitpython-bmp280
     sudo pip3 install adafruit-circuitpython-mcp9808
     sudo pip3 install adafruit-circuitpython-sgp30
     
