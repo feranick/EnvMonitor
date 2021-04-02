@@ -43,9 +43,6 @@ def main():
 def runAcq():
     config = Configuration()
     
-    from Gassensors import GasSensor
-    gasSensor = GasSensor()
-    
     if config.TPsensor == 'BMP180':
         from BMPsensors import TRHSensor
     else:
@@ -63,9 +60,15 @@ def runAcq():
     altitude = trhSensor.altitude
     sealevel = trhSensor.sealevel
     
-    gasSensor.readGasSensor()
-    CO2 = gasSensor.CO2
-    TVOC = gasSensor.TVOC
+    if config.Gassensor == 'SGP30':
+        from Gassensors import GasSensor
+        gasSensor = GasSensor()
+        gasSensor.readGasSensor()
+        CO2 = gasSensor.CO2
+        TVOC = gasSensor.TVOC
+    else:
+        CO2 = 0
+        TVOC = 0
 
     ip = getIP()
     date = time.strftime("%Y%m%d")

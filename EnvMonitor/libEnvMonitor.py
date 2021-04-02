@@ -146,6 +146,7 @@ class Configuration():
             'name' : 'test',
             'itemId' : '1',
             'TPsensor' : 'MCP9808',
+            'Gassensor' : 'SGP30',
             }
     '''
     # for images/binary
@@ -208,6 +209,7 @@ class Configuration():
             #self.architecture = self.instrumentationConfig['architecture']
             self.itemId = self.instrumentationConfig['itemId']
             self.TPsensor = self.instrumentationConfig['TPsensor']
+            self.Gassensor = self.instrumentationConfig['Gassensor']
             
             '''
             self.headers = eval(self.dataConfig['headers'])
