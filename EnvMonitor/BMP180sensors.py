@@ -25,24 +25,7 @@ import RPi.GPIO as GPIO
 #************************************
 class TRHSensor:
     def __init__(self, config):
-        if config.TPsensor == 'BMP280':
-            try:
-                BME280_OSAMPLE_8 = 4
-                sensor = BME280(t_mode=BME280_OSAMPLE_8, p_mode=BME280_OSAMPLE_8, h_mode=BME280_OSAMPLE_8)
-                self.temperature = sensor.read_temperature()
-                self.pressure = sensor.read_pressure() / 100
-                self.humidity = sensor.read_humidity()
-                self.dewpoint = sensor.read_dewpoint()
-            except:
-                print("\n SENSOR NOT CONNECTED ")
-                self.temperature = 0
-                self.pressure = 0
-                self.humidity = 0
-                self.dewpoint = 0
-            self.altitude = 0
-            self.sealevel = 0
-                
-        elif config.TPsensor == 'BME180':
+        if config.TPsensor == 'BME180':
             try:
                 sensor = BMP085.BMP085()
                 self.temperature = sensor.read_temperature()
@@ -58,3 +41,20 @@ class TRHSensor:
             self.humidity = 0
             self.dewpoint = 0
         
+        ### Deprecated as BMP280 uses CircuitPython now.
+        elif config.TPsensor == 'BMP280':
+            try:
+                BME280_OSAMPLE_8 = 4
+                sensor = BME280(t_mode=BME280_OSAMPLE_8, p_mode=BME280_OSAMPLE_8, h_mode=BME280_OSAMPLE_8)
+                self.temperature = sensor.read_temperature()
+                self.pressure = sensor.read_pressure() / 100
+                self.humidity = sensor.read_humidity()
+                self.dewpoint = sensor.read_dewpoint()
+            except:
+                print("\n SENSOR NOT CONNECTED ")
+                self.temperature = 0
+                self.pressure = 0
+                self.humidity = 0
+                self.dewpoint = 0
+            self.altitude = 0
+            self.sealevel = 0
