@@ -37,7 +37,7 @@ while True:
             "**** Baseline values: eCO2 = 0x%x, TVOC = 0x%x"
             % (sgp30.baseline_eCO2, sgp30.baseline_TVOC)
         )
-    if elapsed_2 > 20
+    if elapsed_2 > 20:
         elapsed_2 = 0
         print(
             "**** SET Baseline values: eCO2 = 0x%x, TVOC = 0x%x"
