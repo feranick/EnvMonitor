@@ -211,7 +211,7 @@ class Configuration():
             self.itemId = self.instrumentationConfig['itemId']
             self.TPsensor = self.instrumentationConfig['TPsensor']
             self.Gassensor = self.instrumentationConfig['Gassensor']
-            self.SeaLevelPressure = self.instrumentationConfig['SeaLevelPressure']
+            self.SeaLevelPressure = self.conf.getfloat('Instrumentation','SeaLevelPressure')
             
             '''
             self.headers = eval(self.dataConfig['headers'])
