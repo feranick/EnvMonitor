@@ -4,7 +4,7 @@
 **********************************************************
 *
 * EnvMonitor - Environmental Tracking - MCP9808 Temperature
-* version: 20210401b
+* version: 20210402a
 *
 * By: Nicola Ferralis <feranick@hotmail.com>
 *

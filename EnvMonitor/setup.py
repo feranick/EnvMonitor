@@ -7,7 +7,7 @@ setup(
     entry_points={'console_scripts' : ['EnvMonitor=EnvMonitor:EnvMonitor',
         'GetEnvData=GetEnvData:GetEnvData']},
     py_modules=['EnvMonitor','EnvMonitor_PM','GetEnvData','libEnvMonitor','PMsensor','BMsensors'],
-    version='20210401a',
+    version='20210402a',
     description='Environmental tracking monitor with submission to mongo',
     long_description= """ Environmental tracking monitor with submission to mongo """,
     author_email='ferralis@mit.edu',

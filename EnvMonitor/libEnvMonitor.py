@@ -4,7 +4,7 @@
 **********************************************************
 *
 * libEnvMonitor - Environmental Tracking
-* version: 20210401a
+* version: 20210402a
 *
 * By: Nicola Ferralis <feranick@hotmail.com>
 *
