@@ -46,12 +46,6 @@ def runAcq():
         from BMP180sensors import TRHSensor
     else:
         from Tsensors import TRHSensor
-        
-    #if config.TPsensor == 'MCP9808':
-    #    from MCPsensors import TRHSensor
-    #else:
-    #    from BMPsensors import TRHSensor
-
     #************************************
     ''' NEW: Read from sensors '''
     #************************************
