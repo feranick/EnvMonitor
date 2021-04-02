@@ -24,6 +24,7 @@ from pathlib import Path
 from datetime import datetime
 from pymongo import MongoClient
 import numpy as np
+import pandas as pd
 from libEnvMonitor import *
 
 #************************************
@@ -120,6 +121,8 @@ def runAcq():
     if config.saveCSV:
         try:
             file = 'test.csv'
+            df = pd.read_json(sensData)
+            print(df)
             
         except:
             print("\n Saving to CSV failed!\n")
