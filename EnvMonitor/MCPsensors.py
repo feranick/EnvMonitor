@@ -29,7 +29,7 @@ class TRHSensor:
         # To initialise using the default address:
         if config.TPsensor == 'MCP9808':
             self.sensor = adafruit_mcp9808.MCP9808(self.i2c)
-        elif config.TPsensor == 'BMP280'
+        elif config.TPsensor == 'BMP280':
             self.sensor = adafruit_bmp280.Adafruit_BMP280_I2C(self.i2c)
         
         try:
