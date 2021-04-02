@@ -119,8 +119,12 @@ def runAcq():
             print("\n Submission to database failed!\n")
     if config.saveCSV:
         try:
-            file = 'test.csv'
-            
+            file = 'EnMonLog.csv'
+            df = pd.DataFrame(sensData, index=[0])
+            if not os.path.exists(file):
+                df.to_csv(file, mode="a", header=True)
+            else:
+                df.to_csv(file, mode="a", header=False)
         except:
             print("\n Saving to CSV failed!\n")
 
