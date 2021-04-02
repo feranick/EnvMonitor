@@ -26,7 +26,6 @@ from pymongo import MongoClient
 import numpy as np
 from libEnvMonitor import *
 
-
 #************************************
 ''' Main - Scheduler '''
 #************************************
