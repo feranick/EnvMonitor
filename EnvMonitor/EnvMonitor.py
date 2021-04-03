@@ -126,6 +126,7 @@ def runAcq():
                 df.to_csv(file, mode="a", header=True)
             else:
                 df.to_csv(file, mode="a", header=False)
+            print("\n Save in "+file+"\n")
         except:
             print("\n Saving to CSV failed!\n")
 
