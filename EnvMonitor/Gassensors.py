@@ -35,15 +35,15 @@ class GasSensor:
         #self.sgp30.set_iaq_baseline(0x8973, 0x8AAE)
        
         # Dynamic baseline
-        print("**** Baseline values: eCO2 = 0x%x, TVOC = 0x%x" % (config.eCO2_baseline, config.TVOC_baseline))
+        print("\n**** Baseline values: eCO2 = 0x%x, TVOC = 0x%x" % (config.eCO2_baseline, config.TVOC_baseline))
         self.sgp30.set_iaq_baseline(config.eCO2_baseline, config.TVOC_baseline)
        
         elapsed_sec = 0
-        
+    
+        print("\n eCO2 = %d ppm \t TVOC = %d ppb" % (self.sgp30.eCO2, self.sgp30.TVOC))
         print("Gas Sensor Warming up, please wait")
-        print("eCO2 = %d ppm \t TVOC = %d ppb" % (self.sgp30.eCO2, self.sgp30.TVOC))
         while True:
-            #print("eCO2 = %d ppm \t TVOC = %d ppb" % (self.sgp30.eCO2, self.sgp30.TVOC))
+            print("eCO2 = %d ppm \t TVOC = %d ppb" % (self.sgp30.eCO2, self.sgp30.TVOC))
             time.sleep(1)
             elapsed_sec += 1
             #if elapsed_sec > 10:
