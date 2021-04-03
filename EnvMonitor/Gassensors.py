@@ -48,9 +48,9 @@ class GasSensor:
             if elapsed_sec > 10:
                 #elapsed_sec = 0
                 print("**** Baseline values: eCO2 = 0x%x, TVOC = 0x%x" % (self.sgp30.baseline_eCO2, self.sgp30.baseline_TVOC))
-            #if elapsed_sec > 20:
-            #    self.sgp30.set_iaq_baseline(self.sgp30.baseline_eCO2, self.sgp30.baseline_TVOC)
-            #    break
+            if elapsed_sec > 20:
+                self.sgp30.set_iaq_baseline(self.sgp30.baseline_eCO2, self.sgp30.baseline_TVOC)
+                break
         
     def readGasSensor(self):
         try:
