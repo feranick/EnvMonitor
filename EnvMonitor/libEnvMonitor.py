@@ -218,8 +218,8 @@ class Configuration():
             self.TPsensor = self.instrumentationConfig['TPsensor']
             self.SeaLevelPressure = self.conf.getfloat('Instrumentation','SeaLevelPressure')
             self.Gassensor = self.instrumentationConfig['Gassensor']
-            self.eCO2_baseline = self.conf.get('Instrumentation','eCO2_baseline')
-            self.TVOC_baseline = self.conf.get('Instrumentation','TVOC_baseline')
+            self.eCO2_baseline = int(self.conf.get('Instrumentation','eCO2_baseline'),16)
+            self.TVOC_baseline = int(self.conf.get('Instrumentation','TVOC_baseline'),16)
             
             '''
             self.headers = eval(self.dataConfig['headers'])
