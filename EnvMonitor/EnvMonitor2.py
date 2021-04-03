@@ -43,7 +43,7 @@ def main():
 #************************************
 ''' Run Acquistion '''
 #************************************
-def runAcq(gs):
+def runAcq(gasSensor):
     config = Configuration()
     
     if config.TPsensor == 'BMP180':
@@ -63,7 +63,7 @@ def runAcq(gs):
     sealevel = trhSensor.sealevel
     
     if config.Gassensor == 'SGP30':
-        gs.readGasSensor()
+        gasSensor.readGasSensor()
         CO2 = gasSensor.CO2
         TVOC = gasSensor.TVOC
     else:
