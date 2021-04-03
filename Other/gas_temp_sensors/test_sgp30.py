@@ -15,8 +15,12 @@ sgp30 = adafruit_sgp30.Adafruit_SGP30(i2c)
 print("SGP30 serial #", [hex(i) for i in sgp30.serial])
  
 sgp30.iaq_init()
-sgp30.set_iaq_baseline(0x8973, 0x8AAE)
- 
+#Original calibration
+#sgp30.set_iaq_baseline(0x8973, 0x8AAE)
+
+#New calibration
+sgp30.set_iaq_baseline(0x899c, 0x8c4d)
+
 elapsed_sec = 0
  
 while True:

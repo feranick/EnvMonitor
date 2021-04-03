@@ -1,0 +1,7 @@
+Original: 
+sgp30.set_iaq_baseline(0x8973, 0x8AAE)
+
+New
+sgp30.set_iaq_baseline(0x899c, 0x8c4d)
+
+(First is eCO2, second is TVOC)
