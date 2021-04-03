@@ -148,8 +148,10 @@ class Configuration():
             'name' : 'test',
             'itemId' : '1',
             'TPsensor' : 'MCP9808',
+            'SeaLevelPressure' : '1019.0',
             'Gassensor' : 'SGP30',
-            'SeaLevelPressure' : '1019.0'
+            'eCO2_baseline' : '0x899c',
+            'TVOC_baseline' : '0x8c4d',
             }
     '''
     # for images/binary
@@ -214,8 +216,9 @@ class Configuration():
             #self.architecture = self.instrumentationConfig['architecture']
             self.itemId = self.instrumentationConfig['itemId']
             self.TPsensor = self.instrumentationConfig['TPsensor']
-            self.Gassensor = self.instrumentationConfig['Gassensor']
             self.SeaLevelPressure = self.conf.getfloat('Instrumentation','SeaLevelPressure')
+            self.eCO2_baseline = sself.instrumentationConfig['eCO2_baseline']
+            self.TVOC_baseline = sself.instrumentationConfig['TVOC_baseline']
             
             '''
             self.headers = eval(self.dataConfig['headers'])

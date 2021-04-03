@@ -23,20 +23,21 @@ import adafruit_sgp30
 ''' Class Gas Sensor '''
 #************************************
 class GasSensor:
-    def __init__(self):
+    def __init__(self, config):
         self.i2c = busio.I2C(board.SCL, board.SDA, frequency=100000)
         # To initialise using the default address:
         self.sgp30 = adafruit_sgp30.Adafruit_SGP30(self.i2c)
         
-        #co2eq_base, tvoc_base = self.sgp30.baseline_eCO2, self.sgp30.baseline_TVOC
-        #print(self.sgp30.baseline_eCO2, self.sgp30.baseline_TVOC)
-        
         #print("SGP30 serial #", [hex(i) for i in self.sgp30.serial])
         self.sgp30.iaq_init()
-        self.sgp30.set_iaq_baseline(0x8973, 0x8AAE)
-        #self.sgp30.set_iaq_baseline(co2eq_base, tvoc_base)
-        elapsed_sec = 0
         
+        # Original baseline
+        #self.sgp30.set_iaq_baseline(0x8973, 0x8AAE)
+       
+        # Dynamic baseline
+        self.sgp30.set_iaq_baseline(config.eCO2_baseline, config.TVOC_baseline)
+       
+        elapsed_sec = 0
         
         print("Gas Sensor Warming up, please wait")
         while True:
@@ -46,9 +47,9 @@ class GasSensor:
             if elapsed_sec > 10:
                 #elapsed_sec = 0
                 print("**** Baseline values: eCO2 = 0x%x, TVOC = 0x%x" % (self.sgp30.baseline_eCO2, self.sgp30.baseline_TVOC))
-            if elapsed_sec > 15:
-                self.sgp30.set_iaq_baseline(self.sgp30.baseline_eCO2, self.sgp30.baseline_TVOC)
-                break
+            #if elapsed_sec > 20:
+            #    self.sgp30.set_iaq_baseline(self.sgp30.baseline_eCO2, self.sgp30.baseline_TVOC)
+            #    break
         
     def readGasSensor(self):
         try:
