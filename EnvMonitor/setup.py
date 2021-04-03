@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 setup(
     name='EnvMonitor',
     packages=find_packages(),
-    install_requires=['pymongo','numpy','pandas'],
+    install_requires=['pymongo'],
     entry_points={'console_scripts' : ['EnvMonitor=EnvMonitor:EnvMonitor',
         'GetEnvData=GetEnvData:GetEnvData']},
     py_modules=['EnvMonitor','GetEnvData','libEnvMonitor','PMsensor','BMP180sensors','Tsensors','Gassensors'],
