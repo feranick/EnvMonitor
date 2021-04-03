@@ -217,6 +217,7 @@ class Configuration():
             self.itemId = self.instrumentationConfig['itemId']
             self.TPsensor = self.instrumentationConfig['TPsensor']
             self.SeaLevelPressure = self.conf.getfloat('Instrumentation','SeaLevelPressure')
+            self.Gassensor = self.instrumentationConfig['Gassensor']
             self.eCO2_baseline = self.instrumentationConfig['eCO2_baseline']
             self.TVOC_baseline = self.instrumentationConfig['TVOC_baseline']
             
