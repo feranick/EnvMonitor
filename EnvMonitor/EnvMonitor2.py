@@ -32,12 +32,12 @@ from libEnvMonitor import *
 #************************************
 def main():
     s = sched.scheduler(time.time, time.sleep)
-    conf = Configuration()
+    config = Configuration()
     if config.Gassensor == 'SGP30':
         from Gassensors import GasSensor
         gasSensor = GasSensor(config)
     while True:
-        s.enter(conf.runSeconds, conf.sleepSeconds, runAcq(gasSensor))
+        s.enter(config.runSeconds, config.sleepSeconds, runAcq(gasSensor))
         s.run()
 
 #************************************
