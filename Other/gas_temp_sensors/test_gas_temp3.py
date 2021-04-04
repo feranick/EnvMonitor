@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-  
-import time
+
+import os.path, time
 import board
 import busio
 import adafruit_sgp30
@@ -33,7 +33,13 @@ while True:
     print("eCO2 = %d ppm \t TVOC = %d ppb \t TempC = %0.1f" % (sgp30.eCO2, sgp30.TVOC, mcp.temperature))
     time.sleep(1)
     elapsed_sec += 1
+    
+    date = time.strftime("%Y%m%d")
+    time1 = time.strftime("%H:%M:%S")
+    
     sensData = {
+            'date' : date,
+            'time' : time1,
             'temperature' : mcp.temperature,
             'pressure' : mcp.pressure,
             'humidity' : mcp.relative_humidity,
