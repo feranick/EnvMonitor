@@ -37,7 +37,7 @@ while True:
             'temperature' : mcp.temperature,
             'pressure' : mcp.pressure,
             'humidity' : mcp.relative_humidity,
-            'CO2' : sgp30.CO2,
+            'CO2' : sgp30.eCO2,
             'TVOC' : sgp30.TVOC,
             'eCO2_baseline' : sgp30.baseline_eCO2,
             'TVOC_baseline' : sgp30.baseline_TVOC,
