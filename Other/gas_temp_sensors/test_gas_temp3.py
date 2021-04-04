@@ -34,11 +34,11 @@ while True:
     time.sleep(1)
     elapsed_sec += 1
     sensData = {
-            'temperature' : .mcptemperature,
+            'temperature' : mcp.temperature,
             'pressure' : mcp.pressure,
             'humidity' : mcp.relative_humidity,
-            'CO2' : CO2,
-            'TVOC' : TVOC,
+            'CO2' : sgp30.CO2,
+            'TVOC' : sgp30.TVOC,
             'eCO2_baseline' : sgp30.baseline_eCO2,
             'TVOC_baseline' : sgp30.baseline_TVOC,
             }
