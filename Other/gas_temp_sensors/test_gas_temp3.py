@@ -25,7 +25,7 @@ mcp = adafruit_bme280.Adafruit_BME280_I2C(i2c)
 print("SGP30 serial #", [hex(i) for i in sgp30.serial])
 sgp30.iaq_init()
 #sgp30.set_iaq_baseline(0x8973, 0x8AAE)
-sgp30.set_iaq_baseline(0x8cd4,0x982a)
+sgp30.set_iaq_baseline(0x8d9f,0x9828)
 elapsed_sec = 0
  
 while True:

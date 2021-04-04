@@ -150,8 +150,8 @@ class Configuration():
             'TPsensor' : 'MCP9808',
             'SeaLevelPressure' : '1019.0',
             'Gassensor' : 'SGP30',
-            'eCO2_baseline' : '0x8ccd',
-            'TVOC_baseline' : '0x982a',
+            'eCO2_baseline' : '0x8d9f',
+            'TVOC_baseline' : '0x9828',
             }
     '''
     # for images/binary
