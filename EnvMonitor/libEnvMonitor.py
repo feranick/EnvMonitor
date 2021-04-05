@@ -140,6 +140,7 @@ class Configuration():
             'sleepSeconds' : 1,
             'saveCSV' : False,
             'saveMongoDB' : True,
+            'CSVfile' : 'EnvMonLog.csv',
             }
     def defineInstrumentation(self):
         self.conf['Instrumentation'] = {
@@ -220,6 +221,7 @@ class Configuration():
             self.Gassensor = self.instrumentationConfig['Gassensor']
             self.eCO2_baseline = int(self.conf.get('Instrumentation','eCO2_baseline'),16)
             self.TVOC_baseline = int(self.conf.get('Instrumentation','TVOC_baseline'),16)
+            self.CSVfile = self.sysConfig['CSVfile']
             
             '''
             self.headers = eval(self.dataConfig['headers'])
