@@ -10,8 +10,8 @@ import pandas as pd
 
 # New baseline
 #eCO2_baseline = 0x8ff7
-eCO2_baseline = 0x9600
-TVOC_baseline = 0x9820
+eCO2_baseline = 0x93a7
+TVOC_baseline = 0x9817
 
 # Old default baseline
 #eCO2_baseline = 0x8ff7

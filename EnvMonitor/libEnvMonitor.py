@@ -4,7 +4,7 @@
 **********************************************************
 *
 * libEnvMonitor - Environmental Tracking
-* version: 20210402a
+* version: 20210405a
 *
 * By: Nicola Ferralis <feranick@hotmail.com>
 *
@@ -151,8 +151,8 @@ class Configuration():
             'TPsensor' : 'MCP9808',
             'SeaLevelPressure' : '1019.0',
             'Gassensor' : 'SGP30',
-            'eCO2_baseline' : '0x8ff7',
-            'TVOC_baseline' : '0x9820',
+            'eCO2_baseline' : '0x93a7',
+            'TVOC_baseline' : '0x9817',
             }
     '''
     # for images/binary

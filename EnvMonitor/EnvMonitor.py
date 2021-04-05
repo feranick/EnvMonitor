@@ -4,7 +4,7 @@
 **********************************************************
 *
 * EnvMonitor - Environmental Tracking
-* version: 20210402a
+* version: 20210405a
 *
 * By: Nicola Ferralis <feranick@hotmail.com>
 *
