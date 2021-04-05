@@ -7,9 +7,16 @@ import adafruit_sgp30
 import adafruit_mcp9808
 import adafruit_bme280
 import pandas as pd
+
+# New baseline
+eCO2_baseline = 0x8ff7
+TVOC_baseline = 0x9820
+
+# Old default baseline
+#eCO2_baseline = 0x8ff7
+#TVOC_baseline = 0x9820
  
 file = 'GasTempLog.csv'
-
 i2c = busio.I2C(board.SCL, board.SDA, frequency=100000)
  
 # Create library object on our I2C port
@@ -24,8 +31,7 @@ mcp = adafruit_bme280.Adafruit_BME280_I2C(i2c)
  
 print("SGP30 serial #", [hex(i) for i in sgp30.serial])
 sgp30.iaq_init()
-#sgp30.set_iaq_baseline(0x8973, 0x8AAE)
-sgp30.set_iaq_baseline(0x8ff7,0x9820)
+sgp30.set_iaq_baseline(eCO2_baseline,TVOC_baseline)
 elapsed_sec = 0
  
 while True:
