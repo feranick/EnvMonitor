@@ -9,7 +9,8 @@ import adafruit_bme280
 import pandas as pd
 
 # New baseline
-eCO2_baseline = 0x8ff7
+#eCO2_baseline = 0x8ff7
+eCO2_baseline = 0x9600
 TVOC_baseline = 0x9820
 
 # Old default baseline
@@ -36,7 +37,7 @@ elapsed_sec = 0
  
 while True:
     #print("eCO2 = %d ppm \t TVOC = %d ppb" % (sgp30.eCO2, sgp30.TVOC))
-    print("eCO2 = %d ppm \t TVOC = %d ppb \t TempC = %0.1f" % (sgp30.eCO2, sgp30.TVOC, mcp.temperature))
+    print("eCO2 = %d ppm \t TVOC = %d ppb \t TempC = %0.1f" % (sgp30.eCO2, sgp30.TVOC, mcp.temperat>
     time.sleep(1)
     elapsed_sec += 1
     
@@ -61,9 +62,11 @@ while True:
     else:
         df.to_csv(file, mode="a", header=False)
 
-    if elapsed_sec > 10:
+    if elapsed_sec > 20:
         elapsed_sec = 0
+        eCO2_baseline = sgp30.baseline_eCO2
+        TVOC_baseline = sgp30.baseline_TVOC
         print(
             "**** Baseline values: eCO2 = 0x%x, TVOC = 0x%x"
-            % (sgp30.baseline_eCO2, sgp30.baseline_TVOC)
-        )
+            % (eCO2_baseline,TVOC_baseline))
+        sgp30.set_iaq_baseline(eCO2_baseline,TVOC_baseline)
