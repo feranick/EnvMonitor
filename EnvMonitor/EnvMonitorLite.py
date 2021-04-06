@@ -39,7 +39,7 @@ def main():
 def runAcq():
     config = Configuration()
  
-    file = str(os.path.splitext(config.CSVFile)[0]+ "-Lite_" +\
+    file = str(os.path.splitext(config.CSVfile)[0]+ "-Lite_" +\
                     str(datetime.now().strftime('%Y%m%d-%H%M%S'))+".csv")
     i2c = busio.I2C(board.SCL, board.SDA, frequency=100000)
  
