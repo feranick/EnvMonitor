@@ -148,7 +148,7 @@ class Configuration():
             'lab' : 'test',
             'name' : 'test',
             'itemId' : '1',
-            'TPsensor' : 'MCP9808',
+            'TPsensor' : 'BME280',
             'SeaLevelPressure' : '1019.0',
             'Gassensor' : 'SGP30',
             'eCO2_baseline' : '0x93a7',

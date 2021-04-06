@@ -43,10 +43,12 @@ def runAcq():
                     str(datetime.now().strftime('%Y%m%d-%H%M%S'))+".csv")
     i2c = busio.I2C(board.SCL, board.SDA, frequency=100000)
  
-    if config.Gassensor == 'SGP030':
+    if config.Gassensor == 'SGP30':
         # Create library object on our I2C port
         GSens = adafruit_sgp30.Adafruit_SGP30(i2c)
         print("SGP30 serial #", [hex(i) for i in GSens.serial])
+    else:
+        print("Gas Sensor not found. Exiting")
     
     if config.TPsensor == 'BME280':
         TSens = adafruit_bme280.Adafruit_BME280_I2C(i2c)
