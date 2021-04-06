@@ -20,7 +20,7 @@ def EnvMonitor():
 #***************************************************
 
 import os.path, time
-import board, busio,
+import board, busio
 import adafruit_sgp30
 import adafruit_mcp9808
 import adafruit_bme280
