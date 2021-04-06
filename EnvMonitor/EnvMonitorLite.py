@@ -31,7 +31,7 @@ from libEnvMonitor import *
 ''' Main - Scheduler '''
 #************************************
 def main():
-    runAqc()
+    runAcq()
     
 #************************************
 ''' Run Acquistion '''
