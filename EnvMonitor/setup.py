@@ -5,8 +5,8 @@ setup(
     packages=find_packages(),
     install_requires=['pymongo'],
     entry_points={'console_scripts' : ['EnvMonitor=EnvMonitor:EnvMonitor',
-        'GetEnvData=GetEnvData:GetEnvData']},
-    py_modules=['EnvMonitor','GetEnvData','libEnvMonitor','PMsensor','BMP180sensors','Tsensors','Gassensors'],
+        'GetEnvData=GetEnvData:GetEnvData', 'EnvMonitorLite=EnvMonitorLite:EnvMonitorLite']},
+    py_modules=['EnvMonitor','EnvMonitorLite','GetEnvData','libEnvMonitor','PMsensor','BMP180sensors','Tsensors','Gassensors'],
     version='20210405a',
     description='Environmental tracking monitor with submission to mongo',
     long_description= """ Environmental tracking monitor with submission to mongo """,
@@ -18,7 +18,6 @@ setup(
     platforms='any',
     classifiers=[
      'License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)',
-     'Development Status :: 4 - Beta',
      'Programming Language :: Python :: Only',
      'Programming Language :: Python :: 3',
      'Programming Language :: Python :: 3.5',
