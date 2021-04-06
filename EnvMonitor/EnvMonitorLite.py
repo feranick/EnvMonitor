@@ -63,7 +63,7 @@ def runAcq():
         time1 = time.strftime("%H:%M:%S")
         
         #print("eCO2 = %d ppm \t TVOC = %d ppb" % (sgp30.eCO2, sgp30.TVOC))
-        print("eCO2 = %d ppm TVOC = %d ppb TempC = %0.1f date = %s time: %s" % (sgp30.eCO2, sgp30.TVOC, mcp.temperature, str(date), str(time)))
+        print("eCO2 = %d ppm TVOC = %d ppb TempC = %0.1f date = %s time: %s" % (sgp30.eCO2, sgp30.TVOC, mcp.temperature, str(date), str(time1)))
         time.sleep(1)
         elapsed_sec += 1
     
