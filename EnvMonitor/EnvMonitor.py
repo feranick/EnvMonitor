@@ -32,7 +32,6 @@ from libEnvMonitor import *
 #************************************
 def main():
     s = sched.scheduler(time.time, time.sleep)
-    conf = Configuration()
     while True:
         s.enter(conf.runSeconds, conf.sleepSeconds, runAcq)
         s.run()
