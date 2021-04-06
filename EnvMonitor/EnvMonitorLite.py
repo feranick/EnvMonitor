@@ -39,7 +39,8 @@ def main():
 def runAcq():
     config = Configuration()
  
-    file = 'GasTempLog.csv'
+    file = str(os.path.splitext(config.CSVFile)[0]+ "-Lite_" +\
+                    str(datetime.now().strftime('%Y%m%d-%H%M%S'))+".csv"
     i2c = busio.I2C(board.SCL, board.SDA, frequency=100000)
  
     # Create library object on our I2C port
