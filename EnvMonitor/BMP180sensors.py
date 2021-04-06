@@ -4,7 +4,7 @@
 **********************************************************
 *
 * EnvMonitor - Environmental Tracking - BMP Sensors
-* version: 20210402a
+* version: 20210406a
 *
 * By: Nicola Ferralis <feranick@hotmail.com>
 *
