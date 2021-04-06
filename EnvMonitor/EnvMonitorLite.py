@@ -49,6 +49,7 @@ def runAcq():
         print("SGP30 serial #", [hex(i) for i in GSens.serial])
     else:
         print("Gas Sensor not found. Exiting")
+        return
     
     if config.TPsensor == 'BME280':
         TSens = adafruit_bme280.Adafruit_BME280_I2C(i2c)
