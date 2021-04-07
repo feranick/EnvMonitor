@@ -55,6 +55,8 @@ def runAcq():
         TSens = adafruit_bme280.Adafruit_BME280_I2C(i2c)
     elif config.TPsensor == 'MCP9808':
         TSens = adafruit_mcp9808.MCP9808(i2c)
+        TSens.pressure = 0
+        TSens.relative_humidity = 0
         # To initialise using a specified address:
         # Necessary when, for example, connecting A0 to VDD to make address=0x19
         # TSens = adafruit_mcp9808.MCP9808(i2c_bus, address=0x19)
