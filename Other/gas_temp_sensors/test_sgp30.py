@@ -19,7 +19,7 @@ sgp30.iaq_init()
 #sgp30.set_iaq_baseline(0x8973, 0x8AAE)
 
 #New calibration
-sgp30.set_iaq_baseline(0x899c, 0x8c4d)
+sgp30.set_iaq_baseline(0x93a7, 0x8917)
 
 elapsed_sec = 0
  
