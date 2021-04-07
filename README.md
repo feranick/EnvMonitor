@@ -1,10 +1,14 @@
 # EnvMonitor
 ## Record Enviromental Parameters
 
-Track temperature (T), pressure (P), relative humidity (RH), and particulate matter PM2.5 content
+Track temperature (T), pressure (P), relative humidity (RH), eCO2 and Total Volatile Organic Content, particulate matter PM2.5 content
 continuously with timestamp and location in several relevant locations and submit to DB independently of experiment. 
 Connection between exp. and environmental tracking data is done through the database with no 
 user intervention (as long as the user lists the right time/date/location).
+
+Two versions:
+- `EnvMonitor` To be used for Mongo submission, for multi-machine and lab environments
+- `EnvMonitorLite` Simplified to save data to CSV only. For home use.
 
 ## Requirements
 A choice of:
@@ -85,11 +89,14 @@ The following is deprecated.
     sudo make install
 
 ## Usage
-### T/P/RH sensor only:
+### T/P/RH sensor only or T/P/RH sensor and gas sensor:
     python3 EnvMonitor.py 
 ### T/P/RH and particle sensor (discontinued)
     sudo pigpiod
     python3 EnvMonitor_PM.py
+    
+### EnvMonitorLIte: T/P/RH sensor only or T/P/RH sensor and gas sensor:
+    python3 EnvMonitorLite.py 
     
 ### MongoDB: Quick installation
 The version of MongoDB currently in Raspberry PI OS is severely outdated and most likely won't work. This means if you want to save data you will need to do it through a different computer running mongoDB and accessible online. The following is a short guide to get you going to install and setup MongoDB on a remote computer. 
