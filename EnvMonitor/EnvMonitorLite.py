@@ -61,6 +61,7 @@ def runAcq():
         # Necessary when, for example, connecting A0 to VDD to make address=0x19
         # TSens = adafruit_mcp9808.MCP9808(i2c_bus, address=0x19)
  
+    print("Tsensor:",config.TPsensor)
     GSens.iaq_init()
     GSens.set_iaq_baseline(config.eCO2_baseline, config.TVOC_baseline)
     elapsed_sec = 0
