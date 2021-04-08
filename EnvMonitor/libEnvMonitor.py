@@ -153,6 +153,7 @@ class Configuration():
             'Gassensor' : 'SGP30',
             'eCO2_baseline' : '0x93a7',
             'TVOC_baseline' : '0x9817',
+            'resetBaseline' : False,
             }
     '''
     # for images/binary
@@ -210,6 +211,7 @@ class Configuration():
             self.sleepSeconds = self.conf.getint('System','sleepSeconds')
             self.saveCSV = self.conf.getboolean('System','saveCSV')
             self.saveMongoDB = self.conf.getboolean('System','saveMongoDB')
+            self.CSVfile = self.sysConfig['CSVfile']
             
             self.lab = self.instrumentationConfig['lab']
             self.name = self.instrumentationConfig['name']
@@ -221,7 +223,7 @@ class Configuration():
             self.Gassensor = self.instrumentationConfig['Gassensor']
             self.eCO2_baseline = int(self.conf.get('Instrumentation','eCO2_baseline'),16)
             self.TVOC_baseline = int(self.conf.get('Instrumentation','TVOC_baseline'),16)
-            self.CSVfile = self.sysConfig['CSVfile']
+            self.resetBaseline = self.conf.getboolean('Instrumentation','resetBaseline')
             
             '''
             self.headers = eval(self.dataConfig['headers'])

@@ -100,7 +100,8 @@ def runAcq():
             print(
                 "**** Baseline values: eCO2 = 0x%x, TVOC = 0x%x"
                 % (eCO2_baseline,TVOC_baseline))
-            GSens.set_iaq_baseline(eCO2_baseline,TVOC_baseline)
+            if config.resetBaseline:
+                GSens.set_iaq_baseline(eCO2_baseline,TVOC_baseline)
             
 #************************************
 ''' Main initialization routine '''
