@@ -4,7 +4,7 @@
 #
 # EnvMonitorLite launcher
 #
-# v. 20210407a
+# v. 20210408a
 #
 # Nicola Ferralis <feranick@hotmail.com>
 #
