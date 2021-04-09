@@ -34,7 +34,7 @@ def main():
     config = Configuration()
     s = sched.scheduler(time.time, time.sleep)
     while True:
-        s.enter(config.runSeconds, config.sleepSeconds, runAcq())
+        s.enter(config.runSeconds, config.sleepSeconds, runAcq)
         s.run()
 
 #************************************
