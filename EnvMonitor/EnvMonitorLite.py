@@ -76,6 +76,7 @@ def runAcq():
         elapsed_sec += 1
     
         sensData = {
+            'name' : config.name,
             'date' : date,
             'time' : time1,
             'temperature' : TSens.temperature,

@@ -74,6 +74,7 @@ def runAcq():
         
     sensData = {
             'lab' : config.lab,
+            'name' : config.name,
             'measType' : config.measType,
             'TPsensor' : config.TPsensor,
             'Gassensor' : config.Gassensor,
@@ -95,6 +96,7 @@ def runAcq():
     #************************************
     if config.verbose:
         print("\n Lab: ", config.lab)
+        print(" Lab: ", config.name)
         print(" Measurement type: ", config.measType)
         print(" TP sensor: ", config.TPsensor)
         print(" Gas sensor: ", config.Gassensor)
