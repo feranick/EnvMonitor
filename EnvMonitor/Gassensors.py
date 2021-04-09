@@ -40,7 +40,7 @@ class GasSensor:
        
         elapsed_sec = 0
     
-        print("eCO2 = %d ppm \t TVOC = %d ppb" % (self.sgp30.eCO2, self.sgp30.TVOC))
+        #print("eCO2 = %d ppm \t TVOC = %d ppb" % (self.sgp30.eCO2, self.sgp30.TVOC))
         print("\nGas Sensor Warming up, please wait\n")
         while True:
             #print("eCO2 = %d ppm \t TVOC = %d ppb" % (self.sgp30.eCO2, self.sgp30.TVOC))
