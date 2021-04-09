@@ -55,44 +55,44 @@ def main():
         date = {}
     
     #try
-    for o, a in opts:
-        jsonData={}
-        conn = SubMongoDB(json.dumps(jsonData), conf)
-        if o in ("-t" , "--temperature"):
-            plotSingleData(conn.getByType("temperature", date), "temperature")
-        if o in ("-p" , "--pressure"):
-            plotSingleData(conn.getByType("pressure", date), "pressure")
-        if o in ("-r" , "--humidity"):
-            plotSingleData(conn.getByType("humidity", date), "humidity")
-        if o in ("-w" , "--dewpoint"):
-            plotSingleData(conn.getByType("dewpoint", date), "dewpoint")
-        if o in ("-h" , "--altitude"):
-            plotSingleData(conn.getByType("altitude", date), "altitude")
-        if o in ("-s" , "--sealevel"):
-            plotSingleData(conn.getByType("sealevel", date), "sealevel pressure")
-        if o in ("-c" , "--co2"):
-            plotSingleData(conn.getByType("CO2", date), "CO2")
-        if o in ("-o" , "--tvoc"):
-            plotSingleData(conn.getByType("TVOC", date), "TVOC")
+        for o, a in opts:
+            jsonData={}
+            conn = SubMongoDB(json.dumps(jsonData), conf)
+            if o in ("-t" , "--temperature"):
+                plotSingleData(conn.getByType("temperature", date), "temperature")
+            if o in ("-p" , "--pressure"):
+                plotSingleData(conn.getByType("pressure", date), "pressure")
+            if o in ("-r" , "--humidity"):
+                plotSingleData(conn.getByType("humidity", date), "humidity")
+            if o in ("-w" , "--dewpoint"):
+                plotSingleData(conn.getByType("dewpoint", date), "dewpoint")
+            if o in ("-h" , "--altitude"):
+                plotSingleData(conn.getByType("altitude", date), "altitude")
+            if o in ("-s" , "--sealevel"):
+                plotSingleData(conn.getByType("sealevel", date), "sealevel pressure")
+            if o in ("-c" , "--co2"):
+                plotSingleData(conn.getByType("CO2", date), "CO2")
+            if o in ("-o" , "--tvoc"):
+                plotSingleData(conn.getByType("TVOC", date), "TVOC")
             
-        if o in ("-a" , "--all"):
-            entries = conn.getData(date)
-            data = np.empty((0,7))
-            for entry in entries:
-                data = np.vstack([data, [entry['date'], entry['time'],entry['temperature'], entry['pressure'], entry['humidity'], entry['CO2'], entry['TVOC']]])
-            labels =['date', 'time','temperature','pressure','humidity','CO2','TVOC']
-            plotMultiData(data, labels)
+            if o in ("-a" , "--all"):
+                entries = conn.getData(date)
+                data = np.empty((0,7))
+                for entry in entries:
+                    data = np.vstack([data, [entry['date'], entry['time'],entry['temperature'], entry['pressure'], entry['humidity'], entry['CO2'], entry['TVOC']]])
+                labels =['date', 'time','temperature','pressure','humidity','CO2','TVOC']
+                plotMultiData(data, labels)
 
-        if o in ("-d" , "--delete"):
-            conn.deleteDB(date)
-        '''
-        if o in ("-i" , "--id"):
-            data = conn.getById(sys.argv[2])
-        if o in ("-f" , "--file"):
-            data = conn.getByFile(sys.argv[2])
-        '''
-    #except:
-    #    print("\n Getting entry from database failed! Are you using the correct sensor?\n")
+            if o in ("-d" , "--delete"):
+                conn.deleteDB(date)
+            '''
+            if o in ("-i" , "--id"):
+                data = conn.getById(sys.argv[2])
+            if o in ("-f" , "--file"):
+                data = conn.getByFile(sys.argv[2])
+            '''
+    except:
+        print("\n Getting entry from database failed! Are you using the correct sensor?\n")
 
 #************************************
 ''' Plot data '''
