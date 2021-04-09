@@ -36,7 +36,7 @@ class GasSensor:
         #self.sgp30.set_iaq_baseline(0x8973, 0x8AAE)
        
         # Dynamic baseline
-        print("**** Baseline values: eCO2 = 0x%x, TVOC = 0x%x" % (config.eCO2_baseline, config.TVOC_baseline))
+        #print("**** Baseline values: eCO2 = 0x%x, TVOC = 0x%x" % (config.eCO2_baseline, config.TVOC_baseline))
         self.sgp30.set_iaq_baseline(config.eCO2_baseline, config.TVOC_baseline)
        
         elapsed_sec = 0
