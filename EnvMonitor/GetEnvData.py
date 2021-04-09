@@ -54,7 +54,7 @@ def main():
     except:
         date = {}
     
-    try
+    try:
         for o, a in opts:
             jsonData={}
             conn = SubMongoDB(json.dumps(jsonData), conf)
