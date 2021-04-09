@@ -60,10 +60,10 @@ def runAcq():
     
     if config.Gassensor == 'SGP30':
         from Gassensors import GasSensor
-        gasSensor = GasSensor(config)
-        gasSensor.readGasSensor()
-        CO2 = gasSensor.CO2
-        TVOC = gasSensor.TVOC
+        GSensor = GasSensor(config)
+        GSensor.readGasSensor()
+        CO2 = GSensor.CO2
+        TVOC = GSensor.TVOC
     else:
         CO2 = 0
         TVOC = 0
@@ -89,6 +89,8 @@ def runAcq():
             'sealevel' : sealevel,
             'CO2' : CO2,
             'TVOC' : TVOC,
+            'eCO2_baseline' : hex(GSens.baseline_eCO2),
+            'TVOC_baseline' : hex(GSens.baseline_TVOC),
             }
     
     #************************************
