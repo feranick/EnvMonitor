@@ -34,14 +34,14 @@ def main():
     conf = Configuration()
     s = sched.scheduler(time.time, time.sleep)
     while True:
-        s.enter(conf.runSeconds, conf.sleepSeconds, runAcq(conf))
+        s.enter(conf.runSeconds, conf.sleepSeconds, runAcq())
         s.run()
 
 #************************************
 ''' Run Acquistion '''
 #************************************
-def runAcq(config):
-  
+def runAcq():
+    conf = Configuration()
     if config.TPsensor == 'BMP180':
         from BMP180sensors import TRHSensor
     else:
