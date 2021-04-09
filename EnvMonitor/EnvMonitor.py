@@ -129,7 +129,7 @@ def runAcq():
         try:
             df = pd.DataFrame(sensData, index=[0])
             if not os.path.exists(file):
-                df.to_csv(config.CSVfile, mode="a", header=True)
+                df.to_csv(file, mode="a", header=True)
             else:
                 df.to_csv(file, mode="a", header=False)
             print("\n Saved in "+file)
