@@ -120,11 +120,11 @@ def runAcq(config):
     if config.saveCSV:
         try:
             df = pd.DataFrame(sensData, index=[0])
-            if not os.path.exists(CSVfile):
-                df.to_csv(CSVfile, mode="a", header=True)
+            if not os.path.exists(config.CSVfile):
+                df.to_csv(config.CSVfile, mode="a", header=True)
             else:
-                df.to_csv(CSVfile, mode="a", header=False)
-            print("\n Saved in "+CSVfile+"\n")
+                df.to_csv(config.CSVfile, mode="a", header=False)
+            print("\n Saved in "+config.CSVfile+"\n")
         except:
             print("\n Saving to CSV failed!\n")
 
