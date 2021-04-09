@@ -60,10 +60,10 @@ def runAcq():
     
     if config.Gassensor == 'SGP30':
         from Gassensors import GasSensor
-        GSensor = GasSensor(config)
-        GSensor.readGasSensor()
-        CO2 = GSensor.CO2
-        TVOC = GSensor.TVOC
+        GSens = GasSensor(config)
+        GSens.readGasSensor()
+        CO2 = GSens.CO2
+        TVOC = GSens.TVOC
     else:
         CO2 = 0
         TVOC = 0
