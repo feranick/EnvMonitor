@@ -77,7 +77,7 @@ def main():
             
         if o in ("-a" , "--all"):
             entries = conn.getData(date)
-            data = np.empty((0,5))
+            data = np.empty((0,7))
             for entry in entries:
                 data = np.vstack([data, [entry['date'], entry['time'],entry['temperature'], entry['pressure'], entry['humidity'], entry['CO2'], entry['TVOC']]])
             labels =['date', 'time','temperature','pressure','humidity','CO2','TVOC']
