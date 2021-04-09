@@ -4,7 +4,7 @@
 **********************************************************
 *
 * GetEnvData
-* version: 20191027a
+* version: 20210409a
 *
 * By: Nicola Ferralis <feranick@hotmail.com>
 *
@@ -37,7 +37,7 @@ def main():
     
     try:
         opts, args = getopt.getopt(sys.argv[1:],
-                                   "tphwalsdif:", ["temperature", "pressure", "humidity", "dewpoint", "altitude", "sealevel", "all","delete", "id", "file"])
+                                   "tprwhscoadif:", ["temperature", "pressure", "humidity", "dewpoint", "altitude", "sealevel", "co2", "tvoc", "all","delete", "id", "file"])
     except:
         usage()
         sys.exit(2)
@@ -62,23 +62,25 @@ def main():
             plotSingleData(conn.getByType("temperature", date), "temperature")
         if o in ("-p" , "--pressure"):
             plotSingleData(conn.getByType("pressure", date), "pressure")
-    
-        if o in ("-h" , "--humidity"):
+        if o in ("-r" , "--humidity"):
             plotSingleData(conn.getByType("humidity", date), "humidity")
         if o in ("-w" , "--dewpoint"):
             plotSingleData(conn.getByType("dewpoint", date), "dewpoint")
-
-        if o in ("-l" , "--altitude"):
+        if o in ("-h" , "--altitude"):
             plotSingleData(conn.getByType("altitude", date), "altitude")
         if o in ("-s" , "--sealevel"):
             plotSingleData(conn.getByType("sealevel", date), "sealevel pressure")
+        if o in ("-c" , "--co2"):
+            plotSingleData(conn.getByType("CO2", date), "CO2")
+        if o in ("-o" , "--tvoc"):
+            plotSingleData(conn.getByType("TVOC", date), "TVOC")
             
         if o in ("-a" , "--all"):
             entries = conn.getData(date)
             data = np.empty((0,5))
             for entry in entries:
-                data = np.vstack([data, [entry['date'], entry['time'],entry['temperature'], entry['pressure'], entry['humidity']]])
-            labels =['date', 'time','temperature','pressure','humidity']
+                data = np.vstack([data, [entry['date'], entry['time'],entry['temperature'], entry['pressure'], entry['humidity'], entry['CO2'], entry['TVOC']]])
+            labels =['date', 'time','temperature','pressure','humidity','CO2','TVOC']
             plotMultiData(data, labels)
 
         if o in ("-d" , "--delete"):
@@ -160,8 +162,8 @@ def usage():
     print('\n Usage:\n')
     print(' Query data based on date (YYYYMMDD) for temperature/pressure/humidity:')
     print('  python3 GetEnvData.py -t (or -p or -h) <date>\n')
-    print(' Query all data for temperature/pressure/humidity:')
-    print('  python3 GetEnvData.py -t (or -p or -h)\n')
+    print(' Query all data for temperature/pressure/humidity/co2/tvoc:')
+    print('  python3 GetEnvData.py -t (or -p or -h or -c or -o)\n')
     print(' Query data based on date (YYYYMMDD) for all measurements:')
     print('  python3 GetEnvData.py -a <date>\n')
     print(' Query all data for all measurements:')

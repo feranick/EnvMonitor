@@ -89,7 +89,7 @@ class SubMongoDB:
             data = np.append(data, entry)
         return data
 
-    def deleteDB(self):
+    def deleteDB(self, date):
         client = self.connectDB()
         db = client[self.config.DbName]
         i = 0
