@@ -120,7 +120,7 @@ def runAcq():
             #conn.checkCreateLotDM(sub)
             conn.pushToMongoDB()
         except:
-            print("\n Submission to database failed!\n")
+            print("\n Submission to database failed!")
     if config.saveCSV:
         try:
             df = pd.DataFrame(sensData, index=[0])
@@ -128,9 +128,9 @@ def runAcq():
                 df.to_csv(config.CSVfile, mode="a", header=True)
             else:
                 df.to_csv(config.CSVfile, mode="a", header=False)
-            print("\n Saved in "+config.CSVfile+"\n")
+            print("\n Saved in "+config.CSVfile")
         except:
-            print("\n Saving to CSV failed!\n")
+            print("\n Saving to CSV failed!")
 
 #************************************
 ''' Main initialization routine '''
