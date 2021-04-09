@@ -10,4 +10,4 @@
 #
 #####################################
 
-nohup EnvMonitorLite > ~/EnvMonLiteLog.txt 2>&1 &
+nohup EnvMonitor > ~/EnvMonLog.txt 2>&1 &
