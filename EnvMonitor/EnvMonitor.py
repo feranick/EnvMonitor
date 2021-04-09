@@ -31,17 +31,17 @@ from libEnvMonitor import *
 ''' Main - Scheduler '''
 #************************************
 def main():
-    conf = Configuration()
+    config = Configuration()
     s = sched.scheduler(time.time, time.sleep)
     while True:
-        s.enter(conf.runSeconds, conf.sleepSeconds, runAcq())
+        s.enter(config.runSeconds, config.sleepSeconds, runAcq())
         s.run()
 
 #************************************
 ''' Run Acquistion '''
 #************************************
 def runAcq():
-    conf = Configuration()
+    config = Configuration()
     if config.TPsensor == 'BMP180':
         from BMP180sensors import TRHSensor
     else:
