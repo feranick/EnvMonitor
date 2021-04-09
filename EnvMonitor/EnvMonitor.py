@@ -43,9 +43,6 @@ def main():
 def runAcq():
     config = Configuration()
     
-    file = str(os.path.splitext(config.CSVfile)[0]+ "-" +\
-                    str(datetime.now().strftime('%Y%m%d-%H%M%S'))+".csv")
-    
     if config.TPsensor == 'BMP180':
         from BMP180sensors import TRHSensor
     else:
@@ -128,11 +125,11 @@ def runAcq():
     if config.saveCSV:
         try:
             df = pd.DataFrame(sensData, index=[0])
-            if not os.path.exists(file):
-                df.to_csv(file, mode="a", header=True)
+            if not os.path.exists(config.CSVfile):
+                df.to_csv(config.CSVfile, mode="a", header=True)
             else:
-                df.to_csv(file, mode="a", header=False)
-            print("\n Saved in "+file)
+                df.to_csv(config.CSVfile, mode="a", header=False)
+            print("\n Saved in "+config.CSVfile)
         except:
             print("\n Saving to CSV failed!")
 
