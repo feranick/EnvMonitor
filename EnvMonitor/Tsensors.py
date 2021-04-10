@@ -87,7 +87,7 @@ class TRHSensor:
         
         self.RhA = C * (Pws * RH / 100) * 100 /(273.15 + T)
         
-        print(6.116441*pow(10, (7.591386*T)/(T+K)))
+        print(6.116441*pow(10, (7.591386*T)/(T+240.7263)))
         
         return self.RhA
                 
