@@ -85,6 +85,8 @@ class TRHSensor:
         self.Pws = Pc * exp((Tc/T)*(C1*Th + C2*pow(Th, 1.5) + C3*pow(Th, 3) + C4*pow(Th, 3.5) + C5*pow(Th, 4) + C6*pow(Th, 7.5)))    #  in hPa
         
         self.RhA = C * (Pws * RH / 100) * 100 /(273.15 + T)
+        
+        return self.Rha
                 
         
         

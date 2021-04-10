@@ -58,6 +58,8 @@ def runAcq():
     dewpoint = trhSensor.dewpoint
     altitude = trhSensor.altitude
     sealevel = trhSensor.sealevel
+    absHumidity = trhSensor.absHumidity(temperature,humidity)
+    print(humidity, absHumidity)
     
     if config.Gassensor == 'SGP30':
         from Gassensors import GasSensor
