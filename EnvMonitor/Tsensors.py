@@ -66,4 +66,28 @@ class TRHSensor:
                 self.dewpoint = 0
                 self.altitude = 0
                 self.sealevel = 0
+                
+    def absHumidity(self, T, RH):
+        # https://www.hatchability.com/Vaisala.pdf
+        
+        Tc = 647.096       # in K
+        Pc = 220639.128   # in hPa-7.85951783
+        C1 = -7.85951783
+        C2 = 1.84408259
+        C3 = -11.7866497
+        C4 = 22.6807411
+        C5 = -15.9618719
+        C6 = 1.80122502
+        C = 2.16679    # in gK/J
+        
+        nu = 1 - T/Tc
+        
+        self.Pws = Pc * exp((Tc/T)*(C1*Th + C2*pow(Th, 1.5) + C3*pow(Th, 3) + C4*pow(Th, 3.5) + C5*pow(Th, 4) + C6*pow(Th, 7.5)))    #  in hPa
+        
+        self.RhA = C * (Pws * RH / 100) * 100 /(273.15 + T)
+                
+        
+        
+        
+        
         
