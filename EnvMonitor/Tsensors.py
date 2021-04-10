@@ -70,6 +70,7 @@ class TRHSensor:
     def absHumidity(self, T1, RH):
         # https://www.hatchability.com/Vaisala.pdf
         T = T1 + 273.5
+        C = 2.16679    # in gK/J
         
         ### Method 1 - accurate but comp. intensive
         Tc = 647.096       # in K
@@ -85,7 +86,6 @@ class TRHSensor:
         Pws = Pc * math.exp((Tc/T)*(C1*nu + C2*pow(nu, 1.5) + C3*pow(nu, 3) + C4*pow(nu, 3.5) + C5*pow(nu, 4) + C6*pow(nu, 7.5)))    #  in hPa
         '''
         ### Method 2 - less accurate but more efficient
-        C = 2.16679    # in gK/J
         if T1 > -20 and T1 <= 50:
             A = 6.116441
             m = 7.591386
