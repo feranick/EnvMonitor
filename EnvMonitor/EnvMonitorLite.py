@@ -70,7 +70,7 @@ def runAcq():
         temperature = TSens.temperature
         pressure = TSens.pressure
         humidity = TSens.relative_humidity
-        absHum = absHumidity(TSens.temperature,TSens.relative_humidity)
+        absHum = absHumidity(TSens.temperature,TSens.relative_humidity,Pws(TSens.temperature,TSens.relative_humidity))
         if config.Gassensor == 'SGP30':
             GSens.set_iaq_humidity(absHum)
             

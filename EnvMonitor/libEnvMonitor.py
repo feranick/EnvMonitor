@@ -260,10 +260,8 @@ class Configuration():
 #************************************************
 # Convert Relative Humidity to Absolute in g/m^3
 #************************************************
-def absHumidity(T1, RH):
-    # https://www.hatchability.com/Vaisala.pdf
+def Pws(T1, RH):
     T = T1 + 273.5
-    C = 2.16679    # in gK/J
         
     ### Method 1 - accurate but comp. intensive
     Tc = 647.096       # in K
@@ -290,9 +288,15 @@ def absHumidity(T1, RH):
         
     Pws1 = (A * pow(10, (m*T1)/(T1+Tn)))
     '''
+    return Pws
         
+def absHumidity(T1, RH, Pws):
+    # https://www.hatchability.com/Vaisala.pdf
+    T = T1 + 273.5
+    C = 2.16679    # in gK/J
     RhA = C * (Pws * RH / 100) * 100/T
     return RhA
+    
 
 #************************************
 # Get system IP
