@@ -62,7 +62,7 @@ def runAcq():
     
     if config.Gassensor == 'SGP30':
         from Gassensors import GasSensor
-        GSens = GasSensor(config)
+        GSens = GasSensor(config, absHumidity)
         GSens.readGasSensor()
         CO2 = GSens.CO2
         TVOC = GSens.TVOC

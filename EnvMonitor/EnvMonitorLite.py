@@ -43,14 +43,6 @@ def runAcq():
                     str(datetime.now().strftime('%Y%m%d-%H%M%S'))+".csv")
     i2c = busio.I2C(board.SCL, board.SDA, frequency=100000)
  
-    if config.Gassensor == 'SGP30':
-        # Create library object on our I2C port
-        GSens = adafruit_sgp30.Adafruit_SGP30(i2c)
-        print("SGP30 serial #", [hex(i) for i in GSens.serial])
-    else:
-        print("Gas Sensor not found. Exiting")
-        return
-    
     if config.TPsensor == 'BME280':
         TSens = adafruit_bme280.Adafruit_BME280_I2C(i2c)
     elif config.TPsensor == 'MCP9808':
@@ -61,12 +53,28 @@ def runAcq():
         # Necessary when, for example, connecting A0 to VDD to make address=0x19
         # TSens = adafruit_mcp9808.MCP9808(i2c_bus, address=0x19)
  
-    print("Tsensor:",config.TPsensor)
-    GSens.iaq_init()
-    GSens.set_iaq_baseline(config.eCO2_baseline, config.TVOC_baseline)
+    if config.Gassensor == 'SGP30':
+        # Create library object on our I2C port
+        GSens = adafruit_sgp30.Adafruit_SGP30(i2c
+        print("SGP30 serial #", [hex(i) for i in GSens.serial])
+        print("Tsensor:",config.TPsensor)
+        GSens.iaq_init()
+        GSens.set_iaq_baseline(config.eCO2_baseline, config.TVOC_baseline)
+        GSens.set_iaq_humidity(self, absHumidity)
+    else:
+        print("Gas Sensor not found. Exiting")
+        return
+ 
     elapsed_sec = 0
  
     while True:
+        temperature = TSens.temperature
+        pressure = TSens.pressure
+        humidity = TSens.relative_humidity
+        absHumidity = TSens.absHumidity(temperature,humidity)
+        
+        if config.Gassensor == 'SGP30':
+            GSens.set_iaq_humidity(absHumidity)
         date = time.strftime("%Y%m%d")
         time1 = time.strftime("%H:%M:%S")
         
