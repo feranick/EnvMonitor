@@ -60,7 +60,8 @@ def runAcq():
         print("Tsensor:",config.TPsensor)
         GSens.iaq_init()
         GSens.set_iaq_baseline(config.eCO2_baseline, config.TVOC_baseline)
-        GSens.set_iaq_humidity(absHumidity)
+        absHum = absHumidity(TSens.temperature,T.Sens.relative_humidity)
+        GSens.set_iaq_humidity(absHum)
     else:
         print("Gas Sensor not found. Exiting")
         return
