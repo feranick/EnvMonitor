@@ -260,7 +260,7 @@ class Configuration():
 #************************************************
 # Convert Relative Humidity to Absolute in g/m^3
 #************************************************
-def absHumidity(self, T1, RH):
+def absHumidity(T1, RH):
     # https://www.hatchability.com/Vaisala.pdf
     T = T1 + 273.5
     C = 2.16679    # in gK/J
