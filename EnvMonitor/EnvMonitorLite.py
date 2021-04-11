@@ -60,8 +60,6 @@ def runAcq():
         print("Tsensor:",config.TPsensor)
         GSens.iaq_init()
         GSens.set_iaq_baseline(config.eCO2_baseline, config.TVOC_baseline)
-        absHum = absHumidity(TSens.temperature,T.Sens.relative_humidity)
-        GSens.set_iaq_humidity(absHum)
     else:
         print("Gas Sensor not found. Exiting")
         return
@@ -72,10 +70,10 @@ def runAcq():
         temperature = TSens.temperature
         pressure = TSens.pressure
         humidity = TSens.relative_humidity
-        absHumidity = TSens.absHumidity(temperature,humidity)
-        
+        absHum = absHumidity(TSens.temperature,TSens.relative_humidity)
         if config.Gassensor == 'SGP30':
-            GSens.set_iaq_humidity(absHumidity)
+            GSens.set_iaq_humidity(absHum)
+            
         date = time.strftime("%Y%m%d")
         time1 = time.strftime("%H:%M:%S")
         
