@@ -55,7 +55,7 @@ def runAcq():
  
     if config.Gassensor == 'SGP30':
         # Create library object on our I2C port
-        GSens = adafruit_sgp30.Adafruit_SGP30(i2c
+        GSens = adafruit_sgp30.Adafruit_SGP30(i2c)
         print("SGP30 serial #", [hex(i) for i in GSens.serial])
         print("Tsensor:",config.TPsensor)
         GSens.iaq_init()

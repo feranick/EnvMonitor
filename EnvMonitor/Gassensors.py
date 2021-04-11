@@ -41,7 +41,7 @@ class GasSensor:
         
         # Apply humidity correction
         if config.Gassensor == 'SGP30':
-            self.set_iaq_humidity(absHumidity)
+            self.sgp30.set_iaq_humidity(absHumidity)
         
         elapsed_sec = 0
     
