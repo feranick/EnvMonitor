@@ -37,7 +37,7 @@ def main():
     
     try:
         opts, args = getopt.getopt(sys.argv[1:],
-                                   "tprwhscoadif:", ["temperature", "pressure", "humidity", "dewpoint", "altitude", "sealevel", "co2", "tvoc", "all","delete", "id", "file"])
+                                   "tprwhscoabdif:", ["temperature", "pressure", "humidity", "dewpoint", "altitude", "sealevel", "co2", "tvoc", "all", "backup", "delete", "id", "file"])
     except:
         usage()
         sys.exit(2)
@@ -83,6 +83,15 @@ def main():
                 labels =['date', 'time','temperature','pressure','humidity','CO2','TVOC']
                 plotMultiData(data, labels)
 
+            if o in ("-b" , "--backup"):
+                entries = conn.getData(date)
+                data = np.empty((0,7))
+                for entry in entries:
+                    data = np.vstack([data, [entry['date'], entry['time'],entry['temperature'], entry['pressure'], entry['humidity'], entry['CO2'], entry['TVOC']]])
+                labels =['date', 'time','temperature','pressure','humidity','CO2','TVOC']
+                print(data)
+                print(labels)
+
             if o in ("-d" , "--delete"):
                 conn.deleteDB(date)
             '''
@@ -117,7 +126,6 @@ def plotSingleData(data, type):
     plt.close()
 
 def plotMultiData(data, labels):
-    
     x = data[:,1]
     #x = np.vectorize(convertTime)(x)
     
@@ -181,6 +189,10 @@ def usage():
     print('  python3 GetEnvData.py -a <date>\n')
     print(' Query all data for all measurements:')
     print('  python3 GetEnvData.py -a\n')
+    print(' Backup data on CSV based on date (YYYYMMDD) for all measurements:')
+    print('  python3 GetEnvData.py -b <date>\n')
+    print(' Backup data on CSV all data for all measurements:')
+    print('  python3 GetEnvData.py -b\n')
     print(' Delete all data for all measurements:')
     print('  python3 GetEnvData.py -d\n')
     print(' Delete data based on date for all measurements:')
