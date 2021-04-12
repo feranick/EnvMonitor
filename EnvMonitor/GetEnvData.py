@@ -84,13 +84,10 @@ def main():
                 plotMultiData(data, labels)
 
             if o in ("-b" , "--backup"):
-                entries = conn.getData(date)
-                data = np.empty((0,7))
-                for entry in entries:
-                    data = np.vstack([data, [entry['date'], entry['time'],entry['temperature'], entry['pressure'], entry['humidity'], entry['CO2'], entry['TVOC']]])
-                labels =['date', 'time','temperature','pressure','humidity','CO2','TVOC']
-                print(data)
-                print(labels)
+                file = str(os.path.splitext(conf.CSVfile)[0]+ "-backup_" +\
+                    str(date['date'])+".csv")
+                conn.backupDB(date, file)
+                print("\n Data saved in:",file,"\n")
 
             if o in ("-d" , "--delete"):
                 conn.deleteDB(date)
@@ -170,12 +167,7 @@ def plotMultiData(data, labels):
 
     plt.show()
     plt.close()
-'''
-def convertTime(time):
-    (h, m, s) = time.split(':')
-    #return int(h) * 3600 + int(m) * 60 + int(s)
-    return int(h+m+s)
-'''
+
 #************************************
 ''' Lists the program usage '''
 #************************************

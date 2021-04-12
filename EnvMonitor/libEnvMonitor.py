@@ -17,6 +17,7 @@ from pathlib import Path
 from datetime import datetime
 from pymongo import MongoClient
 import numpy as np
+import pandas as pd
 
 #************************************
 ''' Class Database '''
@@ -97,6 +98,20 @@ class SubMongoDB:
             db[self.config.DbName].delete_one({'_id': entry['_id']})
             i+=1
         print(" All",i,"entries for:",self.config.DbName, "deleted\n")
+        
+    def backupDB(self, date, file):
+            entries = self.getData(date)
+            df = pd.DataFrame(entries[0], index=[0])
+            for line in entries:
+                #print(line)
+                #print(list(line.items()))
+                #obj = list(line.items())
+                #print(np. array(obj))
+            
+                df_temp = pd.DataFrame(line, index=[0])
+                df = df.append(df_temp)
+            print(df)
+            df.to_csv(file, mode="a", header=True)
 
 ####################################################################
 # Configuration
@@ -140,7 +155,7 @@ class Configuration():
             'sleepSeconds' : 1,
             'saveCSV' : False,
             'saveMongoDB' : True,
-            'CSVfile' : 'EnvMonLog.csv',
+            'CSVfile' : 'EnvMonitor.csv',
             }
     def defineInstrumentation(self):
         self.conf['Instrumentation'] = {
