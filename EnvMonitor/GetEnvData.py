@@ -4,7 +4,7 @@
 **********************************************************
 *
 * GetEnvData
-* version: 20210409a
+* version: 20210412a
 *
 * By: Nicola Ferralis <feranick@hotmail.com>
 *
