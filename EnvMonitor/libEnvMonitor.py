@@ -312,7 +312,19 @@ def absHumidity(T1, RH, Pws):
     RhA = C * (Pws * RH / 100) * 100/T
     return RhA
     
-
+def dewPointRH(Pws):
+    if T1 > -20 and T1 <= 50:
+        A = 6.116441
+        m = 7.591386
+        Tn = 240.7263
+    elif T1 > 50 and T1 <= 100:
+        A = 6.004918
+        m = 7.337936
+        Tn = 229.3975
+    
+    dew = Tn/((m/math.log10(Pws * RH / 100))-1)
+    return dew
+    
 #************************************
 # Get system IP
 #************************************

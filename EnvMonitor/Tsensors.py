@@ -58,6 +58,9 @@ class TRHSensor:
                 self.sealevel = self.sensor.sea_level_pressure
                 tmp = math.sqrt(self.temperature/self.humidity)
                 self.dewpoint = 237.7 * tmp/(17.271-tmp)
+                pws = Pws(self.temperature, self.humidity)
+                #self.dewpoint1 = dewPointRH(pws)
+                #print(self.dewpoint, self.dewpoint1)
             except:
                 print("\n SENSOR NOT CONNECTED ")
                 self.temperature = 0
