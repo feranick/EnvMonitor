@@ -312,7 +312,7 @@ def absHumidity(T1, RH, Pws):
     RhA = C * (Pws * RH / 100) * 100/T
     return RhA
     
-def dewPointRH(Pws):
+def dewPointRH(T1, Rh, Pws):
     if T1 > -20 and T1 <= 50:
         A = 6.116441
         m = 7.591386
