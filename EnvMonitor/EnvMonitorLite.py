@@ -70,7 +70,10 @@ def runAcq():
         temperature = TSens.temperature
         pressure = TSens.pressure
         humidity = TSens.relative_humidity
-        absHum = absHumidity(TSens.temperature,TSens.relative_humidity,Pws(TSens.temperature,TSens.relative_humidity))
+        pws = Pws(TSens.temperature,TSens.relative_humidity))
+        absHum = absHumidity(TSens.temperature,TSens.relative_humidity,pws)
+        dewpoint = dewPointRH(temperature, humidity, pws)
+        
         if config.Gassensor == 'SGP30':
             GSens.set_iaq_humidity(absHum)
             
@@ -78,7 +81,7 @@ def runAcq():
         time1 = time.strftime("%H:%M:%S")
         
         #print("eCO2 = %d ppm \t TVOC = %d ppb" % (sgp30.eCO2, sgp30.TVOC))
-        print("eCO2= %d ppm | TVOC= %d ppb | T= %0.1f C | RH= %0.1f | date:%s | time: %s" % (GSens.eCO2, GSens.TVOC, TSens.temperature, TSens.relative_humidity, str(date), str(time1)))
+        print("eCO2= %d ppm | TVOC= %d ppb | T= %0.1f C | RH= %0.1f | date:%s | time: %s" % (GSens.eCO2, GSens.TVOC, temperature, humidity, str(date), str(time1)))
         time.sleep(1)
         elapsed_sec += 1
     
@@ -86,9 +89,10 @@ def runAcq():
             'name' : config.name,
             'date' : date,
             'time' : time1,
-            'temperature' : TSens.temperature,
-            'pressure' : TSens.pressure,
-            'humidity' : TSens.relative_humidity,
+            'temperature' : temperature,
+            'pressure' : pressure,
+            'humidity' : humidity,
+            'dewpoint' : dewpoint,
             'CO2' : GSens.eCO2,
             'TVOC' : GSens.TVOC,
             'eCO2_baseline' : hex(GSens.baseline_eCO2),
