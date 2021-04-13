@@ -4,7 +4,7 @@
 **********************************************************
 *
 * GetEnvData
-* version: 20210412b
+* version: 20210413a
 *
 * By: Nicola Ferralis <feranick@hotmail.com>
 *
@@ -49,61 +49,61 @@ def main():
     #************************************
     ''' Push to MongoDB '''
     #************************************
-    try:
-        date = {'date' : sys.argv[2]}
-    except:
-        date = {}
-        
-    try:
-        name = {'name' : sys.argv[3]}
-    except:
-        name = {}
+    if len(sys.argv) == 4:
+        name = sys.argv[3]
+        date = sys.argv[2]
+    elif len(sys.argv) == 3:
+        name = ""
+        date = sys.argv[2]
+    else:
+        name = ""
+        date = ""
     
-    #try:
-    for o, a in opts:
-        jsonData={}
-        conn = SubMongoDB(json.dumps(jsonData), conf)
-        if o in ("-t" , "--temperature"):
-            plotSingleData(conn.getByType("temperature", date), "temperature")
-        if o in ("-p" , "--pressure"):
-            plotSingleData(conn.getByType("pressure", date), "pressure")
-        if o in ("-r" , "--humidity"):
-            plotSingleData(conn.getByType("humidity", date), "humidity")
-        if o in ("-w" , "--dewpoint"):
-            plotSingleData(conn.getByType("dewpoint", date), "dewpoint")
-        if o in ("-h" , "--altitude"):
-            plotSingleData(conn.getByType("altitude", date), "altitude")
-        if o in ("-s" , "--sealevel"):
-            plotSingleData(conn.getByType("sealevel", date), "sealevel pressure")
-        if o in ("-c" , "--co2"):
-            plotSingleData(conn.getByType("CO2", date), "CO2")
-        if o in ("-o" , "--tvoc"):
-            plotSingleData(conn.getByType("TVOC", date), "TVOC")
+    try:
+        for o, a in opts:
+            jsonData={}
+            conn = SubMongoDB(json.dumps(jsonData), conf)
+            if o in ("-t" , "--temperature"):
+                plotSingleData(conn.getByType("temperature", date), "temperature")
+            if o in ("-p" , "--pressure"):
+                plotSingleData(conn.getByType("pressure", date), "pressure")
+            if o in ("-r" , "--humidity"):
+                plotSingleData(conn.getByType("humidity", date), "humidity")
+            if o in ("-w" , "--dewpoint"):
+                plotSingleData(conn.getByType("dewpoint", date), "dewpoint")
+            if o in ("-h" , "--altitude"):
+                plotSingleData(conn.getByType("altitude", date), "altitude")
+            if o in ("-s" , "--sealevel"):
+                plotSingleData(conn.getByType("sealevel", date), "sealevel pressure")
+            if o in ("-c" , "--co2"):
+                plotSingleData(conn.getByType("CO2", date), "CO2")
+            if o in ("-o" , "--tvoc"):
+                plotSingleData(conn.getByType("TVOC", date), "TVOC")
             
-        if o in ("-a" , "--all"):
-            entries = conn.getData(name, date)
-            data = np.empty((0,7))
-            for entry in entries:
-                data = np.vstack([data, [entry['date'], entry['time'],entry['temperature'], entry['pressure'], entry['humidity'], entry['CO2'], entry['TVOC']]])
-            labels =['date', 'time','temperature','pressure','humidity','CO2','TVOC']
-            plotMultiData(data, labels)
+            if o in ("-a" , "--all"):
+                entries = conn.getData(date, name)
+                data = np.empty((0,7))
+                for entry in entries:
+                    data = np.vstack([data, [entry['date'], entry['time'],entry['temperature'], entry['pressure'], entry['humidity'], entry['CO2'], entry['TVOC']]])
+                labels =['date', 'time','temperature','pressure','humidity','CO2','TVOC']
+                plotMultiData(data, labels, name)
 
-        if o in ("-b" , "--backup"):
-            file = str(os.path.splitext(conf.CSVfile)[0]+ "-backup_" +\
+            if o in ("-b" , "--backup"):
+                file = str(os.path.splitext(conf.CSVfile)[0]+ "-backup_" +\
                 str(date['date'])+".csv")
-            conn.backupDB(date, file)
-            print("\n Data saved in:",file,"\n")
+                conn.backupDB(date, file)
+                print("\n Data saved in:",file,"\n")
 
-        if o in ("-d" , "--delete"):
-            conn.deleteDB(date)
-            '''
-            if o in ("-i" , "--id"):
-                data = conn.getById(sys.argv[2])
-            if o in ("-f" , "--file"):
-                data = conn.getByFile(sys.argv[2])
-            '''
-    #except:
-        print("\n Getting entry from database failed! Are you using the correct sensor?\n")
+            if o in ("-d" , "--delete"):
+                conn.deleteDB(date)
+                '''
+                if o in ("-i" , "--id"):
+                    data = conn.getById(sys.argv[2])
+                if o in ("-f" , "--file"):
+                    data = conn.getByFile(sys.argv[2])
+                '''
+    except:
+        print("\n No entry in database\n")
 
 #************************************
 ''' Plot data '''
@@ -127,7 +127,7 @@ def plotSingleData(data, type):
     plt.show()
     plt.close()
 
-def plotMultiData(data, labels):
+def plotMultiData(data, labels, name):
     x = data[:,1]
     #x = np.vectorize(convertTime)(x)
     
@@ -142,7 +142,7 @@ def plotMultiData(data, labels):
         numTicks = int(len(x)/10)
     fig, (ax1, ax2, ax3, ax4) = plt.subplots(4,1, figsize=(9,10))
     ax1.plot(x,y1, label='EnvMon')
-    ax1.set_title('EnvMonitor: '+data[-1,0])
+    ax1.set_title('EnvMonitor: '+data[-1,0]+'  '+name)
     ax1.set_ylabel(labels[2])
     ax1.set_xticks(x[::numTicks])
     ax1.set_xticklabels([])
@@ -184,6 +184,8 @@ def usage():
     print('  python3 GetEnvData.py -t (or -p or -h or -c or -o)\n')
     print(' Query data based on date (YYYYMMDD) for all measurements:')
     print('  python3 GetEnvData.py -a <date>\n')
+    print(' Query data based on date (YYYYMMDD) and name for all measurements:')
+    print('  python3 GetEnvData.py -a <date> <name>\n')
     print(' Query all data for all measurements:')
     print('  python3 GetEnvData.py -a\n')
     print(' Backup data on CSV based on date (YYYYMMDD) for all measurements:')

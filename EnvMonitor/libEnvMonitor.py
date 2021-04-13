@@ -4,7 +4,7 @@
 **********************************************************
 *
 * libEnvMonitor - Environmental Tracking
-* version: 20210412b
+* version: 20210413a
 *
 * By: Nicola Ferralis <feranick@hotmail.com>
 *
@@ -81,25 +81,19 @@ class SubMongoDB:
             #print(entry['date'], entry['time'], entry[type])
             data = np.vstack((data, [entry['date'], entry['time'], entry[type]]))
         return data
-    
-    def getDataByEntry(self, field):
-        client = self.connectDB()
-        db = client[self.config.DbName]
-        data = np.empty((0,1))
-        for entry in db[self.config.DbName].find(field).sort([("time",1)]):
-            data = np.append(data, entry)
-        return data
         
-    def getData(self, name, date):
+    def getData(self, date, name):
+        print(name, date)
         client = self.connectDB()
         db = client[self.config.DbName]
         data = np.empty((0,1))
-        if name == {}:
-            fields = date
+        if name == "":
+            fields = {'date' : date}
         else:
-            fields = {"$and": [name, date]}
+            fields = {"$and": [{'name' : name}, {'date' : date}]}
         for entry in db[self.config.DbName].find(fields).sort([("time",1)]):
             data = np.append(data, entry)
+        print(data)
         return data
 
     def deleteDB(self, date):
@@ -115,11 +109,6 @@ class SubMongoDB:
             entries = self.getData(date)
             df = pd.DataFrame(entries[0], index=[0])
             for line in entries:
-                #print(line)
-                #print(list(line.items()))
-                #obj = list(line.items())
-                #print(np. array(obj))
-            
                 df_temp = pd.DataFrame(line, index=[0])
                 df = df.append(df_temp)
             print(df)
