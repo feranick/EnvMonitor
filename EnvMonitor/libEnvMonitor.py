@@ -82,11 +82,23 @@ class SubMongoDB:
             data = np.vstack((data, [entry['date'], entry['time'], entry[type]]))
         return data
     
-    def getData(self, date):
+    def getDataByEntry(self, field):
         client = self.connectDB()
         db = client[self.config.DbName]
         data = np.empty((0,1))
-        for entry in db[self.config.DbName].find(date).sort([("time",1)]):
+        for entry in db[self.config.DbName].find(field).sort([("time",1)]):
+            data = np.append(data, entry)
+        return data
+        
+    def getData(self, name, date):
+        client = self.connectDB()
+        db = client[self.config.DbName]
+        data = np.empty((0,1))
+        if name == {}:
+            fields = date
+        else:
+            fields = {"$and": [name, date]}
+        for entry in db[self.config.DbName].find(fields).sort([("time",1)]):
             data = np.append(data, entry)
         return data
 
