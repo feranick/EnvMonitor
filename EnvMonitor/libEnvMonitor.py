@@ -322,7 +322,9 @@ def dewPointRH(T1, RH, Pws):
         m = 7.337936
         Tn = 229.3975
     
-    dew = Tn/((m/math.log10(Pws * RH / 100))-1)
+    Pw = Pws * RH / 100
+    print(Pw)
+    dew = Tn/((m/math.log10(Pw/A))-1)
     return dew
     
 #************************************
