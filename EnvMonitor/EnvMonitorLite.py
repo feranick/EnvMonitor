@@ -70,7 +70,7 @@ def runAcq():
         temperature = TSens.temperature
         pressure = TSens.pressure
         humidity = TSens.relative_humidity
-        pws = Pws(TSens.temperature,TSens.relative_humidity))
+        pws = Pws(temperature,humidity)
         absHum = absHumidity(TSens.temperature,TSens.relative_humidity,pws)
         dewpoint = dewPointRH(temperature, humidity, pws)
         
