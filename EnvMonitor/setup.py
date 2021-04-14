@@ -7,6 +7,7 @@ setup(
     entry_points={'console_scripts' : ['EnvMonitor=EnvMonitor:EnvMonitor',
         'GetEnvData=GetEnvData:GetEnvData', 'EnvMonitorLite=EnvMonitorLite:EnvMonitorLite']},
     py_modules=['EnvMonitor','EnvMonitorLite','GetEnvData','libEnvMonitor','PMsensor','BMP180sensors','Tsensors','Gassensors'],
+    scripts=['EnvMonitor_launcher.sh', 'EnvMonitorLite_launcher.sh'],
     version='20210414a',
     description='Environmental tracking monitor with submission to mongo or CSV',
     long_description= """ Environmental tracking monitor with submission to mongo or CSV """,
