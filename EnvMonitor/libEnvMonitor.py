@@ -4,7 +4,7 @@
 **********************************************************
 *
 * libEnvMonitor - Environmental Tracking
-* version: 20210413a
+* version: 20210414a
 *
 * By: Nicola Ferralis <feranick@hotmail.com>
 *
@@ -82,29 +82,33 @@ class SubMongoDB:
             data = np.vstack((data, [entry['date'], entry['time'], entry[type]]))
         return data
         
-    def getData(self, date, name):
+    def getData(self, date, lab):
         client = self.connectDB()
         db = client[self.config.DbName]
         data = np.empty((0,1))
-        if name == "":
+        if lab == "":
             fields = {'date' : date}
         else:
-            fields = {"$and": [{'name' : name}, {'date' : date}]}
+            fields = {"$and": [{'lab' : lab}, {'date' : date}]}
         for entry in db[self.config.DbName].find(fields).sort([("time",1)]):
             data = np.append(data, entry)
         return data
 
-    def deleteDB(self, date):
+    def deleteDB(self, date, lab):
         client = self.connectDB()
         db = client[self.config.DbName]
+        if lab == "":
+            fields = {'date' : date}
+        else:
+            fields = {"$and": [{'lab' : lab}, {'date' : date}]}
         i = 0
-        for entry in db[self.config.DbName].find(date):
+        for entry in db[self.config.DbName].find(fields):
             db[self.config.DbName].delete_one({'_id': entry['_id']})
             i+=1
         print(" All",i,"entries for:",self.config.DbName, "deleted\n")
         
-    def backupDB(self, date, name, file):
-        entries = self.getData(date, name)
+    def backupDB(self, date, lab, file):
+        entries = self.getData(date, lab)
         df = pd.DataFrame(entries[0], index=[0])
         for line in entries:
             df_temp = pd.DataFrame(line, index=[0])

@@ -4,7 +4,7 @@
 **********************************************************
 *
 * GetEnvData
-* version: 20210413a
+* version: 20210414a
 *
 * By: Nicola Ferralis <feranick@hotmail.com>
 *
@@ -37,7 +37,7 @@ def main():
     
     try:
         opts, args = getopt.getopt(sys.argv[1:],
-                                   "tprwhscoabndif:", ["temperature", "pressure", "humidity", "dewpoint", "altitude", "sealevel", "co2", "tvoc", "all", "-name", "backup", "delete", "id", "file"])
+                                   "tprwhscoabldif:", ["temperature", "pressure", "humidity", "dewpoint", "altitude", "sealevel", "co2", "tvoc", "all", "lab", "backup", "delete", "id", "file"])
     except:
         usage()
         sys.exit(2)
@@ -50,19 +50,20 @@ def main():
     ''' Push to MongoDB '''
     #************************************
     if len(sys.argv) == 4:
-        name = sys.argv[3]
+        lab = sys.argv[3]
         date = sys.argv[2]
     elif len(sys.argv) == 3:
-        name = ""
+        lab = ""
         date = sys.argv[2]
     else:
-        name = ""
+        lab = ""
         date = ""
     
     try:
         for o, a in opts:
             jsonData={}
             conn = SubMongoDB(json.dumps(jsonData), conf)
+        
             if o in ("-t" , "--temperature"):
                 plotSingleData(conn.getByType("temperature", date), "temperature")
             if o in ("-p" , "--pressure"):
@@ -79,29 +80,24 @@ def main():
                 plotSingleData(conn.getByType("CO2", date), "CO2")
             if o in ("-o" , "--tvoc"):
                 plotSingleData(conn.getByType("TVOC", date), "TVOC")
-            
+        
             if o in ("-a" , "--all"):
-                entries = conn.getData(date, name)
+                entries = conn.getData(date, lab)
                 data = np.empty((0,7))
                 for entry in entries:
                     data = np.vstack([data, [entry['date'], entry['time'],entry['temperature'], entry['pressure'], entry['humidity'], entry['CO2'], entry['TVOC']]])
                 labels =['date', 'time','temperature','pressure','humidity','CO2','TVOC']
-                plotMultiData(data, labels, name)
-
+                plotMultiData(data, labels, lab)
+        
             if o in ("-b" , "--backup"):
-                file = str(os.path.splitext(conf.CSVfile)[0]+ "-"+name+"-backup_" +\
+                file = str(os.path.splitext(conf.CSVfile)[0]+ "-"+lab+"-backup_" +\
                     str(date)+".csv")
-                conn.backupDB(date, name, file)
+                conn.backupDB(date, lab, file)
                 print("\n Data saved in:",file,"\n")
-
+        
             if o in ("-d" , "--delete"):
-                conn.deleteDB(date)
-            '''
-            if o in ("-i" , "--id"):
-                data = conn.getById(sys.argv[2])
-            if o in ("-f" , "--file"):
-                data = conn.getByFile(sys.argv[2])
-            '''
+                conn.deleteDB(date, lab)
+        
     except:
         print("\n No entry in database\n")
 
@@ -127,7 +123,7 @@ def plotSingleData(data, type):
     plt.show()
     plt.close()
 
-def plotMultiData(data, labels, name):
+def plotMultiData(data, labels, lab):
     x = data[:,1]
     #x = np.vectorize(convertTime)(x)
     
@@ -142,7 +138,7 @@ def plotMultiData(data, labels, name):
         numTicks = int(len(x)/10)
     fig, (ax1, ax2, ax3, ax4) = plt.subplots(4,1, figsize=(9,10))
     ax1.plot(x,y1, label='EnvMon')
-    ax1.set_title('EnvMonitor: '+data[-1,0]+'  '+name)
+    ax1.set_title('EnvMonitor: '+data[-1,0]+'  '+lab)
     ax1.set_ylabel(labels[2])
     ax1.set_xticks(x[::numTicks])
     ax1.set_xticklabels([])
@@ -184,8 +180,8 @@ def usage():
     print('  python3 GetEnvData.py -t (or -p or -h or -c or -o)\n')
     print(' Query data based on date (YYYYMMDD) for all measurements:')
     print('  python3 GetEnvData.py -a <date>\n')
-    print(' Query data based on date (YYYYMMDD) and name for all measurements:')
-    print('  python3 GetEnvData.py -a <date> <name>\n')
+    print(' Query data based on date (YYYYMMDD) and lab for all measurements:')
+    print('  python3 GetEnvData.py -a <date> <lab>\n')
     print(' Query all data for all measurements:')
     print('  python3 GetEnvData.py -a\n')
     print(' Backup data on CSV based on date (YYYYMMDD) for all measurements:')
