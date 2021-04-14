@@ -101,11 +101,9 @@ class SubMongoDB:
             fields = {'date' : date}
         else:
             fields = {"$and": [{'lab' : lab}, {'date' : date}]}
-        i = 0
-        for entry in db[self.config.DbName].find(fields):
-            db[self.config.DbName].delete_one({'_id': entry['_id']})
-            i+=1
-        print(" All",i,"entries for:",self.config.DbName, "deleted\n")
+
+        db[self.config.DbName].remove(fields)
+        print(" All Entries for:",date,lab,"(Database:",self.config.DbName,") were deleted\n")
         
     def backupDB(self, date, lab, file):
         entries = self.getData(date, lab)
