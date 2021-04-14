@@ -89,19 +89,19 @@ def main():
                 plotMultiData(data, labels, name)
 
             if o in ("-b" , "--backup"):
-                file = str(os.path.splitext(conf.CSVfile)[0]+ "-backup_" +\
-                str(date['date'])+".csv")
-                conn.backupDB(date, file)
+                file = str(os.path.splitext(conf.CSVfile)[0]+ "-"+name+"-backup_" +\
+                    str(date)+".csv")
+                conn.backupDB(date, name, file)
                 print("\n Data saved in:",file,"\n")
 
             if o in ("-d" , "--delete"):
                 conn.deleteDB(date)
-                '''
-                if o in ("-i" , "--id"):
-                    data = conn.getById(sys.argv[2])
-                if o in ("-f" , "--file"):
-                    data = conn.getByFile(sys.argv[2])
-                '''
+            '''
+            if o in ("-i" , "--id"):
+                data = conn.getById(sys.argv[2])
+            if o in ("-f" , "--file"):
+                data = conn.getByFile(sys.argv[2])
+            '''
     except:
         print("\n No entry in database\n")
 

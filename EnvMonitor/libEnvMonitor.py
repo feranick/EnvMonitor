@@ -83,7 +83,6 @@ class SubMongoDB:
         return data
         
     def getData(self, date, name):
-        print(name, date)
         client = self.connectDB()
         db = client[self.config.DbName]
         data = np.empty((0,1))
@@ -93,7 +92,6 @@ class SubMongoDB:
             fields = {"$and": [{'name' : name}, {'date' : date}]}
         for entry in db[self.config.DbName].find(fields).sort([("time",1)]):
             data = np.append(data, entry)
-        print(data)
         return data
 
     def deleteDB(self, date):
@@ -105,14 +103,13 @@ class SubMongoDB:
             i+=1
         print(" All",i,"entries for:",self.config.DbName, "deleted\n")
         
-    def backupDB(self, date, file):
-            entries = self.getData(date)
-            df = pd.DataFrame(entries[0], index=[0])
-            for line in entries:
-                df_temp = pd.DataFrame(line, index=[0])
-                df = df.append(df_temp)
-            print(df)
-            df.to_csv(file, mode="a", header=True)
+    def backupDB(self, date, name, file):
+        entries = self.getData(date, name)
+        df = pd.DataFrame(entries[0], index=[0])
+        for line in entries:
+            df_temp = pd.DataFrame(line, index=[0])
+            df = df.append(df_temp)
+        df.to_csv(file, mode="a", header=True)
 
 ####################################################################
 # Configuration
