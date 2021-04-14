@@ -96,7 +96,9 @@ def main():
                 print("\n Data saved in:",file,"\n")
         
             if o in ("-d" , "--delete"):
-                conn.deleteDB(date, lab)
+                yN = input("Are you sure (y/N)? ")
+                if yN == "y":
+                    conn.deleteDB(date, lab)
         
     except:
         print("\n No entry in database\n")
