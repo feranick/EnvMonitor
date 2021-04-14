@@ -2,12 +2,9 @@
 # -*- coding: utf-8 -*-
 '''
 **********************************************************
-*
 * EnvMonitor - Environmental Tracking - SGP30 Sensor
 * version: 20210414a
-*
 * By: Nicola Ferralis <feranick@hotmail.com>
-*
 ***********************************************************
 '''
 #print(__doc__)

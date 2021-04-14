@@ -1,14 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 '''
-**********************************************************
-*
-* EnvMonitor - Environmental Tracking - MCP9808 Temperature
+************************************************************
+* EnvMonitor - T/RH/P Sensors
 * version: 20210414a
-*
 * By: Nicola Ferralis <feranick@hotmail.com>
-*
-***********************************************************
+************************************************************
 '''
 #print(__doc__)
 import time, math

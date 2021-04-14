@@ -2,12 +2,9 @@
 # -*- coding: utf-8 -*-
 '''
 **********************************************************
-*
 * EnvMonitor - Environmental Tracking - BMP Sensors
 * version: 20210409a
-*
 * By: Nicola Ferralis <feranick@hotmail.com>
-*
 ***********************************************************
 '''
 #print(__doc__)

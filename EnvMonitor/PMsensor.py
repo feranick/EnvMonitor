@@ -2,12 +2,9 @@
 # -*- coding: utf-8 -*-
 '''
 **********************************************************
-*
 * EnvMonitor - Environmental Tracking - PM sensors
 * version: 20190308b
-*
 * By: Nicola Ferralis <feranick@hotmail.com>
-*
 ***********************************************************
 '''
 #print(__doc__)
