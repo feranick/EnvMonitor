@@ -352,7 +352,7 @@ def getBaromPress(config):
         df.columns = cols  # Update column names
         #print(df['pressure_mb'][0])
         sealevel = float(df['pressure_mb'][0])
-        print("\n Gathered sea level pressure for:",config.airportCode,"- ",sealevel,"mbar")
+        print("\n Gathered sea level pressure for:",config.airportCode,"- ",sealevel,"hPa")
         return sealevel
     except:
         print("\n Gathering sea level pressure, failed")

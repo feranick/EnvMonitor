@@ -97,11 +97,11 @@ def runAcq():
     #************************************
     if config.verbose:
         print("\n Lab: ", config.lab)
-        print(" Lab: ", config.name)
+        print(" Name: ", config.name)
         print(" Measurement type: ", config.measType)
+        print(" IP: ", ip)
         print(" TP sensor: ", config.TPsensor)
         print(" Gas sensor: ", config.Gassensor)
-        print(" IP: ", ip)
         print(" Date: ", date)
         print(" Time: ", time1)
         print(" Temperature = {0:0.1f} deg C".format(temperature))
