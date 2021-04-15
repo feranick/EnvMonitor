@@ -61,7 +61,7 @@ class GasSensor:
             self.CO2 = self.sgp30.eCO2
             self.TVOC = self.sgp30.TVOC
         except:
-            print("\n SENSOR NOT CONNECTED ")
+            print("\n GAS SENSOR NOT CONNECTED ")
             self.CO2 = 0
             self.TVOC = 0
         self.baseline_eCO2 = self.sgp30.baseline_eCO2

@@ -344,7 +344,7 @@ def getBaromPress(config):
     data = []
     cols = []
     for i, child in enumerate(root):
-        print(i, child.tag, child.text)
+        #print(i, child.tag, child.text)
         data.append([child.text])
         cols.append(child.tag)
     df = pd.DataFrame(data).T  # Write in DF and transpose it

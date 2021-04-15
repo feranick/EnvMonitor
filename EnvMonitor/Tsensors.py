@@ -27,7 +27,7 @@ class TRHSensor:
             try:
                 self.temperature = self.sensor.temperature
             except:
-                print("\n SENSOR NOT CONNECTED ")
+                print("\n T/RH/P SENSOR NOT CONNECTED ")
                 self.temperature = 0
             self.pressure = 0
             self.humidity = 0
@@ -38,30 +38,30 @@ class TRHSensor:
         elif config.TPsensor == 'BME280':
             import adafruit_bme280
             self.sensor = adafruit_bme280.Adafruit_BME280_I2C(self.i2c)
-            try:
-                self.sensor.sea_level_pressure = getBaromPress(config)
-                self.sensor.mode = adafruit_bme280.MODE_NORMAL
-                self.sensor.standby_period = adafruit_bme280.STANDBY_TC_500
-                self.sensor.iir_filter = adafruit_bme280.IIR_FILTER_X16
-                self.sensor.overscan_pressure = adafruit_bme280.OVERSCAN_X16
-                self.sensor.overscan_humidity = adafruit_bme280.OVERSCAN_X1
-                self.sensor.overscan_temperature = adafruit_bme280.OVERSCAN_X2
-                # The sensor will need a moment to gather initial readings
-                time.sleep(1)
-                self.temperature = self.sensor.temperature
-                self.pressure = self.sensor.pressure
-                self.humidity = self.sensor.relative_humidity
-                self.altitude = self.sensor.altitude
-                self.sealevel = self.sensor.sea_level_pressure
-                self.dewpoint = dewPointRH(self.temperature, self.humidity, Pws(self.temperature, self.humidity))
-            except:
-                print("\n SENSOR NOT CONNECTED ")
-                self.temperature = 0
-                self.pressure = 0
-                self.humidity = 0
-                self.dewpoint = 0
-                self.altitude = 0
-                self.sealevel = getBaromPress(config)
+            #try:
+            self.sensor.sea_level_pressure = getBaromPress(config)
+            self.sensor.mode = adafruit_bme280.MODE_NORMAL
+            self.sensor.standby_period = adafruit_bme280.STANDBY_TC_500
+            self.sensor.iir_filter = adafruit_bme280.IIR_FILTER_X16
+            self.sensor.overscan_pressure = adafruit_bme280.OVERSCAN_X16
+            self.sensor.overscan_humidity = adafruit_bme280.OVERSCAN_X1
+            self.sensor.overscan_temperature = adafruit_bme280.OVERSCAN_X2
+            # The sensor will need a moment to gather initial readings
+            time.sleep(1)
+            self.temperature = self.sensor.temperature
+            self.pressure = self.sensor.pressure
+            self.humidity = self.sensor.relative_humidity
+            self.altitude = self.sensor.altitude
+            self.sealevel = self.sensor.sea_level_pressure
+            self.dewpoint = dewPointRH(self.temperature, self.humidity, Pws(self.temperature, self.humidity))
+            #except:
+            #    print("\n T/RH/P SENSOR NOT CONNECTED ")
+            #    self.temperature = 0
+            #    self.pressure = 0
+            #    self.humidity = 0
+            #    self.dewpoint = 0
+            #    self.altitude = 0
+            #    self.sealevel = getBaromPress(config)
                 
                 
         
