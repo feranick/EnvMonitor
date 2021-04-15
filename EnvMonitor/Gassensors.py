@@ -21,7 +21,7 @@ import adafruit_sgp30
 #************************************
 class GasSensor:
     def __init__(self, config, absHumidity):
-        print("\n Gas Sensor Warming up, please wait\n")
+        print(" Gas Sensor Warming up, please wait...\n")
         self.i2c = busio.I2C(board.SCL, board.SDA, frequency=100000)
         # To initialise using the default address:
         self.sgp30 = adafruit_sgp30.Adafruit_SGP30(self.i2c)
