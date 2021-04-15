@@ -1,8 +1,8 @@
 #!/bin/bash
 #####################################
-# EnvMonitor launcher
+# EnvMonitorNest launcher
 # v. 20210415b
 # Nicola Ferralis <feranick@hotmail.com>
 #####################################
 
-nohup EnvMonitor > ~/EnvMonLog.txt 2>&1 &
+nohup EnvMonitorNest > ~/EnvMonNestLog.txt 2>&1 &
