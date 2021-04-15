@@ -353,7 +353,7 @@ def getBaromPress(config):
         #print(df['pressure_mb'][0])
         sealevel = float(df['pressure_mb'][0])
         print("\n Gathered seal level pressure for:",config.airportCode,"(",sealevel,")")
-        return sealevel)
+        return sealevel
     except:
         print("\n Gathering sea level pressure, failed")
         return 1000
