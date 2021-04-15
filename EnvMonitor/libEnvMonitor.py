@@ -133,7 +133,7 @@ class Configuration():
         try:
             self.defineSystem()
             self.defineInstrumentation()
-            #self.defineData()
+            self.defineEnvironment()
             self.defineConfDM()
             with open(self.configFile, 'w') as configfile:
                 self.conf.write(configfile)
@@ -166,6 +166,12 @@ class Configuration():
             'eCO2_baseline' : '0x93a7',
             'TVOC_baseline' : '0x9817',
             'resetBaseline' : False,
+            }
+            
+    def defineEnvironment(self):
+        self.conf['Environment'] = {
+            'minCO2' : 800,
+            'maxCO2' : 1500,
             }
     '''
     # for images/binary
@@ -212,7 +218,7 @@ class Configuration():
         self.appVersion = self.sysConfig['appVersion']
         try:
             self.instrumentationConfig = self.conf['Instrumentation']
-            #self.dataConfig = self.conf['Data']
+            self.envConfig = self.conf['Environment']
             self.dmConfig = self.conf['DM']
 
             self.loggingLevel = self.sysConfig['loggingLevel']
@@ -236,6 +242,9 @@ class Configuration():
             self.eCO2_baseline = int(self.conf.get('Instrumentation','eCO2_baseline'),16)
             self.TVOC_baseline = int(self.conf.get('Instrumentation','TVOC_baseline'),16)
             self.resetBaseline = self.conf.getboolean('Instrumentation','resetBaseline')
+            
+            self.minCO2 = self.conf.getfloat('Environment','minCO2')
+            self.maxCO2 = self.conf.getfloat('Environment','maxCO2')
             
             '''
             self.headers = eval(self.dataConfig['headers'])
