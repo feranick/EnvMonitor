@@ -34,7 +34,7 @@ def main():
     
     try:
         opts, args = getopt.getopt(sys.argv[1:],
-                                   "tprwhscoabldif:", ["temperature", "pressure", "humidity", "dewpoint", "altitude", "sealevel", "co2", "tvoc", "all", "lab", "backup", "delete", "id", "file"])
+            "tprwhscoabldif:", ["temperature", "pressure", "humidity", "dewpoint", "altitude", "sealevel", "co2", "tvoc", "all", "lab", "backup", "delete", "id", "file"])
     except:
         usage()
         sys.exit(2)
