@@ -31,10 +31,10 @@ class SubMongoDB:
             client = MongoClient(self.config.DbHostname, int(self.config.DbPortNumber))
             auth_status = client[self.config.DbName].authenticate(self.config.DbUsername,self.config.DbPassword)
             if self.config.verbose:
-                print(" Connecting to MongoDB: Authentication status = {0}\n".format(auth_status))
+                print(" Connecting to MongoDB: Authentication status = {0}".format(auth_status))
             return client
         except:
-            print(" Connecting to MongoDB: Unsuccessful\n")
+            print(" Connecting to MongoDB: Unsuccessful")
             return None
 
     def printAuthInfo(self):
@@ -352,7 +352,7 @@ def getBaromPress(config):
         df.columns = cols  # Update column names
         #print(df['pressure_mb'][0])
         sealevel = float(df['pressure_mb'][0])
-        print("\n Gathered sea level pressure for:",config.airportCode," ",sealevel,"mbar")
+        print("\n Gathered sea level pressure for:",config.airportCode,"- ",sealevel,"mbar")
         return sealevel
     except:
         print("\n Gathering sea level pressure, failed")
