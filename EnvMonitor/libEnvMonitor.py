@@ -9,11 +9,13 @@
 '''
 #print(__doc__)
 
-import sys, math, json, os.path, time, configparser, logging, sched
+import sys, math, json, os.path, time, configparser, logging, sched, urllib.request
 from pathlib import Path
 from datetime import datetime
 from pymongo import MongoClient
 import numpy as np
+import pandas as pd
+import xml.etree.ElementTree as ET
 import pandas as pd
 
 #************************************
@@ -161,7 +163,6 @@ class Configuration():
             'name' : 'test',
             'itemId' : '1',
             'TPsensor' : 'BME280',
-            'SeaLevelPressure' : '1019.0',
             'Gassensor' : 'SGP30',
             'eCO2_baseline' : '0x93a7',
             'TVOC_baseline' : '0x9817',
@@ -170,6 +171,7 @@ class Configuration():
             
     def defineEnvironment(self):
         self.conf['Environment'] = {
+            'airportCode' : 'KBOS',
             'minCO2' : 800,
             'maxCO2' : 1500,
             }
@@ -237,12 +239,12 @@ class Configuration():
             #self.architecture = self.instrumentationConfig['architecture']
             self.itemId = self.instrumentationConfig['itemId']
             self.TPsensor = self.instrumentationConfig['TPsensor']
-            self.SeaLevelPressure = self.conf.getfloat('Instrumentation','SeaLevelPressure')
+            #self.SeaLevelPressure = self.conf.getfloat('Instrumentation','SeaLevelPressure')
             self.Gassensor = self.instrumentationConfig['Gassensor']
             self.eCO2_baseline = int(self.conf.get('Instrumentation','eCO2_baseline'),16)
             self.TVOC_baseline = int(self.conf.get('Instrumentation','TVOC_baseline'),16)
             self.resetBaseline = self.conf.getboolean('Instrumentation','resetBaseline')
-            
+            self.airportCode = self.instrumentationConfig['airportCode']
             self.minCO2 = self.conf.getfloat('Environment','minCO2')
             self.maxCO2 = self.conf.getfloat('Environment','maxCO2')
             
@@ -331,7 +333,24 @@ def dewPointRH(T1, RH, Pws):
     Pw = Pws * RH / 100
     dew = Tn/((m/math.log10(Pw/A))-1)
     return dew
-    
+
+#************************************
+# Get barometric pressure from NWS
+#************************************
+def getBaromPress(config):
+    url = 'https://w1.weather.gov/xml/current_obs/'+config.airportCode+'.xml'
+    xml_data = urllib.request.urlopen(url).read()
+    root = ET.XML(xml_data)  # Parse XML
+    data = []
+    cols = []
+    for i, child in enumerate(root):
+        print(i, child.tag, child.text)
+        data.append([child.text])
+        cols.append(child.tag)
+    df = pd.DataFrame(data).T  # Write in DF and transpose it
+    df.columns = cols  # Update column names
+    print(df['pressure_mb'][0])
+
 #************************************
 # Get system IP
 #************************************
