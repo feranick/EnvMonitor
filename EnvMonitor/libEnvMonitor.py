@@ -3,7 +3,7 @@
 '''
 **********************************************************
 * libEnvMonitor - Environmental Tracking
-* version: 20210414a
+* version: 20210414b
 * By: Nicola Ferralis <feranick@hotmail.com>
 ***********************************************************
 '''
@@ -148,8 +148,8 @@ class Configuration():
             'loggingFilename' : self.logFile,
             'dataFolder' : '.',
             'verbose' : True,
-            'runSeconds' : 5,
-            'sleepSeconds' : 1,
+            'sleepSeconds' : 5,
+            'priority' : 1,
             'saveCSV' : False,
             'saveMongoDB' : True,
             'CSVfile' : 'EnvMonitor.csv',
@@ -219,8 +219,8 @@ class Configuration():
             self.loggingFilename = self.sysConfig['loggingFilename']
             self.dataFolder = self.sysConfig['dataFolder']
             self.verbose = self.conf.getboolean('System','verbose')
-            self.runSeconds = self.conf.getint('System','runSeconds')
             self.sleepSeconds = self.conf.getint('System','sleepSeconds')
+            self.priority = self.conf.getint('System','priority')
             self.saveCSV = self.conf.getboolean('System','saveCSV')
             self.saveMongoDB = self.conf.getboolean('System','saveMongoDB')
             self.CSVfile = self.sysConfig['CSVfile']

@@ -3,7 +3,7 @@
 '''
 **********************************************************
 * EnvMonitor - Environmental Tracking
-* version: 20210414a
+#* version: 2021014b
 * By: Nicola Ferralis <feranick@hotmail.com>
 ***********************************************************
 '''
@@ -31,7 +31,7 @@ def main():
     config = Configuration()
     s = sched.scheduler(time.time, time.sleep)
     while True:
-        s.enter(config.runSeconds, config.sleepSeconds, runAcq)
+        s.enter(config.sleepSeconds, config.priority, runAcq)
         s.run()
 
 #************************************
