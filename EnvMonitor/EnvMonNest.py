@@ -66,7 +66,7 @@ def runAcq(gnest):
     if CO2 > config.maxCO2 and gnest.getFanTrait(0) != "ON":
         print(" Run Fan! (CO2: "+str(CO2)+")")
         gnest.setFanON(gnest.dev)
-    if CO2 < config.minCO2:
+    if CO2 < config.minCO2 and gnest.getFanTrait(0) == "ON":
         print(" STOP Fan! (CO2: "+str(CO2)+")")
         gnest.setFanOFF(gnest.dev)
         
