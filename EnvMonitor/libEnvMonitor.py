@@ -349,7 +349,8 @@ def getBaromPress(config):
         cols.append(child.tag)
     df = pd.DataFrame(data).T  # Write in DF and transpose it
     df.columns = cols  # Update column names
-    print(df['pressure_mb'][0])
+    #print(df['pressure_mb'][0])
+    return df['pressure_mb'][0]
 
 #************************************
 # Get system IP
