@@ -3,7 +3,7 @@
 '''
 **********************************************************
 * EnvMonitor - Environmental Tracking - SGP30 Sensor
-* version: 20210414b
+* version: 20210415a
 * By: Nicola Ferralis <feranick@hotmail.com>
 ***********************************************************
 '''
@@ -17,7 +17,7 @@ import board, busio
 import adafruit_sgp30
 
 #************************************
-''' Class Gas Sensor '''
+# Class Gas Sensor
 #************************************
 class GasSensor:
     def __init__(self, config, absHumidity):

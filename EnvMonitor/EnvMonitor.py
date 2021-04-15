@@ -3,14 +3,14 @@
 '''
 **********************************************************
 * EnvMonitor - Environmental Tracking
-#* version: 2021014b
+#* version: 20210415a
 * By: Nicola Ferralis <feranick@hotmail.com>
 ***********************************************************
 '''
 #print(__doc__)
 
 #***************************************************
-''' This is needed for installation through pip '''
+# This is needed for installation through pip
 #***************************************************
 def EnvMonitor():
     main()
@@ -25,7 +25,7 @@ import pandas as pd
 from libEnvMonitor import *
 
 #************************************
-''' Main - Scheduler '''
+# Main - Scheduler
 #************************************
 def main():
     config = Configuration()
@@ -35,7 +35,7 @@ def main():
         s.run()
 
 #************************************
-''' Run Acquistion '''
+# Run Acquistion
 #************************************
 def runAcq():
     config = Configuration()
@@ -93,7 +93,7 @@ def runAcq():
             }
     
     #************************************
-    ''' Print Values on screen '''
+    # Print Values on screen
     #************************************
     if config.verbose:
         print("\n Lab: ", config.lab)
@@ -132,7 +132,7 @@ def runAcq():
             print("\n Saving to CSV failed!")
 
 #************************************
-''' Main initialization routine '''
+# Main initialization routine
 #************************************
 if __name__ == "__main__":
     sys.exit(main())

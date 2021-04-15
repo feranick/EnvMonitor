@@ -2,14 +2,14 @@
 '''
 **********************************************************
 * EnvMonitor - Environmental Tracking
-* version: 20210414b
+* version: 20210415a
 * By: Nicola Ferralis <feranick@hotmail.com>
 ***********************************************************
 '''
 #print(__doc__)
 
 #***************************************************
-''' This is needed for installation through pip '''
+# This is needed for installation through pip
 #***************************************************
 def EnvMonitorLite():
     main()
@@ -24,13 +24,13 @@ import pandas as pd
 from libEnvMonitor import *
 
 #************************************
-''' Main - Scheduler '''
+# Main - Scheduler
 #************************************
 def main():
     runAcq()
     
 #************************************
-''' Run Acquistion '''
+# Run Acquistion
 #************************************
 def runAcq():
     config = Configuration()
@@ -112,7 +112,7 @@ def runAcq():
                 GSens.set_iaq_baseline(eCO2_baseline,TVOC_baseline)
             
 #************************************
-''' Main initialization routine '''
+# Main initialization routine
 #************************************
 if __name__ == "__main__":
     sys.exit(main())

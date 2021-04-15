@@ -3,7 +3,7 @@
 '''
 ***********************************************************
 * Google Nest Device Access GNestAccess
-* version: 20210414a
+* version: 20210415a
 * By: Nicola Ferralis <feranick@hotmail.com>
 ***********************************************************
 '''
@@ -225,7 +225,7 @@ class GNestConfig():
         
 
 #************************************
-''' Main initialization routine '''
+# Main initialization routine
 #************************************
 if __name__ == "__main__":
     sys.exit(main())

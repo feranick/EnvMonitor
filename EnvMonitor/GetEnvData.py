@@ -3,14 +3,14 @@
 '''
 ***********************************************************
 * GetEnvData
-* version: 20210414b
+* version: 20210415a
 * By: Nicola Ferralis <feranick@hotmail.com>
 ***********************************************************
 '''
 print(__doc__)
 
 #***************************************************
-''' This is needed for installation through pip '''
+# This is needed for installation through pip
 #***************************************************
 def GetEnvData():
     main()
@@ -26,7 +26,7 @@ from libEnvMonitor import *
 import matplotlib.pyplot as plt
 
 #************************************
-''' Main '''
+# Main
 #************************************
 def main():
     conf = Configuration()
@@ -44,7 +44,7 @@ def main():
         sys.exit(2)
 
     #************************************
-    ''' Push to MongoDB '''
+    # Push to MongoDB
     #************************************
     if len(sys.argv) == 4:
         lab = sys.argv[3]
@@ -101,7 +101,7 @@ def main():
         print("\n No entry in database\n")
 
 #************************************
-''' Plot data '''
+# Plot data
 #************************************
 def plotSingleData(data, type):
     date = data[-1,0]
@@ -169,7 +169,7 @@ def plotMultiData(data, labels, lab):
     plt.close()
 
 #************************************
-''' Lists the program usage '''
+# Lists the program usage
 #************************************
 def usage():
     print('\n Usage:\n')
@@ -199,7 +199,7 @@ def usage():
     '''
 
 #************************************
-''' Main initialization routine '''
+# Main initialization routine
 #************************************
 if __name__ == "__main__":
     sys.exit(main())

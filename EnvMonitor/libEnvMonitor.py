@@ -3,7 +3,7 @@
 '''
 **********************************************************
 * libEnvMonitor - Environmental Tracking
-* version: 20210414b
+* version: 20210415a
 * By: Nicola Ferralis <feranick@hotmail.com>
 ***********************************************************
 '''
@@ -17,7 +17,7 @@ import numpy as np
 import pandas as pd
 
 #************************************
-''' Class Database '''
+# Class Database
 #************************************
 class SubMongoDB:
     def __init__(self, jsonData, config):

@@ -3,7 +3,7 @@
 '''
 ************************************************************
 * EnvMonitor - T/RH/P Sensors
-* version: 20210414b
+* version: 20210415a
 * By: Nicola Ferralis <feranick@hotmail.com>
 ************************************************************
 '''
@@ -14,7 +14,7 @@ from libEnvMonitor import *
 import board, busio, math
 
 #************************************
-''' Class T/RH Sensor '''
+# Class T/RH Sensor
 #************************************
 class TRHSensor:
     def __init__(self, config):

@@ -3,7 +3,7 @@
 '''
 **********************************************************
 * EnvMonitor - Environmental Tracking - PM sensors
-* version: 20190308b
+* version: 20210415a
 * By: Nicola Ferralis <feranick@hotmail.com>
 ***********************************************************
 '''
@@ -19,7 +19,7 @@ import RPi.GPIO as GPIO
 pms_gpio = 15  # (GPIO15, pin 10)
 
 #************************************
-''' Class Particulate Sensor '''
+# Class Particulate Sensor 
 #************************************
 class PMSensor:
     '''
