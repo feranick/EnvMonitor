@@ -8,7 +8,7 @@ setup(
         'EnvMonNest=EnvMonNest:EnvMonNest', 'EnvMonitorLite=EnvMonitorLite:EnvMonitorLite']},
     py_modules=['EnvMonitor','EnvMonitorLite','GetEnvData','libEnvMonitor','PMsensor','BMP180sensors','Tsensors',
         'Gassensors','EnvMonNest','GNestAccess'],
-    scripts=['EnvMonitor_launcher.sh', 'EnvMonitorLite_launcher.sh', 'EnvMonitorNest_launcher.sh'],
+    scripts=['EnvMonitor_launcher.sh', 'EnvMonitorLite_launcher.sh', 'EnvMonNest_launcher.sh'],
     version='20210415b',
     description='Environmental tracking monitor with submission to mongo or CSV',
     long_description= """ Environmental tracking monitor with submission to mongo or CSV """,
