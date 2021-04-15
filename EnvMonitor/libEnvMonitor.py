@@ -338,19 +338,25 @@ def dewPointRH(T1, RH, Pws):
 # Get barometric pressure from NWS
 #************************************
 def getBaromPress(config):
-    url = 'https://w1.weather.gov/xml/current_obs/'+config.airportCode+'.xml'
-    xml_data = urllib.request.urlopen(url).read()
-    root = ET.XML(xml_data)  # Parse XML
-    data = []
-    cols = []
-    for i, child in enumerate(root):
-        #print(i, child.tag, child.text)
-        data.append([child.text])
-        cols.append(child.tag)
-    df = pd.DataFrame(data).T  # Write in DF and transpose it
-    df.columns = cols  # Update column names
-    #print(df['pressure_mb'][0])
-    return df['pressure_mb'][0]
+    try:
+        url = 'https://w1.weather.gov/xml/current_obs/'+config.airportCode+'.xml'
+        xml_data = urllib.request.urlopen(url).read()
+        root = ET.XML(xml_data)  # Parse XML
+        data = []
+        cols = []
+        for i, child in enumerate(root):
+            #print(i, child.tag, child.text)
+            data.append([child.text])
+            cols.append(child.tag)
+        df = pd.DataFrame(data).T  # Write in DF and transpose it
+        df.columns = cols  # Update column names
+        #print(df['pressure_mb'][0])
+        sealevel = float(df['pressure_mb'][0])
+        print("\n Gathered seal level pressure for:",config.airportCode,"(",sealevel,")")
+        return sealevel)
+    except:
+        print("\n Gathering sea level pressure, failed")
+        return 1000
 
 #************************************
 # Get system IP
