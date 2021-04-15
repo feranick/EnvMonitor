@@ -3,7 +3,7 @@
 '''
 **********************************************************
 * EnvMonNest - Control Nest Thermostat based on Air Quality
-#* version: 2021015a
+#* version: 2021015b
 * By: Nicola Ferralis <feranick@hotmail.com>
 ***********************************************************
 '''

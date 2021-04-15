@@ -1,7 +1,7 @@
 #!/bin/bash
 #####################################
 # EnvMonitorLite launcher
-# v. 20210414a
+# v. 20210415b
 # Nicola Ferralis <feranick@hotmail.com>
 #####################################
 

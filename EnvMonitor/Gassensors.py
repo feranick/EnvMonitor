@@ -3,7 +3,7 @@
 '''
 **********************************************************
 * EnvMonitor - Environmental Tracking - SGP30 Sensor
-* version: 20210415a
+* version: 20210415b
 * By: Nicola Ferralis <feranick@hotmail.com>
 ***********************************************************
 '''

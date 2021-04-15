@@ -3,7 +3,7 @@
 '''
 **********************************************************
 * EnvMonitor - Environmental Tracking - BMP Sensors
-* version: 20210409a
+* version: 20210415b
 * By: Nicola Ferralis <feranick@hotmail.com>
 ***********************************************************
 '''
@@ -18,7 +18,7 @@ import Adafruit_BMP.BMP085 as BMP085
 import RPi.GPIO as GPIO
 
 #************************************
-''' Class T/RH Sensor '''
+# Class T/RH Sensor
 #************************************
 class TRHSensor:
     def __init__(self, config):
