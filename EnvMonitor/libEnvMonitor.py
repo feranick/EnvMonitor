@@ -150,7 +150,7 @@ class Configuration():
             'loggingFilename' : self.logFile,
             'dataFolder' : '.',
             'verbose' : True,
-            'sleepSeconds' : 5,
+            'sleepSeconds' : 30,
             'priority' : 1,
             'saveCSV' : False,
             'saveMongoDB' : True,
@@ -244,7 +244,7 @@ class Configuration():
             self.eCO2_baseline = int(self.conf.get('Instrumentation','eCO2_baseline'),16)
             self.TVOC_baseline = int(self.conf.get('Instrumentation','TVOC_baseline'),16)
             self.resetBaseline = self.conf.getboolean('Instrumentation','resetBaseline')
-            self.airportCode = self.instrumentationConfig['airportCode']
+            self.airportCode = self.envConfig['airportCode']
             self.minCO2 = self.conf.getfloat('Environment','minCO2')
             self.maxCO2 = self.conf.getfloat('Environment','maxCO2')
             
