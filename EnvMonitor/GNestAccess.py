@@ -143,10 +143,13 @@ class GoogleNest:
         self.sendCmdDevice(device, data)
     
     def getFanTrait(self, dev):
-        dev_name, traits = self.getDevices(dev)
-        print(traits,"\n\n")
-        self.fanMode = traits['devices'][dev]['traits']['sdm.devices.traits.Fan']['timerMode']
-        print("Fan",dev,"is:",self.fanMode)
+        try:
+            dev_name, traits = self.getDevices(dev)
+            self.fanMode = traits['devices'][dev]['traits']['sdm.devices.traits.Fan']['timerMode']
+            print("Fan",dev,"is:",self.fanMode)
+        except:
+            print("\n\n Failed to get Fan status\n")
+            self.fanMode = "OFF"
         return self.fanMode
         
 ####################################################################

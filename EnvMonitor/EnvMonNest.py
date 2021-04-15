@@ -36,7 +36,6 @@ def main():
     gnest.getToken()
     gnest.dev, tmp = gnest.getDevices(0)
     
-    gnest = 0
     while True:
         s.enter(config.sleepSeconds, config.priority, runAcq, (gnest,))
         s.run()
@@ -62,15 +61,15 @@ def runAcq(gnest):
     print(" CO2 = {0:0.1f} ppm".format(entry['CO2']))
     print(" Total Volatile Organic Content = {0:0.1f} ppb".format(entry['TVOC']),"\n")
     
-    print(config.minCO2, config.maxCO2)
-    
+    CO2 = float(entry['CO2'])
+        
     if CO2 > config.maxCO2 and gnest.getFanTrait(0) != "ON":
-        print(" Run Fan!", CO2)
+        print(" Run Fan! (CO2: "+str(CO2)+")")
         gnest.setFanON(gnest.dev)
     if CO2 < config.minCO2:
-        print(" STOP Fan!", CO2)
+        print(" STOP Fan! (CO2: "+str(CO2)+")")
         gnest.setFanOFF(gnest.dev)
-
+        
 #************************************
 # Main initialization routine
 #************************************
