@@ -33,7 +33,7 @@ def main():
 class GoogleNest:
     def __init__(self):
         self.conf = GNestConfig()
-        self.url = 'https://nestservices.google.com/partnerconnections/'+self.conf.project_id+'/auth?redirect_uri='+self.conf.redirect_uri+'&access_type=offline&prompt=consent&client_id='+self.conf.client_id+'&response_type=code&scope=https://www.googleapis.com/auth/sdm.service'
+        self.url = '\nEnter this URL in a browser and follow the instructins to get a code:\n\n https://nestservices.google.com/partnerconnections/'+self.conf.project_id+'/auth?redirect_uri='+self.conf.redirect_uri+'&access_type=offline&prompt=consent&client_id='+self.conf.client_id+'&response_type=code&scope=https://www.googleapis.com/auth/sdm.service'
         
         print(self.url)
         self.code = input("\nType code: ")
