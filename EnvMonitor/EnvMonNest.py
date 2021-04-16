@@ -70,8 +70,10 @@ def runAcq(gnest):
         print(" STOP Fan! (CO2: "+str(CO2)+")")
         gnest.setFanOFF(gnest.dev)
     
-    if time.time()-gnest.time > 600:
+    diffTime = time.time()-gnest.time
+    if diffTime > 3000:
         gnest.refreshToken()
+        gnest.time = time.time()
         
 #************************************
 # Main initialization routine
