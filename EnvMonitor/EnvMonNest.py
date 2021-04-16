@@ -3,7 +3,7 @@
 '''
 **********************************************************
 * EnvMonNest - Control Nest Thermostat based on Air Quality
-#* version: 2021015b
+#* version: 2021016a
 * By: Nicola Ferralis <feranick@hotmail.com>
 ***********************************************************
 '''
@@ -69,6 +69,9 @@ def runAcq(gnest):
     if CO2 < config.minCO2 and gnest.getFanTrait(0) == "ON":
         print(" STOP Fan! (CO2: "+str(CO2)+")")
         gnest.setFanOFF(gnest.dev)
+    
+    if time.time()-gnest.time > 600:
+        gnest.refreshToken()
         
 #************************************
 # Main initialization routine
