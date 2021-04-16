@@ -98,9 +98,9 @@ class GoogleNest:
 
         response = requests.get(url_get_devices, headers=headers)
         #print(response.json())
-
         response_json = response.json()
         device_name = str(response_json['devices'][dev]['name'])
+        #print(device_name)
         return device_name, response.json()
 
     # Get Device Stats
