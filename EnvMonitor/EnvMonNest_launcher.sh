@@ -1,7 +1,7 @@
 #!/bin/bash
 #####################################
 # EnvMonitorNest launcher
-# v. 20210415b
+# v. 20210416a
 # Nicola Ferralis <feranick@hotmail.com>
 #####################################
 

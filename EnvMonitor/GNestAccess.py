@@ -3,7 +3,7 @@
 '''
 ***********************************************************
 * Google Nest Device Access GNestAccess
-* version: 20210415b
+* version: 20210416a
 * By: Nicola Ferralis <feranick@hotmail.com>
 ***********************************************************
 '''
