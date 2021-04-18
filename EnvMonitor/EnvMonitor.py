@@ -111,7 +111,7 @@ def runAcq():
         print(" Altitude = {0:0.1f} m".format(altitude))
         print(" Sealevel pressure = {0:0.1f} hPa".format(sealevel),)
         print(" CO2 = {0:0.1f} ppm".format(CO2))
-        print(" Total Volatile Organic Content = {0:0.1f} ppb".format(TVOC),"\n")
+        print(" Total Volatile Organic Content = {0:0.1f} ppb\n".format(TVOC))
       
     if config.saveMongoDB:
         try:

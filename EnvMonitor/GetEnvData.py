@@ -3,7 +3,7 @@
 '''
 ***********************************************************
 * GetEnvData
-* version: 20210416a
+* version: 20210418a
 * By: Nicola Ferralis <feranick@hotmail.com>
 ***********************************************************
 '''
@@ -34,7 +34,7 @@ def main():
     
     try:
         opts, args = getopt.getopt(sys.argv[1:],
-            "tprwhscoabldif:", ["temperature", "pressure", "humidity", "dewpoint", "altitude", "sealevel", "co2", "tvoc", "all", "lab", "backup", "delete", "id", "file"])
+            "tprwhscoabmdif:", ["temperature", "pressure", "humidity", "dewpoint", "altitude", "sealevel", "co2", "tvoc", "all", "mobile", "backup", "delete", "id", "file"])
     except:
         usage()
         sys.exit(2)
@@ -85,6 +85,23 @@ def main():
                     data = np.vstack([data, [entry['date'], entry['time'],entry['temperature'], entry['pressure'], entry['humidity'], entry['CO2'], entry['TVOC']]])
                 labels =['date', 'time','temperature','pressure','humidity','CO2','TVOC']
                 plotMultiData(data, labels, lab)
+        
+            if o in ("-m" , "--mobile"):
+                entries = conn.getData(date, lab)
+                print("\n Last measurement:")
+                print("\n Lab: ", conf.lab)
+                print(" Date: ", entries[-1]['date'])
+                print(" Time: ", entries[-1]['time'])
+                print(" Temperature = {0:0.1f} deg C".format(entries[-1]['temperature']))
+                print(" Pressure = {0:0.1f} hPa".format(entries[-1]['pressure']))
+                print(" Humidity = {0:0.1f} %".format(entries[-1]['humidity']))
+                print(" Dew Point = {0:0.1f} deg C".format(entries[-1]['dewpoint']))
+                print("\033[1m CO2 = {0:0.1f} ppm".format(entries[-1]['CO2']))
+                print(" Total Volatile Organic Content = {0:0.1f} ppb\033[0m\n".format(entries[-1]['TVOC']))
+                #data = np.empty((0,7))
+                #for entry in entries:
+                #    data = np.vstack([data, [entry['date'], entry['time'],entry['temperature'], entry['pressure'], entry['humidity'], entry['CO2'], entry['TVOC']]])
+                #labels =['date', 'time','temperature','pressure','humidity','CO2','TVOC']
         
             if o in ("-b" , "--backup"):
                 file = str(os.path.splitext(conf.CSVfile)[0]+ "-"+lab+"-backup_" +\
