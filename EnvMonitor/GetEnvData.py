@@ -31,7 +31,8 @@ def main():
     
     try:
         opts, args = getopt.getopt(sys.argv[1:],
-            "tprwhscoabmdif:", ["temperature", "pressure", "humidity", "dewpoint", "altitude", "sealevel", "co2", "tvoc", "all", "mobile", "backup", "delete", "id", "file"])
+            "tprwhscoabmdlif:", ["temperature", "pressure", "humidity", "dewpoint", "altitude", "sealevel", "co2",
+            "tvoc", "all", "mobile", "backup", "delete", "list", "id", "file"])
     except:
         usage()
         sys.exit(2)
@@ -52,7 +53,7 @@ def main():
     else:
         lab = ""
         date = ""
-    
+        
     try:
         for o, a in opts:
             jsonData={}
@@ -91,6 +92,9 @@ def main():
                 yN = input("Are you sure (y/N)? ")
                 if yN == "y":
                     conn.deleteDB(date, lab)
+        
+        if o in ("-l", "--list"):
+            conn.getDatesAvailable()
         
     except:
         print("\n No entry in database\n")
@@ -197,7 +201,7 @@ def plotMultiData(data, labels, lab):
 # Lists the program usage
 #************************************
 def usage():
-    print('\n Usage:\n')
+    print(' Usage:\n')
     print(' Query data based on date (YYYYMMDD) for temperature/pressure/humidity:')
     print('  python3 GetEnvData.py -t (or -p or -h) <date>\n')
     print(' Query all data for temperature/pressure/humidity/co2/tvoc:')
@@ -212,6 +216,8 @@ def usage():
     print('  python3 GetEnvData.py -m <date>\n')
     print(' Query last measurement for all measurements:')
     print('  python3 GetEnvData.py -m\n')
+    print(' List dates and labs available with measurements:')
+    print('  python3 GetEnvData.py -l\n')
     print(' Backup data on CSV based on date (YYYYMMDD) for all measurements:')
     print('  python3 GetEnvData.py -b <date>\n')
     print(' Backup data on CSV all data for all measurements:')

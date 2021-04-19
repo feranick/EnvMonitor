@@ -78,6 +78,16 @@ class SubMongoDB:
             data = np.vstack((data, [entry['date'], entry['time'], entry[type]]))
         return data
         
+    def getDatesAvailable(self):
+        client = self.connectDB()
+        db = client[self.config.DbName]
+        print("\n Available data in:",self.config.DbName)
+        for date in db[self.config.DbName].distinct("date"):
+            print("",date)
+            for entry in db[self.config.DbName].find({'date' : date}).distinct('lab'):
+                print(" -->",entry)
+        print("")
+        
     def getData(self, date, lab):
         import numpy as np
         client = self.connectDB()
