@@ -3,7 +3,7 @@
 '''
 ***********************************************************
 * GetEnvData
-* version: 20210418a
+* version: 20210419a
 * By: Nicola Ferralis <feranick@hotmail.com>
 ***********************************************************
 '''
@@ -18,12 +18,10 @@ def GetEnvData():
 
 import configparser, logging, sys, math
 import json, os.path, time, base64, getopt
-import pandas as pd
-import numpy as np
 from pathlib import Path
 from datetime import datetime
 from libEnvMonitor import *
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 
 #************************************
 # Main
@@ -79,29 +77,10 @@ def main():
                 plotSingleData(conn.getByType("TVOC", date), "TVOC")
         
             if o in ("-a" , "--all"):
-                entries = conn.getData(date, lab)
-                data = np.empty((0,7))
-                for entry in entries:
-                    data = np.vstack([data, [entry['date'], entry['time'],entry['temperature'], entry['pressure'], entry['humidity'], entry['CO2'], entry['TVOC']]])
-                labels =['date', 'time','temperature','pressure','humidity','CO2','TVOC']
-                plotMultiData(data, labels, lab)
+                displayAllData(conn, date, lab)
         
             if o in ("-m" , "--mobile"):
-                entries = conn.getData(date, lab)
-                print("\n Last measurement:")
-                print("\n Lab: ", conf.lab)
-                print(" Date: ", entries[-1]['date'])
-                print(" Time: ", entries[-1]['time'])
-                print(" Temperature = {0:0.1f} deg C".format(entries[-1]['temperature']))
-                print(" Pressure = {0:0.1f} hPa".format(entries[-1]['pressure']))
-                print(" Humidity = {0:0.1f} %".format(entries[-1]['humidity']))
-                print(" Dew Point = {0:0.1f} deg C".format(entries[-1]['dewpoint']))
-                print("\033[1m CO2 = {0:0.1f} ppm".format(entries[-1]['CO2']))
-                print(" Total Volatile Organic Content = {0:0.1f} ppb\033[0m\n".format(entries[-1]['TVOC']))
-                #data = np.empty((0,7))
-                #for entry in entries:
-                #    data = np.vstack([data, [entry['date'], entry['time'],entry['temperature'], entry['pressure'], entry['humidity'], entry['CO2'], entry['TVOC']]])
-                #labels =['date', 'time','temperature','pressure','humidity','CO2','TVOC']
+                displayDataMobile(conn, date, lab)
         
             if o in ("-b" , "--backup"):
                 file = str(os.path.splitext(conf.CSVfile)[0]+ "-"+lab+"-backup_" +\
@@ -118,9 +97,37 @@ def main():
         print("\n No entry in database\n")
 
 #************************************
+# Get data from database
+#************************************
+def displayAllData(conn, date, lab):
+    import pandas as pd
+    import numpy as np
+    entries = conn.getData(date, lab)
+    data = np.empty((0,7))
+    for entry in entries:
+        data = np.vstack([data, [entry['date'], entry['time'],entry['temperature'], entry['pressure'], entry['humidity'], entry['CO2'], entry['TVOC']]])
+    labels =['date', 'time','temperature','pressure','humidity','CO2','TVOC']
+    plotMultiData(data, labels, lab)
+    
+def displayDataMobile(conn, date, lab):
+    entries = conn.getData(date, lab)
+    print("\n Last measurement:")
+    print("\n Lab: ", entries[-1]['lab'])
+    print(" Date: ", entries[-1]['date'])
+    print(" Time: ", entries[-1]['time'])
+    print(" Temperature = {0:0.1f} deg C".format(entries[-1]['temperature']))
+    print(" Pressure = {0:0.1f} hPa".format(entries[-1]['pressure']))
+    print(" Humidity = {0:0.1f} %".format(entries[-1]['humidity']))
+    print(" Dew Point = {0:0.1f} deg C".format(entries[-1]['dewpoint']))
+    print("\033[1m CO2 = {0:0.1f} ppm".format(entries[-1]['CO2']))
+    print(" Total Volatile Organic Content = {0:0.1f} ppb\033[0m\n".format(entries[-1]['TVOC']))
+
+#************************************
 # Plot data
 #************************************
 def plotSingleData(data, type):
+    import matplotlib.pyplot as plt
+    import numpy as np
     date = data[-1,0]
     x = data[:,1]
     y = np.around(data[:,2].astype(float), decimals=1)
@@ -140,6 +147,8 @@ def plotSingleData(data, type):
     plt.close()
 
 def plotMultiData(data, labels, lab):
+    import matplotlib.pyplot as plt
+    import numpy as np
     x = data[:,1]
     #x = np.vectorize(convertTime)(x)
     
