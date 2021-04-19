@@ -13,10 +13,6 @@ import sys, math, json, os.path, time, configparser, logging, sched, urllib.requ
 from pathlib import Path
 from datetime import datetime
 from pymongo import MongoClient
-import numpy as np
-import pandas as pd
-import xml.etree.ElementTree as ET
-import pandas as pd
 
 #************************************
 # Class Database
@@ -73,6 +69,7 @@ class SubMongoDB:
         return db_entry['file'][2:]
 
     def getByType(self, type, date):
+        import numpy as np
         client = self.connectDB()
         db = client[self.config.DbName]
         data = np.empty((0,3))
@@ -82,6 +79,7 @@ class SubMongoDB:
         return data
         
     def getData(self, date, lab):
+        import numpy as np
         client = self.connectDB()
         db = client[self.config.DbName]
         data = np.empty((0,1))
@@ -105,6 +103,7 @@ class SubMongoDB:
         print(" All Entries for:",date,lab,"(Database:",self.config.DbName,") were deleted\n")
         
     def backupDB(self, date, lab, file):
+        import pandas as pd
         entries = self.getData(date, lab)
         df = pd.DataFrame(entries[0], index=[0])
         for line in entries:
@@ -338,6 +337,8 @@ def dewPointRH(T1, RH, Pws):
 # Get barometric pressure from NWS
 #************************************
 def getBaromPress(config):
+    import pandas as pd
+    import xml.etree.ElementTree as ET
     try:
         url = 'https://w1.weather.gov/xml/current_obs/'+config.airportCode+'.xml'
         xml_data = urllib.request.urlopen(url).read()
