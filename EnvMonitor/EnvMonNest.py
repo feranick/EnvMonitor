@@ -16,12 +16,9 @@ def EnvMonNest():
     main()
 #***************************************************
 
-import sys, math, json, os.path, time, configparser, logging, sched
-from pathlib import Path
+import sys, json, os.path, time, sched
 from datetime import datetime
 from pymongo import MongoClient
-import numpy as np
-import pandas as pd
 from libEnvMonitor import *
 from GNestAccess import *
 
