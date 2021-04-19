@@ -3,7 +3,7 @@
 '''
 ************************************************************
 * EnvMonitor - T/RH/P Sensors
-* version: 20210416a
+* version: 202104169a
 * By: Nicola Ferralis <feranick@hotmail.com>
 ************************************************************
 '''
@@ -62,10 +62,3 @@ class TRHSensor:
                 self.dewpoint = 0
                 self.altitude = 0
                 self.sealevel = getBaromPress(config)
-                
-                
-        
-        
-        
-        
-        

@@ -3,7 +3,7 @@
 '''
 **********************************************************
 * EnvMonitor - Environmental Tracking - PM sensors
-* version: 20210416a
+* version: 20210419a
 * By: Nicola Ferralis <feranick@hotmail.com>
 ***********************************************************
 '''
@@ -12,7 +12,6 @@
 import sys, math, json, os.path, time, configparser, logging, sched
 from pathlib import Path
 from datetime import datetime
-from pymongo import MongoClient
 from libEnvMonitor import *
 import RPi.GPIO as GPIO
 

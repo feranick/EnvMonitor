@@ -21,7 +21,6 @@ import json, os.path, time, base64, getopt
 from pathlib import Path
 from datetime import datetime
 from libEnvMonitor import *
-#import matplotlib.pyplot as plt
 
 #************************************
 # Main
