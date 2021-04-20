@@ -64,15 +64,21 @@ class TRHSensor:
         elif config.TPsensor == 'SCD30':
             import adafruit_scd30
             self.sensor = adafruit_scd30.Adafruit_SGP30(self.i2c)
+            print("Temperature offset:", self.sensor.temperature_offset)
+            print("Measurement interval:", self.sensor.measurement_interval)
+            print("Self-calibration enabled:", self.sensor.self_calibration_enabled)
+            print("Ambient Pressure:", self.sensor.ambient_pressure)
+            print("Altitude:", self.sensor.altitude, "meters above sea level")
+            print("Forced recalibration reference:", self.sensor.forced_recalibration_reference)
             while True:
-                data = scd.data_available
-                if data:
-                    self.pressure = self.sensor.ambient_pressure
+                data = self.sensor.data_available
+                if self.sensor.data_available:
                     self.temperature = self.sensor.temperature
-                    self.pressure = self.sensor.pressure
+                    self.pressure = self.sensor.ambient_pressure
                     self.humidity = self.sensor.relative_humidity
                     self.altitude = self.sensor.altitude
                     self.CO2 = self.sensor.CO2
+                time.sleep(0.5)
                     
         elif config.TPsensor == 'BME180':
             import Adafruit_BMP.BMP085 as BMP085
