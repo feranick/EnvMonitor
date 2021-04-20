@@ -3,7 +3,7 @@
 '''
 **********************************************************
 * EnvMonitor - Environmental Tracking
-# version: 20210416a
+# version: 20210420a
 * By: Nicola Ferralis <feranick@hotmail.com>
 ***********************************************************
 '''
@@ -23,6 +23,7 @@ from pymongo import MongoClient
 import numpy as np
 import pandas as pd
 from libEnvMonitor import *
+from Sensors import TRHSensor
 
 #************************************
 # Main - Scheduler
@@ -39,11 +40,7 @@ def main():
 #************************************
 def runAcq():
     config = Configuration()
-    
-    if config.TPsensor == 'BMP180':
-        from BMP180sensors import TRHSensor
-    else:
-        from Tsensors import TRHSensor
+        
     #************************************
     ''' NEW: Read from sensors '''
     #************************************
@@ -55,11 +52,14 @@ def runAcq():
     dewpoint = trhSensor.dewpoint
     altitude = trhSensor.altitude
     sealevel = trhSensor.sealevel
-    absHum = absHumidity(temperature,humidity, Pws(temperature,humidity))
+    absHum = trhSensor.absHum
     
-    if config.Gassensor == 'SGP30':
-        from Gassensors import GasSensor
-        GSens = GasSensor(config, absHum)
+    if config.Gassensor == 'SCD30':
+        CO2 = trhSensor.CO2
+        TVOC = 0
+    elif config.Gassensor == 'SGP30':
+        from Gassensors import SGP30
+        GSens = SGP30(config, absHum)
         GSens.readGasSensor()
         CO2 = GSens.CO2
         TVOC = GSens.TVOC

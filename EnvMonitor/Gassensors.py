@@ -14,13 +14,13 @@ from datetime import datetime
 #import numpy as np
 from libEnvMonitor import *
 import board, busio
-import adafruit_sgp30
 
 #************************************
 # Class Gas Sensor
 #************************************
-class GasSensor:
+class SGP30:
     def __init__(self, config, absHumidity):
+        import adafruit_sgp30
         print(" Gas Sensor Warming up, please wait...\n")
         self.i2c = busio.I2C(board.SCL, board.SDA, frequency=100000)
         # To initialise using the default address:
@@ -37,9 +37,7 @@ class GasSensor:
         self.sgp30.set_iaq_baseline(config.eCO2_baseline, config.TVOC_baseline)
         
         # Apply humidity correction
-        if config.Gassensor == 'SGP30':
-            self.sgp30.set_iaq_humidity(absHumidity)
-        
+        self.sgp30.set_iaq_humidity(absHumidity)
         elapsed_sec = 0
     
         #print("eCO2 = %d ppm \t TVOC = %d ppb" % (self.sgp30.eCO2, self.sgp30.TVOC))
