@@ -58,7 +58,7 @@ def runAcq():
         CO2 = trhSensor.CO2
         TVOC = 0
     elif config.Gassensor == 'SGP30':
-        from Gassensors import SGP30
+        from Sensors import SGP30
         GSens = SGP30(config, absHum)
         GSens.readGasSensor()
         CO2 = GSens.CO2
