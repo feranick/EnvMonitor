@@ -3,7 +3,7 @@
 '''
 ************************************************************
 * EnvMonitor - Sensors
-* version: 202104169a
+* version: 20210420a
 * By: Nicola Ferralis <feranick@hotmail.com>
 ************************************************************
 '''
@@ -34,7 +34,7 @@ class TRHSensor:
             self.humidity = 0
             self.dewpoint = 0
             self.altitude = 0
-            
+
         elif config.TPsensor == 'BME280':
             import adafruit_bme280
             self.sensor = adafruit_bme280.Adafruit_BME280_I2C(self.i2c)
@@ -60,9 +60,8 @@ class TRHSensor:
                 self.dewpoint = 0
                 self.altitude = 0
                 self.sealevel = self.sea_level_pressure
-                
-                
-        elif config.TPsensor == 'SCD30'
+
+        elif config.TPsensor == 'SCD30':
             import adafruit_scd30
             self.sensor = adafruit_scd30.Adafruit_SGP30(self.i2c)
             while True:
