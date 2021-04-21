@@ -37,7 +37,7 @@ elapsed_sec = 0
  
 while True:
     #print("eCO2 = %d ppm \t TVOC = %d ppb" % (sgp30.eCO2, sgp30.TVOC))
-    print("eCO2 = %d ppm \t TVOC = %d ppb \t TempC = %0.1f" % (sgp30.eCO2, sgp30.TVOC, mcp.temperature))
+    print("eCO2= %d ppm | TVOC= %d ppb | T= %0.1f C | RH= %0.1f | date:%s | time: %s" % (sgp30.eCO2, sgp30.TVOC, mcp.temperature, mcp.relative_humidity, str(date), str(time1)))
     time.sleep(1)
     elapsed_sec += 1
     
