@@ -76,7 +76,6 @@ class TRHSensor:
                 data = self.sensor.data_available
                 if self.sensor.data_available:
                     self.temperature = self.sensor.temperature
-                    self.pressure =
                     self.humidity = self.sensor.relative_humidity
                     self.altitude = self.sensor.altitude
                     self.CO2 = self.sensor.CO2
