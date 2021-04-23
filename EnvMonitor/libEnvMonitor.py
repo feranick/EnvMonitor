@@ -100,11 +100,6 @@ class SubMongoDB:
             fields = {"$and": [{'lab' : lab}, {'date' : date}]}
         entries = db[self.config.DbName].find(fields).sort([("time",1)])
         data = pd.DataFrame(list(entries))
-        #print(data['lab'].iloc[-1])
-        #print(data.iloc[-1])
-        #print(df)
-        #for entry in entries:
-        #    data = np.append(data, entry)
         return data
 
     def deleteDB(self, date, lab):

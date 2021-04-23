@@ -107,7 +107,6 @@ def displayAllData(conn, date, lab):
     import numpy as np
     entries = conn.getData(date, lab)
     data = entries[['date', 'time', 'temperature', 'pressure', 'humidity', 'CO2', 'TVOC']].to_numpy()
-    print(data)
     labels =['date', 'time','temperature','pressure','humidity','CO2','TVOC']
     plotMultiData(data, labels, lab)
     
