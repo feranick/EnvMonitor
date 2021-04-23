@@ -63,7 +63,7 @@ class TRHSensor:
 
         elif config.TPsensor == 'SCD30':
             import adafruit_scd30
-            self.sensor = adafruit_scd30.Adafruit_SGP30(self.i2c)
+            self.sensor = adafruit_scd30.SCD30(self.i2c)
             print("Temperature offset:", self.sensor.temperature_offset)
             print("Measurement interval:", self.sensor.measurement_interval)
             print("Self-calibration enabled:", self.sensor.self_calibration_enabled)
