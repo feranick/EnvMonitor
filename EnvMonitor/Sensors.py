@@ -78,6 +78,7 @@ class TRHSensor:
                     self.humidity = self.sensor.relative_humidity
                     self.altitude = self.sensor.altitude
                     self.CO2 = self.sensor.CO2
+                    break
                 time.sleep(0.5)
                     
         elif config.TPsensor == 'BME180':

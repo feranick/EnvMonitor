@@ -57,15 +57,21 @@ def runAcq():
     if config.Gassensor == 'SCD30':
         CO2 = trhSensor.CO2
         TVOC = 0
+        baseline_eCO2 = 0
+        baseline_TVOC = 0
     elif config.Gassensor == 'SGP30':
         from Sensors import SGP30
         GSens = SGP30(config, absHum)
         GSens.readGasSensor()
         CO2 = GSens.CO2
         TVOC = GSens.TVOC
+        baseline_eCO2 = hex(GSens.baseline_eCO2)
+        baseline_TVOC = hex(GSens.baseline_TVOC)
     else:
         CO2 = 0
         TVOC = 0
+        baseline_eCO2 = 0
+        baseline_TVOC = 0
 
     ip = getIP()
     date = time.strftime("%Y%m%d")
@@ -88,8 +94,8 @@ def runAcq():
             'sealevel' : sealevel,
             'CO2' : CO2,
             'TVOC' : TVOC,
-            'eCO2_baseline' : hex(GSens.baseline_eCO2),
-            'TVOC_baseline' : hex(GSens.baseline_TVOC),
+            'eCO2_baseline' : baseline_eCO2,
+            'TVOC_baseline' : baseline_TVOC,
             }
     
     #************************************
