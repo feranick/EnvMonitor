@@ -66,12 +66,12 @@ class TRHSensor:
             self.sensor = adafruit_scd30.SCD30(self.i2c)
             #self.sensor.ambient_pressure(self.pressure)
             self.pressure = self.sea_level_pressure
-            print(" Temperature offset:", self.sensor.temperature_offset)
-            print(" Measurement interval:", self.sensor.measurement_interval)
-            print(" Self-calibration enabled:", self.sensor.self_calibration_enabled)
-            print(" Ambient Pressure:", self.sensor.ambient_pressure)
-            print(" Altitude:", self.sensor.altitude, "meters above sea level")
-            print(" Forced recalibration reference:", self.sensor.forced_recalibration_reference)
+            #print(" Temperature offset:", self.sensor.temperature_offset)
+            #print(" Measurement interval:", self.sensor.measurement_interval)
+            #print(" Self-calibration enabled:", self.sensor.self_calibration_enabled)
+            #print(" Ambient Pressure:", self.sensor.ambient_pressure)
+            #print(" Altitude:", self.sensor.altitude, "meters above sea level")
+            #print(" Forced recalibration reference:", self.sensor.forced_recalibration_reference)
             while True:
                 data = self.sensor.data_available
                 if self.sensor.data_available:
