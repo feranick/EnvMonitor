@@ -65,7 +65,7 @@ class TRHSensor:
             import adafruit_scd30
             self.sensor = adafruit_scd30.SCD30(self.i2c)
             self.pressure = self.sea_level_pressure
-            self.sensor.ambient_pressure.(self.pressure)
+            self.sensor.ambient_pressure(self.pressure)
             print(" Temperature offset:", self.sensor.temperature_offset)
             print(" Measurement interval:", self.sensor.measurement_interval)
             print(" Self-calibration enabled:", self.sensor.self_calibration_enabled)
