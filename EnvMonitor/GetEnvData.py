@@ -109,6 +109,7 @@ def displayAllData(conn, date, lab):
     data = entries[['date', 'time', 'temperature', 'pressure', 'humidity', 'CO2', 'TVOC']].to_numpy()
     labels =['date', 'time','temperature','pressure','humidity','CO2','TVOC']
     plotMultiData(data, labels, lab)
+    #plotMultiData2(entries, lab)
     
 def displayDataMobile(conn, date, lab):
     entries = conn.getData(date, lab).iloc[-1]
@@ -194,6 +195,20 @@ def plotMultiData(data, labels, lab):
 
     plt.show()
     plt.close()
+    
+def plotMultiData2(entries, lab):
+    import matplotlib.pyplot as plt
+    
+    plt.figure(1, figsize=(9,10))
+    plt.subplot(4,1,1)
+    entries.plot(kind='line',x='time',y='temperature',ax=plt.gca())
+    plt.subplot(4,1,2)
+    entries.plot(kind='line',x='time',y='humidity', ax=plt.gca())
+    plt.subplot(4,1,3)
+    entries.plot(kind='line',x='time',y='CO2', ax=plt.gca())
+    plt.subplot(4,1,4)
+    entries.plot(kind='line',x='time',y='TVOC', ax=plt.gca())
+    plt.show()
 
 #************************************
 # Lists the program usage
