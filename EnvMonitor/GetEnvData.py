@@ -93,8 +93,8 @@ def main():
                 if yN == "y":
                     conn.deleteDB(date, lab)
         
-        if o in ("-l", "--list"):
-            conn.getDatesAvailable()
+            if o in ("-l", "--list"):
+                conn.getDatesAvailable()
         
     except:
         print("\n No entry in database\n")
