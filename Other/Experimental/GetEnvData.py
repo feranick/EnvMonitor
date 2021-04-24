@@ -151,42 +151,55 @@ def plotMultiData(entries, lab):
     import matplotlib.pyplot as plt
     
     labs = entries.lab.unique()
-    fig, ax1 = plt.subplots(4,1, figsize=(9,10))
+    #fig, ax1 = plt.subplots(4,1, figsize=(9,10))
     #plt.figure(1, figsize=(9,10))
-    plt.subplot(4,1,1)
-    plt.title('EnvMonitor: '+entries['date'].iloc[-1]+'  '+lab)
+    #plt.title('EnvMonitor: '+entries['date'].iloc[-1]+'  '+lab)
     #entries.plot(kind='line',x='time',y='temperature',ax=plt.gca())
-    
+    '''
     entry0 = entries.pivot(index="time", columns="lab", values="temperature")
     entry1 = entries.pivot(index="time", columns="lab", values="humidity")
     entry2 = entries.pivot(index="time", columns="lab", values="CO2")
     entry3 = entries.pivot(index="time", columns="lab", values="TVOC")
-    print(entry2)
-
-    entry0['MasterBedroom'].plot(kind='line', use_index=True, y=labs[0])
     
-    print(entry0['MasterBedroom'])
-
+    entry0.plot(kind='line',ax=plt.gca())
+    entry1.plot(kind='line',ax=ax1[1])
+    entry2.plot(kind='line',ax=ax1[2])
+    entry3.plot(kind='line',ax=ax1[3])
     '''
+    
     for i in range(labs.size):
-        pass
+        fig, ax1 = plt.subplots(4,1, figsize=(9,10))
+        plt.title('EnvMonitor: '+entries['date'].iloc[-1]+'  '+lab)
+        plt.subplot(4,1,1)
+        entries[entries['lab']==labs[i]].plot(kind='line',use_index=True, x='time', y='temperature', ax=plt.gca())
+        plt.subplot(4,1,2)
+        entries[entries['lab']==labs[i]].plot(kind='line',use_index=True, x='time', y='temperature', ax=plt.gca())
+        plt.subplot(4,1,3)
+        entries[entries['lab']==labs[i]].plot(kind='line',x='time',y='CO2', ax=plt.gca())
+        plt.subplot(4,1,4)
+        entries[entries['lab']==labs[i]].plot(kind='line',x='time',y='TVOC', ax=plt.gca())
+        plt.show()
+    
+    '''
+    plt.subplot(4,1,1)
+    for i in range(labs.size):
         #entry0.plot(kind='line', y=labs[i], ax=ax1[0])
-        #entries[entries['lab']==labs[i]].plot(kind='line',use_index=True, x='time', y='temperature', ax=plt.gca())
+        entries[entries['lab']==labs[i]].plot(kind='line',use_index=True, x='time', y='temperature', ax=plt.gca())
     plt.subplot(4,1,2)
     for i in range(labs.size):
-        entry1.plot(kind='line', y=labs[i], ax=plt.gca())
-        #entries[entries['lab']==labs[i]].plot(kind='line',x='time',y='humidity', ax=plt.gca())
+        #entry1.plot(kind='line', y=labs[i], ax=plt.gca())
+        entries[entries['lab']==labs[i]].plot(kind='line',x='time',y='humidity', ax=plt.gca())
     plt.subplot(4,1,3)
     for i in range(labs.size):
-        entry2.plot(kind='line', y=labs[i], ax=plt.gca())
-        #entries[entries['lab']==labs[i]].plot(kind='line',x='time',y='CO2', ax=plt.gca())
+        #entry2.plot(kind='line', y=labs[i], ax=plt.gca())
+        entries[entries['lab']==labs[i]].plot(kind='line',x='time',y='CO2', ax=plt.gca())
     plt.subplot(4,1,4)
     for i in range(labs.size):
-        entry3.plot(kind='line', y=labs[i], ax=plt.gca())
-        #entries[entries['lab']==labs[i]].plot(kind='line',x='time',y='TVOC', ax=plt.gca())
-    '''
+        #entry3.plot(kind='line', y=labs[i], ax=plt.gca())
+        entries[entries['lab']==labs[i]].plot(kind='line',x='time',y='TVOC', ax=plt.gca())
+    
     plt.show()
-
+    '''
 #************************************
 # Lists the program usage
 #************************************
