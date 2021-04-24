@@ -108,8 +108,7 @@ def displayAllData(conn, date, lab):
     entries = conn.getData(date, lab)
     data = entries[['date', 'time', 'temperature', 'pressure', 'humidity', 'CO2', 'TVOC']].to_numpy()
     labels =['date', 'time','temperature','pressure','humidity','CO2','TVOC']
-    #plotMultiData(data, labels, lab)
-    plotMultiData2(entries, lab)
+    plotMultiData(entries, lab)
     
 def displayDataMobile(conn, date, lab):
     entries = conn.getData(date, lab).iloc[-1]
@@ -147,56 +146,8 @@ def plotSingleData(data, type):
     ax1.set_xticklabels(x[::numTicks], rotation=45)
     plt.show()
     plt.close()
-
-def plotMultiData(data, labels, lab):
-    import matplotlib.pyplot as plt
-    import numpy as np
-    x = data[:,1]
-    #x = np.vectorize(convertTime)(x)
     
-    y1 = data[:,2].astype(float)
-    #y2 = data[:,3].astype(float)
-    y2 = data[:,4].astype(float)
-    y3 = data[:,5].astype(float)
-    y4 = data[:,6].astype(float)
-    if int(len(x)) <10:
-        numTicks = int(len(x))
-    else:
-        numTicks = int(len(x)/10)
-    fig, (ax1, ax2, ax3, ax4) = plt.subplots(4,1, figsize=(9,10))
-    ax1.plot(x,y1, label='EnvMon')
-    ax1.set_title('EnvMonitor: '+data[-1,0]+'  '+lab)
-    ax1.set_ylabel(labels[2])
-    ax1.set_xticks(x[::numTicks])
-    ax1.set_xticklabels([])
-    
-    '''
-    ax2.plot(x,y2, label='EnvMon')
-    ax2.set_ylabel(labels[3])
-    ax2.set_xticks(x[::numTicks])
-    ax2.set_xticklabels([])
-    '''
-    
-    ax2.plot(x,y2, label='EnvMon')
-    ax2.set_ylabel(labels[4])
-    ax2.set_xticks(x[::numTicks])
-    ax2.set_xticklabels([])
-    
-    ax3.plot(x,y3, label='EnvMon')
-    ax3.set_ylabel(labels[5])
-    ax3.set_xticks(x[::numTicks])
-    ax3.set_xticklabels([])
-    
-    ax4.plot(x,y4, label='EnvMon')
-    ax4.set_ylabel(labels[6])
-    ax4.set_xticks(x[::numTicks])
-    ax4.set_xticklabels(x[::numTicks], rotation=45)
-    ax4.set_xlabel(labels[1])
-
-    plt.show()
-    plt.close()
-    
-def plotMultiData2(entries, lab):
+def plotMultiData(entries, lab):
     import matplotlib.pyplot as plt
     plt.figure(1, figsize=(9,10))
     plt.subplot(4,1,1)
