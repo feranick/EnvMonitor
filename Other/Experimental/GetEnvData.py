@@ -3,7 +3,7 @@
 '''
 ***********************************************************
 * GetEnvData
-* version: 20210423a
+* version: 20210425a
 * By: Nicola Ferralis <feranick@hotmail.com>
 ***********************************************************
 '''
@@ -80,7 +80,7 @@ def main():
             displayAllData(conn, date, lab)
         
         if o in ("-m" , "--mobile"):
-            displayDataMobile(conn, date, lab)
+            displayDataMobile(conn, date, lab, 10)
         
         if o in ("-b" , "--backup"):
             file = str(os.path.splitext(conf.CSVfile)[0]+ "-"+lab+"-backup_" +\
@@ -110,7 +110,15 @@ def displayAllData(conn, date, lab):
     labels =['date', 'time','temperature','pressure','humidity','CO2','TVOC']
     plotMultiData(entries, lab)
     
-def displayDataMobile(conn, date, lab):
+def displayDataMobile(conn, date, lab, num):
+    entries = conn.getData(date, lab)
+    print()
+    for i in range(num):
+        entry = entries.iloc[i-num]
+        print(" Date:{0:s} | Time:{1:s} | T= {2:0.1f} C | RH= {3:0.1f} | \033[1mCO2 = {4:0.1f} ppm\033[0m | TVOC = {5:0.1f} ppb ".format( entry['date'],entry['time'],entry['temperature'],entry['humidity'],entry['CO2'],entry['TVOC']))
+    print()
+    
+def displayDataMobile_old(conn, date, lab):
     entries = conn.getData(date, lab).iloc[-1]
     print("\n Last measurement:")
     print("\n Lab: ", entries['lab'])

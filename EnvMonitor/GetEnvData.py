@@ -3,7 +3,7 @@
 '''
 ***********************************************************
 * GetEnvData
-* version: 20210423a
+* version: 20210425a
 * By: Nicola Ferralis <feranick@hotmail.com>
 ***********************************************************
 '''
@@ -54,50 +54,50 @@ def main():
         lab = ""
         date = ""
         
-    #try:
-    for o, a in opts:
-        jsonData={}
-        conn = SubMongoDB(json.dumps(jsonData), conf)
+    try:
+        for o, a in opts:
+            jsonData={}
+            conn = SubMongoDB(json.dumps(jsonData), conf)
             
-        if o in ("-t" , "--temperature"):
-            plotSingleData(conn.getByType("temperature", date), "temperature")
-        if o in ("-p" , "--pressure"):
-            plotSingleData(conn.getByType("pressure", date), "pressure")
-        if o in ("-r" , "--humidity"):
-            plotSingleData(conn.getByType("humidity", date), "humidity")
-        if o in ("-w" , "--dewpoint"):
-            plotSingleData(conn.getByType("dewpoint", date), "dewpoint")
-        if o in ("-h" , "--altitude"):
-            plotSingleData(conn.getByType("altitude", date), "altitude")
-        if o in ("-s" , "--sealevel"):
-            plotSingleData(conn.getByType("sealevel", date), "sealevel pressure")
-        if o in ("-c" , "--co2"):
-            plotSingleData(conn.getByType("CO2", date), "CO2")
-        if o in ("-o" , "--tvoc"):
-            plotSingleData(conn.getByType("TVOC", date), "TVOC")
+            if o in ("-t" , "--temperature"):
+                plotSingleData(conn.getByType("temperature", date), "temperature")
+            if o in ("-p" , "--pressure"):
+                plotSingleData(conn.getByType("pressure", date), "pressure")
+            if o in ("-r" , "--humidity"):
+                plotSingleData(conn.getByType("humidity", date), "humidity")
+            if o in ("-w" , "--dewpoint"):
+                plotSingleData(conn.getByType("dewpoint", date), "dewpoint")
+            if o in ("-h" , "--altitude"):
+                plotSingleData(conn.getByType("altitude", date), "altitude")
+            if o in ("-s" , "--sealevel"):
+                plotSingleData(conn.getByType("sealevel", date), "sealevel pressure")
+            if o in ("-c" , "--co2"):
+                plotSingleData(conn.getByType("CO2", date), "CO2")
+            if o in ("-o" , "--tvoc"):
+                plotSingleData(conn.getByType("TVOC", date), "TVOC")
         
-        if o in ("-a" , "--all"):
-            displayAllData(conn, date, lab)
+            if o in ("-a" , "--all"):
+                displayAllData(conn, date, lab)
         
-        if o in ("-m" , "--mobile"):
-            displayDataMobile(conn, date, lab)
+            if o in ("-m" , "--mobile"):
+                displayDataMobile(conn, date, lab, 10)
+            
+            if o in ("-b" , "--backup"):
+                file = str(os.path.splitext(conf.CSVfile)[0]+ "-"+lab+"-backup_" +\
+                    str(date)+".csv")
+                conn.backupDB(date, lab, file)
+                print("\n Data saved in:",file,"\n")
         
-        if o in ("-b" , "--backup"):
-            file = str(os.path.splitext(conf.CSVfile)[0]+ "-"+lab+"-backup_" +\
-                str(date)+".csv")
-            conn.backupDB(date, lab, file)
-            print("\n Data saved in:",file,"\n")
+            if o in ("-d" , "--delete"):
+                yN = input("Are you sure (y/N)? ")
+                if yN == "y":
+                    conn.deleteDB(date, lab)
         
-        if o in ("-d" , "--delete"):
-            yN = input("Are you sure (y/N)? ")
-            if yN == "y":
-                conn.deleteDB(date, lab)
+            if o in ("-l", "--list"):
+                conn.getDatesAvailable()
         
-        if o in ("-l", "--list"):
-            conn.getDatesAvailable()
-        
-    #except:
-    #    print("\n No entry in database\n")
+    except:
+        print("\n No entry in database or error\n")
 
 #************************************
 # Get data from database
@@ -110,7 +110,15 @@ def displayAllData(conn, date, lab):
     labels =['date', 'time','temperature','pressure','humidity','CO2','TVOC']
     plotMultiData(entries, lab)
     
-def displayDataMobile(conn, date, lab):
+def displayDataMobile(conn, date, lab, num):
+    entries = conn.getData(date, lab)
+    print()
+    for i in range(num):
+        entry = entries.iloc[i-num]
+        print(" Date:{0:s} | Time:{1:s} | T= {2:0.1f} C | RH= {3:0.1f} | \033[1mCO2 = {4:0.1f} ppm\033[0m | TVOC = {5:0.1f} ppb ".format( entry['date'],entry['time'],entry['temperature'],entry['humidity'],entry['CO2'],entry['TVOC']))
+    print()
+    
+def displayDataMobile_old(conn, date, lab):
     entries = conn.getData(date, lab).iloc[-1]
     print("\n Last measurement:")
     print("\n Lab: ", entries['lab'])
@@ -122,7 +130,7 @@ def displayDataMobile(conn, date, lab):
     print(" Dew Point = {0:0.1f} deg C".format(entries['dewpoint']))
     print("\033[1m CO2 = {0:0.1f} ppm".format(entries['CO2']))
     print(" Total Volatile Organic Content = {0:0.1f} ppb\033[0m\n".format(entries['TVOC']))
-
+        
 #************************************
 # Plot data
 #************************************
