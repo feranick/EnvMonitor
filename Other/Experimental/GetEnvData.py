@@ -3,7 +3,7 @@
 '''
 ***********************************************************
 * GetEnvData
-* version: 20210425a
+* version: 20210426a
 * By: Nicola Ferralis <feranick@hotmail.com>
 ***********************************************************
 '''
@@ -157,12 +157,20 @@ def plotSingleData(data, type):
     
 def plotMultiData(entries, lab):
     import matplotlib.pyplot as plt
-    
     labs = entries.lab.unique()
-    #fig, ax1 = plt.subplots(4,1, figsize=(9,10))
-    #plt.figure(1, figsize=(9,10))
-    #plt.title('EnvMonitor: '+entries['date'].iloc[-1]+'  '+lab)
-    #entries.plot(kind='line',x='time',y='temperature',ax=plt.gca())
+    for i in range(labs.size):
+        fig, ax1 = plt.subplots(4,1, figsize=(9,10))
+        fig.suptitle('EnvMonitor: '+entries['date'].iloc[-1]+'\nLab:  '+labs[i])
+        plt.subplot(4,1,1)
+        entries[entries['lab']==labs[i]].plot(kind='line',use_index=True, x='time', y='temperature', ax=plt.gca(), ylabel="T [C]", legend=False)
+        plt.subplot(4,1,2)
+        entries[entries['lab']==labs[i]].plot(kind='line',use_index=True, x='time', y='humidity', ax=plt.gca(), ylabel="RH [%]", legend=False)
+        plt.subplot(4,1,3)
+        entries[entries['lab']==labs[i]].plot(kind='line',x='time',y='CO2', ax=plt.gca(), ylabel="CO2 [ppm]", legend=False)
+        plt.subplot(4,1,4)
+        entries[entries['lab']==labs[i]].plot(kind='line',x='time',y='TVOC', ax=plt.gca(), ylabel="TVOC [ppb]", legend=False)
+        plt.show()
+        
     '''
     entry0 = entries.pivot(index="time", columns="lab", values="temperature")
     entry1 = entries.pivot(index="time", columns="lab", values="humidity")
@@ -174,40 +182,28 @@ def plotMultiData(entries, lab):
     entry2.plot(kind='line',ax=ax1[2])
     entry3.plot(kind='line',ax=ax1[3])
     '''
-    
-    for i in range(labs.size):
-        fig, ax1 = plt.subplots(4,1, figsize=(9,10))
-        plt.title('EnvMonitor: '+entries['date'].iloc[-1]+'  '+lab)
-        plt.subplot(4,1,1)
-        entries[entries['lab']==labs[i]].plot(kind='line',use_index=True, x='time', y='temperature', ax=plt.gca())
-        plt.subplot(4,1,2)
-        entries[entries['lab']==labs[i]].plot(kind='line',use_index=True, x='time', y='temperature', ax=plt.gca())
-        plt.subplot(4,1,3)
-        entries[entries['lab']==labs[i]].plot(kind='line',x='time',y='CO2', ax=plt.gca())
-        plt.subplot(4,1,4)
-        entries[entries['lab']==labs[i]].plot(kind='line',x='time',y='TVOC', ax=plt.gca())
-        plt.show()
-    
     '''
+    fig, ax1 = plt.subplots(4,1, figsize=(9,10))
+    fig.suptitle('EnvMonitor: '+entries['date'].iloc[-1])
     plt.subplot(4,1,1)
     for i in range(labs.size):
         #entry0.plot(kind='line', y=labs[i], ax=ax1[0])
-        entries[entries['lab']==labs[i]].plot(kind='line',use_index=True, x='time', y='temperature', ax=plt.gca())
+        entries[entries['lab']==labs[i]].plot(kind='line',use_index=True, x='time', y='temperature', ax=plt.gca(), ylabel="T [C]", legend=False)
     plt.subplot(4,1,2)
     for i in range(labs.size):
         #entry1.plot(kind='line', y=labs[i], ax=plt.gca())
-        entries[entries['lab']==labs[i]].plot(kind='line',x='time',y='humidity', ax=plt.gca())
+        entries[entries['lab']==labs[i]].plot(kind='line',x='time',y='humidity', ax=plt.gca(), ylabel="RH [%]", legend=False)
     plt.subplot(4,1,3)
     for i in range(labs.size):
         #entry2.plot(kind='line', y=labs[i], ax=plt.gca())
-        entries[entries['lab']==labs[i]].plot(kind='line',x='time',y='CO2', ax=plt.gca())
+        entries[entries['lab']==labs[i]].plot(kind='line',x='time',y='CO2', ax=plt.gca(), ylabel="CO2 [ppm]", legend=False)
     plt.subplot(4,1,4)
     for i in range(labs.size):
         #entry3.plot(kind='line', y=labs[i], ax=plt.gca())
-        entries[entries['lab']==labs[i]].plot(kind='line',x='time',y='TVOC', ax=plt.gca())
+        entries[entries['lab']==labs[i]].plot(kind='line',x='time',y='TVOC', ax=plt.gca(), ylabel="TVOC [ppb]", legend=False)
     
     plt.show()
-    '''
+    
 #************************************
 # Lists the program usage
 #************************************
