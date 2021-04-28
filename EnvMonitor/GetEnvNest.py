@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 '''
 **********************************************************
-* EnvMonNest - Control Nest Thermostat based on Air Quality
-#* version: 20210425a
+* GetEnvNest - Control Nest Thermostat based on Air Quality
+#* version: 20210428a
 * By: Nicola Ferralis <feranick@hotmail.com>
 ***********************************************************
 '''
@@ -12,7 +12,7 @@
 #***************************************************
 ''' This is needed for installation through pip '''
 #***************************************************
-def EnvMonNest():
+def GetEnvNest():
     main()
 #***************************************************
 

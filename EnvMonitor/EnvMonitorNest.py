@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 '''
 **********************************************************
-* EnvMonitor - Environmental Tracking
+* EnvMonitorNest - Environmental Tracking with Nest data
 # version: 20210428a
 * By: Nicola Ferralis <feranick@hotmail.com>
 ***********************************************************
@@ -12,7 +12,7 @@
 #***************************************************
 # This is needed for installation through pip
 #***************************************************
-def EnvMonitor():
+def EnvMonitorNest():
     main()
 #***************************************************
 
@@ -23,6 +23,7 @@ from pymongo import MongoClient
 import numpy as np
 import pandas as pd
 from libEnvMonitor import *
+from GNestAccess import *
 from Sensors import TRHSensor
 
 #************************************
@@ -31,14 +32,19 @@ from Sensors import TRHSensor
 def main():
     config = Configuration()
     s = sched.scheduler(time.time, time.sleep)
+    
+    gnest = GoogleNest()
+    gnest.getToken()
+    gnest.dev, tmp = gnest.getDevices(0)
+    
     while True:
-        s.enter(config.sleepSeconds, config.priority, runAcq)
+        s.enter(config.sleepSeconds, config.priority, runAcq,(gnest,))
         s.run()
 
 #************************************
 # Run Acquistion
 #************************************
-def runAcq():
+def runAcq(gnest):
     config = Configuration()
         
     #************************************
@@ -76,6 +82,7 @@ def runAcq():
     ip = getIP()
     date = time.strftime("%Y%m%d")
     time1 = time.strftime("%H:%M:%S")
+    nestFan = gnest.getFanTrait(0)
         
     sensData = {
             'lab' : config.lab,
@@ -96,6 +103,7 @@ def runAcq():
             'TVOC' : TVOC,
             'eCO2_baseline' : baseline_eCO2,
             'TVOC_baseline' : baseline_TVOC,
+            'NestFan' : nestFan,
             }
     
     #************************************
@@ -117,7 +125,8 @@ def runAcq():
         print(" Altitude = {0:0.1f} m".format(altitude))
         print(" Sealevel pressure = {0:0.1f} hPa".format(sealevel),)
         print(" CO2 = {0:0.1f} ppm".format(CO2))
-        print(" Total Volatile Organic Content = {0:0.1f} ppb\n".format(TVOC))
+        print(" Total Volatile Organic Content = {0:0.1f} ppb".format(TVOC))
+        print(" Nest Fan:",nestFan)
       
     if config.saveMongoDB:
         try:
@@ -136,6 +145,11 @@ def runAcq():
             print("\n Saved in "+config.CSVfile)
         except:
             print("\n Saving to CSV failed!")
+            
+    diffTime = time.time()-gnest.time
+    if diffTime > 3000:
+        gnest.refreshToken()
+        gnest.time = time.time()
 
 #************************************
 # Main initialization routine
