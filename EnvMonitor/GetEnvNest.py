@@ -3,7 +3,7 @@
 '''
 **********************************************************
 * GetEnvNest - Control Nest Thermostat based on Air Quality
-#* version: 20210428a
+#* version: 20210428b
 * By: Nicola Ferralis <feranick@hotmail.com>
 ***********************************************************
 '''
