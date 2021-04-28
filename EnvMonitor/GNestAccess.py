@@ -123,16 +123,20 @@ class GoogleNest:
             self.temperature = response_json['traits']['sdm.devices.traits.Temperature']['ambientTemperatureCelsius']
             #print('Temperature:', self.temperature)
         
-            self.fanStatus = response_json['traits']['sdm.devices.traits.Fan']['timerMode']
+            tmp = response_json['traits']['sdm.devices.traits.Fan']['timerMode']
+            if tmp == "ON":
+                self.fanStatus = 1
+            else:
+                self.fanStatus = 0
+            
             #print('Fan:', self.fanStatus)
         except RuntimeError as arg:
             print("\n\n Failed to get Device Statistics\n")
             print(arg)
             self.humidity = 0
             self.temperature = 0
-            self.fanStatus = "OFF"
+            self.fanStatus = 0
         
-    
     def sendCmdDevice(self, device, data):
         url_set_mode = 'https://smartdevicemanagement.googleapis.com/v1/' + device + ':executeCommand'
 

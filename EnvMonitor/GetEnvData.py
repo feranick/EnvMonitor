@@ -31,8 +31,8 @@ def main():
     
     try:
         opts, args = getopt.getopt(sys.argv[1:],
-            "tprwhscoabmdlif:", ["temperature", "pressure", "humidity", "dewpoint", "altitude", "sealevel", "co2",
-            "tvoc", "all", "mobile", "backup", "delete", "list", "id", "file"])
+            "tprwhscoabmndlif:", ["temperature", "pressure", "humidity", "dewpoint", "altitude", "sealevel", "co2",
+            "tvoc", "all", "mobile", "nest", "backup", "delete", "list", "id", "file"])
     except:
         usage()
         sys.exit(2)
@@ -54,11 +54,11 @@ def main():
         lab = ""
         date = ""
         
-    try:
-        for o, a in opts:
-            jsonData={}
-            conn = SubMongoDB(json.dumps(jsonData), conf)
-            
+    #try:
+    for o, a in opts:
+        jsonData={}
+        conn = SubMongoDB(json.dumps(jsonData), conf)
+        '''
             if o in ("-t" , "--temperature"):
                 plotSingleData(conn.getByType("temperature", date), "temperature")
             if o in ("-p" , "--pressure"):
@@ -75,13 +75,16 @@ def main():
                 plotSingleData(conn.getByType("CO2", date), "CO2")
             if o in ("-o" , "--tvoc"):
                 plotSingleData(conn.getByType("TVOC", date), "TVOC")
+        '''
+        if o in ("-a" , "--all"):
+            displayAllData(conn, date, lab, 'TVOC')
+                
+        if o in ("-n" , "--nest"):
+            displayAllData(conn, date, lab, 'NestFanStatus')
         
-            if o in ("-a" , "--all"):
-                displayAllData(conn, date, lab)
-        
-            if o in ("-m" , "--mobile"):
-                displayDataMobile(conn, date, lab, 10)
-            
+        if o in ("-m" , "--mobile"):
+            displayDataMobile(conn, date, lab, 10)
+        '''
             if o in ("-b" , "--backup"):
                 file = str(os.path.splitext(conf.CSVfile)[0]+ "-"+lab+"-backup_" +\
                     str(date)+".csv")
@@ -95,23 +98,25 @@ def main():
         
             if o in ("-l", "--list"):
                 conn.getDatesAvailable()
-        
-    except:
-        print("\n No entry in database or error\n")
+        '''
+    #except:
+    #    print("\n No entry in database or error\n")
 
 #************************************
 # Get data from database
 #************************************
-def displayAllData(conn, date, lab):
+def displayAllData(conn, date, lab, tag):
     import pandas as pd
     import numpy as np
     entries = conn.getData(date, lab)
-    data = entries[['date', 'time', 'temperature', 'pressure', 'humidity', 'CO2', 'TVOC']].to_numpy()
-    labels =['date', 'time','temperature','pressure','humidity','CO2','TVOC']
-    plotMultiData(entries, lab)
+    print(entries[tag])
+    data = entries[['date', 'time', 'temperature', 'pressure', 'humidity', 'CO2', tag]].to_numpy()
+    labels =['date', 'time','temperature','pressure','humidity','CO2',tag]
+    plotMultiData(entries, lab, tag)
     
 def displayDataMobile(conn, date, lab, num):
     entries = conn.getData(date, lab)
+    print(entries)
     print()
     for i in range(num):
         entry = entries.iloc[i-num]
@@ -155,7 +160,7 @@ def plotSingleData(data, type):
     plt.show()
     plt.close()
     
-def plotMultiData(entries, lab):
+def plotMultiData(entries, lab, tag):
     import matplotlib.pyplot as plt
     labs = entries.lab.unique()
     for i in range(labs.size):
@@ -168,7 +173,7 @@ def plotMultiData(entries, lab):
         plt.subplot(4,1,3)
         entries[entries['lab']==labs[i]].plot(kind='line',x='time',y='CO2', ax=plt.gca(), ylabel="CO2 [ppm]", legend=False)
         plt.subplot(4,1,4)
-        entries[entries['lab']==labs[i]].plot(kind='line',x='time',y='TVOC', ax=plt.gca(), ylabel="TVOC [ppb]", legend=False)
+        entries[entries['lab']==labs[i]].plot(kind='line',x='time',y=tag, ax=plt.gca(), ylabel=tag, legend=False)
         plt.show()
     
     '''
