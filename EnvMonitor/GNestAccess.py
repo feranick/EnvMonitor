@@ -40,7 +40,7 @@ class GoogleNest:
         
         print(self.url)
         webbrowser.open(self.url,new=1,autoraise=True)
-         if code == "":
+        if code == "":
             self.code = input("\n\033[1mPaste access code: \033[0m")
         else:
             self.code = code

@@ -26,7 +26,7 @@ from GNestAccess import *
 # Main - Scheduler
 #************************************
 def main():
-    if len(sys.argv) < 1:
+    if len(sys.argv) > 1:
         code = sys.argv[1]
     else:
         code = ""
