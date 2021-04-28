@@ -104,7 +104,9 @@ def runAcq(gnest):
             'TVOC' : TVOC,
             'eCO2_baseline' : baseline_eCO2,
             'TVOC_baseline' : baseline_TVOC,
-            'NestFan' : gnest.fanStatus,
+            'NestFanStatus' : gnest.fanStatus,
+            'NestTemperature' : gnest.temperature,
+            'NestHumidity' : gnest.humidity,
             }
     
     #************************************
