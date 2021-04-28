@@ -36,7 +36,6 @@ def main():
     gnest = GoogleNest()
     gnest.getToken()
     gnest.dev, tmp = gnest.getDevices(0)
-    gnest.getDeviceStats(0)
     
     while True:
         s.enter(config.sleepSeconds, config.priority, runAcq,(gnest,))
@@ -83,6 +82,8 @@ def runAcq(gnest):
     ip = getIP()
     date = time.strftime("%Y%m%d")
     time1 = time.strftime("%H:%M:%S")
+    
+    gnest.getDeviceStats(gnest.dev)
         
     sensData = {
             'lab' : config.lab,
