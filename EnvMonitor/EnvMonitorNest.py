@@ -36,6 +36,7 @@ def main():
     gnest = GoogleNest()
     gnest.getToken()
     gnest.dev, tmp = gnest.getDevices(0)
+    gnest.getDeviceStats(0)
     
     while True:
         s.enter(config.sleepSeconds, config.priority, runAcq,(gnest,))
@@ -82,7 +83,6 @@ def runAcq(gnest):
     ip = getIP()
     date = time.strftime("%Y%m%d")
     time1 = time.strftime("%H:%M:%S")
-    nestFan = gnest.getFanTrait(0)
         
     sensData = {
             'lab' : config.lab,
@@ -103,7 +103,7 @@ def runAcq(gnest):
             'TVOC' : TVOC,
             'eCO2_baseline' : baseline_eCO2,
             'TVOC_baseline' : baseline_TVOC,
-            'NestFan' : nestFan,
+            'NestFan' : gnest.fanStatus,
             }
     
     #************************************
@@ -126,7 +126,7 @@ def runAcq(gnest):
         print(" Sealevel pressure = {0:0.1f} hPa".format(sealevel),)
         print(" CO2 = {0:0.1f} ppm".format(CO2))
         print(" Total Volatile Organic Content = {0:0.1f} ppb".format(TVOC))
-        print(" Nest Fan:",nestFan)
+        print(" Nest Fan:",gnest.fanStatus)
       
     if config.saveMongoDB:
         try:

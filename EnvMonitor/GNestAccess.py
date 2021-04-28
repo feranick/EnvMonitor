@@ -117,13 +117,13 @@ class GoogleNest:
         response = requests.get(url_get_device, headers=headers)
 
         response_json = response.json()
-        humidity = response_json['traits']['sdm.devices.traits.Humidity']['ambientHumidityPercent']
-        print('Humidity:', humidity)
-        temperature = response_json['traits']['sdm.devices.traits.Temperature']['ambientTemperatureCelsius']
-        print('Temperature:', temperature)
+        self.humidity = response_json['traits']['sdm.devices.traits.Humidity']['ambientHumidityPercent']
+        print('Humidity:', self.humidity)
+        self.temperature = response_json['traits']['sdm.devices.traits.Temperature']['ambientTemperatureCelsius']
+        print('Temperature:', self.temperature)
         
-        fan = response_json['traits']['sdm.devices.traits.Fan']['timerMode']
-        print('Fan:', fan)
+        self.fanStatus = response_json['traits']['sdm.devices.traits.Fan']['timerMode']
+        print('Fan:', self.fanStatus)
         
     
     def sendCmdDevice(self, device, data):
