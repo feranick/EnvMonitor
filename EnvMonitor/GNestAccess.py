@@ -33,14 +33,17 @@ def main():
 ####################################################################
         
 class GoogleNest:
-    def __init__(self):
+    def __init__(self, code):
         self.conf = GNestConfig()
         print('\033[1mEnter this URL in a browser and follow the instructions to get an access code:\033[0m\n')
         self.url = 'https://nestservices.google.com/partnerconnections/'+self.conf.project_id+'/auth?redirect_uri='+self.conf.redirect_uri+'&access_type=offline&prompt=consent&client_id='+self.conf.client_id+'&response_type=code&scope=https://www.googleapis.com/auth/sdm.service'
         
         print(self.url)
         webbrowser.open(self.url,new=1,autoraise=True)
-        self.code = input("\n\033[1mPaste access code: \033[0m")
+         if code == "":
+            self.code = input("\n\033[1mPaste access code: \033[0m")
+        else:
+            self.code = code
         
         self.params = (
             ('client_id', self.conf.client_id),

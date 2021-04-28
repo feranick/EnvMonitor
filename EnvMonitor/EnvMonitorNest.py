@@ -30,10 +30,14 @@ from Sensors import TRHSensor
 # Main - Scheduler
 #************************************
 def main():
+    if len(sys.argv) < 1:
+        code = sys.argv[1]
+    else:
+        code = ""
     config = Configuration()
     s = sched.scheduler(time.time, time.sleep)
     
-    gnest = GoogleNest()
+    gnest = GoogleNest(code)
     gnest.getToken()
     gnest.dev, tmp = gnest.getDevices(0)
     
