@@ -106,24 +106,28 @@ class GoogleNest:
 
     # Get Device Stats
     def getDeviceStats(self, device):
-        print("DEVICE NAME:",device)
+        #print("DEVICE NAME:",device)
         url_get_device = 'https://smartdevicemanagement.googleapis.com/v1/' + device
-
         headers = {
         'Content-Type': 'application/json',
         'Authorization': self.access_token,
         }
-
-        response = requests.get(url_get_device, headers=headers)
-
-        response_json = response.json()
-        self.humidity = response_json['traits']['sdm.devices.traits.Humidity']['ambientHumidityPercent']
-        print('Humidity:', self.humidity)
-        self.temperature = response_json['traits']['sdm.devices.traits.Temperature']['ambientTemperatureCelsius']
-        print('Temperature:', self.temperature)
+        try:
+            response = requests.get(url_get_device, headers=headers)
+            response_json = response.json()
+            self.humidity = response_json['traits']['sdm.devices.traits.Humidity']['ambientHumidityPercent']
+            #print('Humidity:', self.humidity)
+            self.temperature = response_json['traits']['sdm.devices.traits.Temperature']['ambientTemperatureCelsius']
+            #print('Temperature:', self.temperature)
         
-        self.fanStatus = response_json['traits']['sdm.devices.traits.Fan']['timerMode']
-        print('Fan:', self.fanStatus)
+            self.fanStatus = response_json['traits']['sdm.devices.traits.Fan']['timerMode']
+            #print('Fan:', self.fanStatus)
+        except RuntimeError as arg:
+            print("\n\n Failed to get Device Statistics\n")
+            print(arg)
+            self.humidity = 0
+            self.temperature = 0
+            self.fanStatus = "OFF"
         
     
     def sendCmdDevice(self, device, data):
