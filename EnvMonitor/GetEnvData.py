@@ -54,11 +54,11 @@ def main():
         lab = ""
         date = ""
         
-    #try:
-    for o, a in opts:
-        jsonData={}
-        conn = SubMongoDB(json.dumps(jsonData), conf)
-        '''
+    try:
+        for o, a in opts:
+            jsonData={}
+            conn = SubMongoDB(json.dumps(jsonData), conf)
+        
             if o in ("-t" , "--temperature"):
                 plotSingleData(conn.getByType("temperature", date), "temperature")
             if o in ("-p" , "--pressure"):
@@ -75,16 +75,16 @@ def main():
                 plotSingleData(conn.getByType("CO2", date), "CO2")
             if o in ("-o" , "--tvoc"):
                 plotSingleData(conn.getByType("TVOC", date), "TVOC")
-        '''
-        if o in ("-a" , "--all"):
-            displayAllData(conn, date, lab, 'TVOC')
-                
-        if o in ("-n" , "--nest"):
-            displayAllData(conn, date, lab, 'NestFanStatus')
         
-        if o in ("-m" , "--mobile"):
-            displayDataMobile(conn, date, lab, 10)
-        '''
+            if o in ("-a" , "--all"):
+                displayAllData(conn, date, lab, 'TVOC')
+                
+            if o in ("-n" , "--nest"):
+                displayAllData(conn, date, lab, 'NestFanStatus')
+        
+            if o in ("-m" , "--mobile"):
+                displayDataMobile(conn, date, lab, 10)
+        
             if o in ("-b" , "--backup"):
                 file = str(os.path.splitext(conf.CSVfile)[0]+ "-"+lab+"-backup_" +\
                     str(date)+".csv")
@@ -98,9 +98,9 @@ def main():
         
             if o in ("-l", "--list"):
                 conn.getDatesAvailable()
-        '''
-    #except:
-    #    print("\n No entry in database or error\n")
+        
+    except:
+        print("\n No entry in database or error\n")
 
 #************************************
 # Get data from database
@@ -109,14 +109,12 @@ def displayAllData(conn, date, lab, tag):
     import pandas as pd
     import numpy as np
     entries = conn.getData(date, lab)
-    print(entries[tag])
     data = entries[['date', 'time', 'temperature', 'pressure', 'humidity', 'CO2', tag]].to_numpy()
     labels =['date', 'time','temperature','pressure','humidity','CO2',tag]
     plotMultiData(entries, lab, tag)
     
 def displayDataMobile(conn, date, lab, num):
     entries = conn.getData(date, lab)
-    print(entries)
     print()
     for i in range(num):
         entry = entries.iloc[i-num]
