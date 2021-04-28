@@ -129,7 +129,7 @@ def runAcq(gnest):
         print(" Sealevel pressure = {0:0.1f} hPa".format(sealevel),)
         print(" CO2 = {0:0.1f} ppm".format(CO2))
         print(" Total Volatile Organic Content = {0:0.1f} ppb".format(TVOC))
-        print(" Nest Fan:",gnest.fanStatus)
+        print(" Nest Fan:",gnest.fanStatus,"\n")
       
     if config.saveMongoDB:
         try:
