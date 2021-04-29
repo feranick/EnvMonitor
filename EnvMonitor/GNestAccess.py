@@ -151,7 +151,8 @@ class GoogleNest:
             print(arg)
             self.humidity = 0
             self.temperature = 0
-            self.fanStatus = 0
+            self.fanStatus = "OFF"
+            self.hvacStatus = "OFF"
         
     def sendCmdDevice(self, device, data):
         url_set_mode = 'https://smartdevicemanagement.googleapis.com/v1/' + device + ':executeCommand'
