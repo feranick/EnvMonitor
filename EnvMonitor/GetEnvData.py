@@ -3,7 +3,7 @@
 '''
 ***********************************************************
 * GetEnvData
-* version: 20210428b
+* version: 20210429a
 * By: Nicola Ferralis <feranick@hotmail.com>
 ***********************************************************
 '''
@@ -58,7 +58,14 @@ def main():
         for o, a in opts:
             jsonData={}
             conn = SubMongoDB(json.dumps(jsonData), conf)
-
+            
+            if o in ("-a" , "--all"):
+                plotMultiData(conn, date, lab)
+            if o in ("-n" , "--nest"):
+                plotMultiDataNest(conn, date, lab)
+            if o in ("-m" , "--mobile"):
+                displayDataMobile(conn, date, lab, 10)
+    
             if o in ("-t" , "--temperature"):
                 plotSingleData(conn.getByType("temperature", date), "temperature")
             if o in ("-p" , "--pressure"):
@@ -75,15 +82,6 @@ def main():
                 plotSingleData(conn.getByType("CO2", date), "CO2")
             if o in ("-o" , "--tvoc"):
                 plotSingleData(conn.getByType("TVOC", date), "TVOC")
-        
-            if o in ("-a" , "--all"):
-                displayAllData(conn, date, lab, 'TVOC')
-                
-            if o in ("-n" , "--nest"):
-                displayAllData(conn, date, lab, 'NestFanStatus')
-                
-            if o in ("-m" , "--mobile"):
-                displayDataMobile(conn, date, lab, 10)
                 
             if o in ("-b" , "--backup"):
                 file = str(os.path.splitext(conf.CSVfile)[0]+ "-"+lab+"-backup_" +\
@@ -98,20 +96,13 @@ def main():
         
             if o in ("-l", "--list"):
                 conn.getDatesAvailable()
-
+    
     except:
-        print("\n No entry in database or error\n")
+       print("\n No entry in database or error\n")
         
 #************************************
 # Get data from database
 #************************************
-def displayAllData(conn, date, lab, tag):
-    import pandas as pd
-    import numpy as np
-    entries = conn.getData(date, lab)
-    data = entries[['date', 'time', 'temperature', 'pressure', 'humidity', 'CO2', tag]].to_numpy()
-    labels =['date', 'time','temperature','pressure','humidity','CO2',tag]
-    plotMultiData(entries, lab, tag)
     
 def displayDataMobile(conn, date, lab, num):
     entries = conn.getData(date, lab)
@@ -128,6 +119,54 @@ def displayDataMobile(conn, date, lab, num):
 #************************************
 # Plot data
 #************************************
+    
+def plotMultiData(conn, date, lab):
+    import pandas as pd
+    import numpy as np
+    import matplotlib.pyplot as plt
+    entries = conn.getData(date, lab)
+    labs = entries.lab.unique()
+    for i in range(labs.size):
+        fig, ax1 = plt.subplots(4,1, figsize=(9,10))
+        fig.suptitle('EnvMonitor: '+entries['date'].iloc[-1]+'\nLab:  '+labs[i])
+        plt.subplot(4,1,1)
+        entries[entries['lab']==labs[i]].plot(kind='line',use_index=True, x='time', y='temperature', ax=plt.gca(), ylabel="T [C]", legend=False)
+        plt.subplot(4,1,2)
+        entries[entries['lab']==labs[i]].plot(kind='line',use_index=True, x='time', y='humidity', ax=plt.gca(), ylabel="RH [%]", legend=False)
+        plt.subplot(4,1,3)
+        entries[entries['lab']==labs[i]].plot(kind='line',x='time',y='CO2', ax=plt.gca(), ylabel="CO2 [ppm]", legend=False)
+        plt.subplot(4,1,4)
+        entries[entries['lab']==labs[i]].plot(kind='line',x='time',y='TVOC', ax=plt.gca(), ylabel='TVOC', legend=False)
+        plt.show()
+        
+def plotMultiDataNest(conn, date, lab):
+    import pandas as pd
+    import numpy as np
+    import matplotlib.pyplot as plt
+    entries = conn.getData(date, lab)
+    labs = entries.lab.unique()
+    
+    entries.loc[(entries.NestFanStatus == "OFF"),'NestFanStatus'] = 0
+    entries.loc[(entries.NestFanStatus == "ON"),'NestFanStatus'] = 1
+    entries.loc[(entries.NestHvacStatus == "OFF"),'NestHvacStatus'] = 0
+    entries.loc[(entries.NestHvacStatus == "HEATING"),'NestHvacStatus'] = 1
+    entries.loc[(entries.NestHvacStatus == "COOLING"),'NestHvacStatus'] = 0.5
+        
+    for i in range(labs.size):
+        fig, ax1 = plt.subplots(5,1, figsize=(9,10))
+        fig.suptitle('EnvMonitor: '+entries['date'].iloc[-1]+'\nLab:  '+labs[i])
+        plt.subplot(5,1,1)
+        entries[entries['lab']==labs[i]].plot(kind='line',use_index=True, x='time', y='temperature', ax=plt.gca(), ylabel="T [C]", legend=False)
+        plt.subplot(5,1,2)
+        entries[entries['lab']==labs[i]].plot(kind='line',use_index=True, x='time', y='humidity', ax=plt.gca(), ylabel="RH [%]", legend=False)
+        plt.subplot(5,1,3)
+        entries[entries['lab']==labs[i]].plot(kind='line',x='time',y='CO2', ax=plt.gca(), ylabel="CO2 [ppm]", legend=False)
+        plt.subplot(5,1,4)
+        entries[entries['lab']==labs[i]].plot(kind='line',x='time',y='NestFanStatus', ax=plt.gca(), ylabel='Fan Status', legend=False)
+        plt.subplot(5,1,5)
+        entries[entries['lab']==labs[i]].plot(kind='line',x='time',y='NestHvacStatus', ax=plt.gca(), ylabel='Hvac Status', legend=False)
+        plt.show()
+    
 def plotSingleData(data, type):
     import matplotlib.pyplot as plt
     import numpy as np
@@ -149,70 +188,6 @@ def plotSingleData(data, type):
     plt.show()
     plt.close()
     
-def plotMultiData(entries, lab, tag):
-    import matplotlib.pyplot as plt
-    labs = entries.lab.unique()
-    for i in range(labs.size):
-        fig, ax1 = plt.subplots(4,1, figsize=(9,10))
-        fig.suptitle('EnvMonitor: '+entries['date'].iloc[-1]+'\nLab:  '+labs[i])
-        plt.subplot(4,1,1)
-        entries[entries['lab']==labs[i]].plot(kind='line',use_index=True, x='time', y='temperature', ax=plt.gca(), ylabel="T [C]", legend=False)
-        plt.subplot(4,1,2)
-        entries[entries['lab']==labs[i]].plot(kind='line',use_index=True, x='time', y='humidity', ax=plt.gca(), ylabel="RH [%]", legend=False)
-        plt.subplot(4,1,3)
-        entries[entries['lab']==labs[i]].plot(kind='line',x='time',y='CO2', ax=plt.gca(), ylabel="CO2 [ppm]", legend=False)
-        plt.subplot(4,1,4)
-        entries[entries['lab']==labs[i]].plot(kind='line',x='time',y=tag, ax=plt.gca(), ylabel=tag, legend=False)
-        plt.show()
-    
-    '''
-    entry0 = entries.pivot(index="time", columns="lab", values="temperature")
-    entry1 = entries.pivot(index="time", columns="lab", values="humidity")
-    entry2 = entries.pivot(index="time", columns="lab", values="CO2")
-    entry3 = entries.pivot(index="time", columns="lab", values="TVOC")
-    
-    entry0.plot(kind='line',ax=plt.gca())
-    entry1.plot(kind='line',ax=ax1[1])
-    entry2.plot(kind='line',ax=ax1[2])
-    entry3.plot(kind='line',ax=ax1[3])
-    '''
-    '''
-    fig, ax1 = plt.subplots(4,1, figsize=(9,10))
-    fig.suptitle('EnvMonitor: '+entries['date'].iloc[-1])
-    plt.subplot(4,1,1)
-    for i in range(labs.size):
-        #entry0.plot(kind='line', y=labs[i], ax=ax1[0])
-        entries[entries['lab']==labs[i]].plot(kind='line',use_index=True, x='time', y='temperature', ax=plt.gca(), ylabel="T [C]", legend=False)
-    plt.subplot(4,1,2)
-    for i in range(labs.size):
-        #entry1.plot(kind='line', y=labs[i], ax=plt.gca())
-        entries[entries['lab']==labs[i]].plot(kind='line',x='time',y='humidity', ax=plt.gca(), ylabel="RH [%]", legend=False)
-    plt.subplot(4,1,3)
-    for i in range(labs.size):
-        #entry2.plot(kind='line', y=labs[i], ax=plt.gca())
-        entries[entries['lab']==labs[i]].plot(kind='line',x='time',y='CO2', ax=plt.gca(), ylabel="CO2 [ppm]", legend=False)
-    plt.subplot(4,1,4)
-    for i in range(labs.size):
-        #entry3.plot(kind='line', y=labs[i], ax=plt.gca())
-        entries[entries['lab']==labs[i]].plot(kind='line',x='time',y='TVOC', ax=plt.gca(), ylabel="TVOC [ppb]", legend=False)
-    plt.show()
-    '''
-    
-    
-def plotMultiData_old(entries, lab):
-    import matplotlib.pyplot as plt
-    plt.figure(1, figsize=(9,10))
-    plt.subplot(4,1,1)
-    plt.title('EnvMonitor: '+entries['date'].iloc[-1]+'  '+lab)
-    entries.plot(kind='line',x='time',y='temperature',ax=plt.gca())
-    plt.subplot(4,1,2)
-    entries.plot(kind='line',x='time',y='humidity', ax=plt.gca())
-    plt.subplot(4,1,3)
-    entries.plot(kind='line',x='time',y='CO2', ax=plt.gca())
-    plt.subplot(4,1,4)
-    entries.plot(kind='line',x='time',y='TVOC', ax=plt.gca())
-    plt.show()
-
 #************************************
 # Lists the program usage
 #************************************

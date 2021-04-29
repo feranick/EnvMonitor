@@ -16,7 +16,7 @@ setup(
     author_email='ferralis@mit.edu',
     url='https://github.com/feranick/EnvMonitor',
     download_url='https://github.com/feranick/EnvMonitor/archive/master.zip',
-    keywords=['Data', 'Environment', 'tracking', 'automation','eCO2'],
+    keywords=['Data', 'Environment', 'tracking', 'automation','eCO2','Nest'],
     license='GPLv3',
     platforms='any',
     classifiers=[

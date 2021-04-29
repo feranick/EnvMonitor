@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 '''
 **********************************************************
-* EnvMonitor - Environmental Tracking
-* version: 20210428b
+* EnvMonitorLite - Environmental Tracking
+* version: 20210429ab
 * By: Nicola Ferralis <feranick@hotmail.com>
 ***********************************************************
 '''
