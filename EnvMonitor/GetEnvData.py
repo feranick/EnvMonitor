@@ -58,7 +58,7 @@ def main():
         for o, a in opts:
             jsonData={}
             conn = SubMongoDB(json.dumps(jsonData), conf)
-        
+
             if o in ("-t" , "--temperature"):
                 plotSingleData(conn.getByType("temperature", date), "temperature")
             if o in ("-p" , "--pressure"):
@@ -81,10 +81,10 @@ def main():
                 
             if o in ("-n" , "--nest"):
                 displayAllData(conn, date, lab, 'NestFanStatus')
-        
+                
             if o in ("-m" , "--mobile"):
                 displayDataMobile(conn, date, lab, 10)
-        
+                
             if o in ("-b" , "--backup"):
                 file = str(os.path.splitext(conf.CSVfile)[0]+ "-"+lab+"-backup_" +\
                     str(date)+".csv")
@@ -98,10 +98,10 @@ def main():
         
             if o in ("-l", "--list"):
                 conn.getDatesAvailable()
-        
+
     except:
         print("\n No entry in database or error\n")
-
+        
 #************************************
 # Get data from database
 #************************************
@@ -116,23 +116,14 @@ def displayAllData(conn, date, lab, tag):
 def displayDataMobile(conn, date, lab, num):
     entries = conn.getData(date, lab)
     print()
-    for i in range(num):
-        entry = entries.iloc[i-num]
-        print(" Date:{0:s} | Time:{1:s} | T= {2:0.1f} C | RH= {3:0.1f} | \033[1mCO2 = {4:0.1f} ppm\033[0m | TVOC = {5:0.1f} ppb ".format( entry['date'],entry['time'],entry['temperature'],entry['humidity'],entry['CO2'],entry['TVOC']))
-    print()
-    
-def displayDataMobile_old(conn, date, lab):
-    entries = conn.getData(date, lab).iloc[-1]
-    print("\n Last measurement:")
-    print("\n Lab: ", entries['lab'])
-    print(" Date: ", entries['date'])
-    print(" Time: ", entries['time'])
-    print(" Temperature = {0:0.1f} deg C".format(entries['temperature']))
-    print(" Pressure = {0:0.1f} hPa".format(entries['pressure']))
-    print(" Humidity = {0:0.1f} %".format(entries['humidity']))
-    print(" Dew Point = {0:0.1f} deg C".format(entries['dewpoint']))
-    print("\033[1m CO2 = {0:0.1f} ppm".format(entries['CO2']))
-    print(" Total Volatile Organic Content = {0:0.1f} ppb\033[0m\n".format(entries['TVOC']))
+    labs = entries.lab.unique()
+    for j in range(labs.size):
+        print(" \033[1m"+labs[j]+"\033[0m")
+        for i in range(num):
+            entry = entries[entries['lab']==labs[j]].iloc[i-num]
+            #entry = entries.iloc[i-num]
+            print(" Date:{0:s} | Time:{1:s} | T= {2:0.1f} C | RH= {3:0.1f} | \033[1mCO2 = {4:0.1f} ppm\033[0m | TVOC = {5:0.1f} ppb ".format( entry['date'],entry['time'],entry['temperature'],entry['humidity'],entry['CO2'],entry['TVOC']))
+        print()
         
 #************************************
 # Plot data
