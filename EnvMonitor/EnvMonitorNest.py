@@ -109,6 +109,7 @@ def runAcq(gnest):
             'eCO2_baseline' : baseline_eCO2,
             'TVOC_baseline' : baseline_TVOC,
             'NestFanStatus' : gnest.fanStatus,
+            'NestHvacStatus' : gnest.hvacStatus,
             'NestTemperature' : gnest.temperature,
             'NestHumidity' : gnest.humidity,
             }
@@ -133,7 +134,9 @@ def runAcq(gnest):
         print(" Sealevel pressure = {0:0.1f} hPa".format(sealevel),)
         print(" CO2 = {0:0.1f} ppm".format(CO2))
         print(" Total Volatile Organic Content = {0:0.1f} ppb".format(TVOC))
-        print(" Nest Fan Status:",gnest.fanStatus,"\n")
+        print(" Nest Fan Status:",gnest.fanStatus)
+        print(" Nest HVAC Status:",gnest.hvacStatus,"\n")
+        
       
     if config.saveMongoDB:
         try:
