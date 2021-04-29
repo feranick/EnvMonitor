@@ -10,7 +10,7 @@ setup(
     py_modules=['EnvMonitor','EnvMonitorNest','EnvMonitorLite','GetEnvData','libEnvMonitor','PMsensor','Sensors',
         'GetEnvNest','GNestAccess'],
     scripts=['EnvMonitor_launcher.sh', 'EnvMonitorNest_launcher.sh', 'EnvMonitorLite_launcher.sh'],
-    version='20210428b',
+    version='20210429a',
     description='Environmental tracking monitor with submission to mongo or CSV',
     long_description= """ Environmental tracking monitor with submission to mongo or CSV """,
     author_email='ferralis@mit.edu',
