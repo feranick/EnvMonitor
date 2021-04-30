@@ -145,10 +145,8 @@ class GoogleNest:
             self.fanStatus = response_json['traits']['sdm.devices.traits.Fan']['timerMode']
             self.hvacStatus = response_json['traits']['sdm.devices.traits.ThermostatHvac']['status']
             
-
-        except RuntimeError as arg:
+        except:
             print("\n\n Failed to get Device Statistics\n")
-            print(arg)
             self.humidity = 0
             self.temperature = 0
             self.fanStatus = "OFF"
