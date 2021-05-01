@@ -157,9 +157,12 @@ def runAcq(gnest):
             print("\n Saving to CSV failed!")
             
     diffTime = time.time()-gnest.time
+    print("DIFFTIME:", diffTime)
     if diffTime > 3000:
         gnest.refreshToken()
         gnest.time = time.time()
+        print("REFRESHED TOKEN")
+        
 
 #************************************
 # Main initialization routine
