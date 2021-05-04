@@ -109,7 +109,7 @@ def displayDataMobile(conn, date, lab, num):
     print()
     labs = entries.lab.unique()
     for j in range(labs.size):
-        print(" \033[1m"+labs[j]+"\033[0m")
+        print(" \033[1m"+labs[j]+" - "+entries[entries['lab']==labs[j]].measType.unique()[-1]+"\033[0m")
         for i in range(num):
             entry = entries[entries['lab']==labs[j]].iloc[i-num]
             #entry = entries.iloc[i-num]
