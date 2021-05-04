@@ -27,12 +27,12 @@ class TRHSensor:
             self.sensor = adafruit_mcp9808.MCP9808(self.i2c)
             try:
                 self.temperature = self.sensor.temperature
+                self.pressure = 0
+                self.humidity = 1
+                self.dewpoint = 0
+                self.altitude = 0
             except:
                 self.failSafe()
-            self.pressure = 0
-            self.humidity = 1
-            self.dewpoint = 0
-            self.altitude = 0
 
         elif config.TPsensor == 'BME280':
             import adafruit_bme280
@@ -85,9 +85,9 @@ class TRHSensor:
                 self.temperature = sensor.read_temperature()
                 self.pressure = sensor.read_pressure() / 100
                 self.altitude = sensor.read_altitude()
+                self.humidity = 1
             except:
                 self.failSafe()
-            self.humidity = 0
                     
         self.sealevel = self.sea_level_pressure
         self.dewpoint = dewPointRH(self.temperature, self.humidity, Pws(self.temperature, self.humidity))
