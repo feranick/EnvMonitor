@@ -3,7 +3,7 @@
 '''
 ************************************************************
 * EnvMonitor - Sensors
-* version: 20210428b
+* version: 20210504a
 * By: Nicola Ferralis <feranick@hotmail.com>
 ************************************************************
 '''
@@ -28,8 +28,7 @@ class TRHSensor:
             try:
                 self.temperature = self.sensor.temperature
             except:
-                print("\n T/RH/P SENSOR NOT CONNECTED ")
-                self.temperature = 0
+                self.failSafe()
             self.pressure = 0
             self.humidity = 0
             self.dewpoint = 0
@@ -53,35 +52,32 @@ class TRHSensor:
                 self.humidity = self.sensor.relative_humidity
                 self.altitude = self.sensor.altitude
             except:
-                print("\n T/RH/P SENSOR NOT CONNECTED ")
-                self.temperature = 0
-                self.pressure = 0
-                self.humidity = 0
-                self.dewpoint = 0
-                self.altitude = 0
-                self.sealevel = self.sea_level_pressure
+                self.failSafe()
 
         elif config.TPsensor == 'SCD30':
             import adafruit_scd30
-            self.sensor = adafruit_scd30.SCD30(self.i2c)
-            self.pressure = self.sea_level_pressure
-            #print(" Temperature offset:", self.sensor.temperature_offset)
-            #print(" Measurement interval:", self.sensor.measurement_interval)
-            #print(" Self-calibration enabled:", self.sensor.self_calibration_enabled)
-            #print(" Ambient Pressure:", self.sensor.ambient_pressure)
-            #print(" Altitude:", self.sensor.altitude, "meters above sea level")
-            #print(" Forced recalibration reference:", self.sensor.forced_recalibration_reference)
-            while True:
-                data = self.sensor.data_available
-                if self.sensor.data_available:
-                    self.temperature = self.sensor.temperature
-                    self.pressure = self.sensor.ambient_pressure
-                    self.humidity = self.sensor.relative_humidity
-                    self.altitude = self.sensor.altitude
-                    self.CO2 = self.sensor.CO2
-                    break
-                time.sleep(0.5)
-                    
+            try:
+                self.sensor = adafruit_scd30.SCD30(self.i2c)
+                self.pressure = self.sea_level_pressure
+                #print(" Temperature offset:", self.sensor.temperature_offset)
+                #print(" Measurement interval:", self.sensor.measurement_interval)
+                #print(" Self-calibration enabled:", self.sensor.self_calibration_enabled)
+                #print(" Ambient Pressure:", self.sensor.ambient_pressure)
+                #print(" Altitude:", self.sensor.altitude, "meters above sea level")
+                #print(" Forced recalibration reference:", self.sensor.forced_recalibration_reference)
+                while True:
+                    data = self.sensor.data_available
+                    if self.sensor.data_available:
+                        self.temperature = self.sensor.temperature
+                        self.pressure = self.sensor.ambient_pressure
+                        self.humidity = self.sensor.relative_humidity
+                        self.altitude = self.sensor.altitude
+                        self.CO2 = self.sensor.CO2
+                        break
+                    time.sleep(0.5)
+            except:
+                self.failSafe()
+                
         elif config.TPsensor == 'BME180':
             import Adafruit_BMP.BMP085 as BMP085
             import RPi.GPIO as GPIO
@@ -91,15 +87,22 @@ class TRHSensor:
                 self.pressure = sensor.read_pressure() / 100
                 self.altitude = sensor.read_altitude()
             except:
-                print("\n SENSOR NOT CONNECTED ")
-                self.temperature = 0
-                self.pressure = 0
-                self.altitude = 0
+                self.failSafe()
             self.humidity = 0
                     
         self.sealevel = self.sea_level_pressure
         self.dewpoint = dewPointRH(self.temperature, self.humidity, Pws(self.temperature, self.humidity))
         self.absHum = absHumidity(self.temperature,self.humidity, Pws(self.temperature,self.humidity))
+        
+    def failSafe(self):
+        print("\n T/RH/P SENSOR NOT CONNECTED ")
+        self.sensor = 0
+        self.temperature = 0
+        self.pressure = 0
+        self.humidity = 0
+        self.altitude = 0
+        self.CO2 = 0
+        self.sealevel = self.sea_level_pressure
         
 #************************************
 # Class Gas Sensor
