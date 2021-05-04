@@ -55,6 +55,10 @@ def runAcq(gnest):
     ''' NEW: Read from sensors '''
     #************************************
     trhSensor = TRHSensor(config)
+    
+    if trhSensor.success == False:
+        print("\n T/RH/P SENSOR NOT CONNECTED ")
+        break
    
     temperature = trhSensor.temperature
     pressure = trhSensor.pressure

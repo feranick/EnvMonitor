@@ -46,7 +46,7 @@ def runAcq():
     #************************************
     trhSensor = TRHSensor(config)
     
-    if trhSensor.success == False
+    if trhSensor.success == False:
         print("\n T/RH/P SENSOR NOT CONNECTED ")
         break
         
