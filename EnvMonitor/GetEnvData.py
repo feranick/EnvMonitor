@@ -128,7 +128,7 @@ def plotMultiData(conn, date, lab):
     labs = entries.lab.unique()
     for i in range(labs.size):
         fig, ax1 = plt.subplots(4,1, figsize=(9,10))
-        fig.suptitle('EnvMonitor: '+entries['date'].iloc[-1]+'\nLab:  '+labs[i])
+        fig.suptitle('EnvMonitor: '+entries['date'].iloc[-1]+'\nLab:  '+labs[i]+" - "+ entries[entries['lab']==labs[i]].measType.unique()[-1])
         plt.subplot(4,1,1)
         entries[entries['lab']==labs[i]].plot(kind='line',use_index=True, x='time', y='temperature', ax=plt.gca(), ylabel="T [C]", legend=False)
         plt.subplot(4,1,2)
@@ -154,7 +154,7 @@ def plotMultiDataNest(conn, date, lab):
         
     for i in range(labs.size):
         fig, ax1 = plt.subplots(5,1, figsize=(9,10))
-        fig.suptitle('EnvMonitor: '+entries['date'].iloc[-1]+'\nLab:  '+labs[i])
+        fig.suptitle('EnvMonitor: '+entries['date'].iloc[-1]+'\nLab:  '+labs[i]+" - "+ entries[entries['lab']==labs[i]].measType.unique()[-1])
         plt.subplot(5,1,1)
         entries[entries['lab']==labs[i]].plot(kind='line',use_index=True, x='time', y='temperature', ax=plt.gca(), ylabel="T [C]", legend=False)
         plt.subplot(5,1,2)
