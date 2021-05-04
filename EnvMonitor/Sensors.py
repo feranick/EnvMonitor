@@ -30,7 +30,7 @@ class TRHSensor:
             except:
                 self.failSafe()
             self.pressure = 0
-            self.humidity = 0
+            self.humidity = 1
             self.dewpoint = 0
             self.altitude = 0
 
@@ -66,7 +66,6 @@ class TRHSensor:
                 #print(" Altitude:", self.sensor.altitude, "meters above sea level")
                 #print(" Forced recalibration reference:", self.sensor.forced_recalibration_reference)
                 while True:
-                    data = self.sensor.data_available
                     if self.sensor.data_available:
                         self.temperature = self.sensor.temperature
                         self.pressure = self.sensor.ambient_pressure
@@ -99,7 +98,7 @@ class TRHSensor:
         self.sensor = 0
         self.temperature = 0
         self.pressure = 0
-        self.humidity = 0
+        self.humidity = 1
         self.altitude = 0
         self.CO2 = 0
         self.sealevel = self.sea_level_pressure
