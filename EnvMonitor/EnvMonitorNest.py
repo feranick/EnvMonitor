@@ -58,7 +58,7 @@ def runAcq(gnest):
     
     if trhSensor.success == False:
         print("\n T/RH/P SENSOR NOT CONNECTED ")
-        break
+        return
    
     temperature = trhSensor.temperature
     pressure = trhSensor.pressure
