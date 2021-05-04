@@ -51,6 +51,7 @@ class TRHSensor:
                 self.pressure = self.sensor.pressure
                 self.humidity = self.sensor.relative_humidity
                 self.altitude = self.sensor.altitude
+                self.success = True
             except:
                 self.failSafe()
 
@@ -74,6 +75,7 @@ class TRHSensor:
                         self.CO2 = self.sensor.CO2
                         break
                     time.sleep(0.5)
+                self.success = True
             except:
                 self.failSafe()
                 
@@ -86,6 +88,7 @@ class TRHSensor:
                 self.pressure = sensor.read_pressure() / 100
                 self.altitude = sensor.read_altitude()
                 self.humidity = 1
+                self.success = True
             except:
                 self.failSafe()
                     
@@ -102,6 +105,7 @@ class TRHSensor:
         self.altitude = 0
         self.CO2 = 0
         self.sealevel = self.sea_level_pressure
+        self.success = False
         
 #************************************
 # Class Gas Sensor

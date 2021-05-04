@@ -45,7 +45,11 @@ def runAcq():
     ''' NEW: Read from sensors '''
     #************************************
     trhSensor = TRHSensor(config)
-   
+    
+    if trhSensor.success == False
+        print("\n T/RH/P SENSOR NOT CONNECTED ")
+        break
+        
     temperature = trhSensor.temperature
     pressure = trhSensor.pressure
     humidity = trhSensor.humidity
@@ -118,7 +122,7 @@ def runAcq():
         print(" Sealevel pressure = {0:0.1f} hPa".format(sealevel),)
         print(" CO2 = {0:0.1f} ppm".format(CO2))
         print(" Total Volatile Organic Content = {0:0.1f} ppb\n".format(TVOC))
-      
+    
     if config.saveMongoDB:
         try:
             conn = SubMongoDB(json.dumps(sensData),config)
