@@ -293,7 +293,7 @@ class Configuration():
 #************************************************
 # Convert Relative Humidity to Absolute in g/m^3
 #************************************************
-def Pws(T1, RH):
+def Pws(T1):
     T = T1 + 273.5
         
     ### Method 1 - accurate but comp. intensive

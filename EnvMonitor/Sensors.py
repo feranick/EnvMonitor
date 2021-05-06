@@ -93,8 +93,8 @@ class TRHSensor:
                 self.failSafe()
                     
         self.sealevel = self.sea_level_pressure
-        self.dewpoint = dewPointRH(self.temperature, self.humidity, Pws(self.temperature, self.humidity))
-        self.absHum = absHumidity(self.temperature,self.humidity, Pws(self.temperature,self.humidity))
+        self.dewpoint = dewPointRH(self.temperature, self.humidity, Pws(self.temperature))
+        self.absHum = absHumidity(self.temperature,self.humidity, Pws(self.temperature))
         
     def failSafe(self):
         print("\n T/RH/P SENSOR NOT CONNECTED ")
