@@ -3,7 +3,7 @@
 '''
 ***********************************************************
 * Google Nest Device Access GNestAccess
-* version: 20210429a
+* version: 20210505a
 * By: Nicola Ferralis <feranick@hotmail.com>
 * Google Nest API: https://tinyurl.com/673rxvmf
 ***********************************************************

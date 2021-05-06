@@ -2,7 +2,7 @@
 '''
 **********************************************************
 * EnvMonitorLite - Environmental Tracking
-* version: 20210504a
+* version: 20210505a
 * By: Nicola Ferralis <feranick@hotmail.com>
 ***********************************************************
 '''
@@ -84,7 +84,7 @@ def runAcq():
             else:
                 pressure = TSens.pressure
             humidity = TSens.relative_humidity
-            pws = Pws(temperature,humidity)
+            pws = Pws(temperature)
             absHum = absHumidity(TSens.temperature,TSens.relative_humidity,pws)
             dewpoint = dewPointRH(temperature, humidity, pws)
         

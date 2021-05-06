@@ -3,7 +3,7 @@
 '''
 **********************************************************
 * EnvMonitorNest - Environmental Tracking with Nest data
-# version: 20210504a
+# version: 20210505a
 * By: Nicola Ferralis <feranick@hotmail.com>
 ***********************************************************
 '''
