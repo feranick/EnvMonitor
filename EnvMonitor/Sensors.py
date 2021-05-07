@@ -31,6 +31,7 @@ class TRHSensor:
                 self.humidity = 1
                 self.dewpoint = 0
                 self.altitude = 0
+                self.success = True
             except:
                 self.failSafe()
 
