@@ -1,0 +1,32 @@
+from setuptools import setup, find_packages
+
+setup(
+    name='TMonitorLite',
+    packages=find_packages(),
+    install_requires=['pymongo'],
+    entry_points={'console_scripts' : ['TMonitorLite=TMonitorLite:TMonitorLite','GetEnvData=GetEnvData:GetEnvData']},
+    py_modules=['TMonitorLite','libTMonitor','BMP180sensors','Tsensors'],
+    scripts=['TMonitorLite_launcher.sh'],
+    version='20230919a',
+    description='Temperature/Pressure tracking monitor with submission to CSV',
+    long_description= """ Temperature/Pressure tracking monitor with submission to CSV """,
+    author_email='ferralis@mit.edu',
+    url='https://github.com/feranick/EnvMonitor',
+    download_url='https://github.com/feranick/EnvMonitor/archive/master.zip',
+    keywords=['Data', 'Environment', 'tracking', 'automation'],
+    license='GPLv3',
+    platforms='any',
+    classifiers=[
+     'License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)',
+     'Programming Language :: Python :: Only',
+     'Programming Language :: Python :: 3',
+     'Programming Language :: Python :: 3.5',
+     'Programming Language :: Python :: 3.6',
+     'Programming Language :: Python :: 3.7',
+     'Programming Language :: Python :: 3.8',
+     'Programming Language :: Python :: 3.9',
+     'Intended Audience :: Science/Research',
+     'Topic :: Scientific/Engineering :: Chemistry',
+     'Topic :: Scientific/Engineering :: Physics',
+     ],
+)
